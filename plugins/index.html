@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Blur Text Generator erlan anjay brat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: left;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+        #output {
+            margin-top: 20px;
+            background: white;
+            width: 400px;
+            height: 400px;
+            position: relative;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: calc(100% - 20px);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text Generator erlan anjay brat</h1>
+        <input type="text" id="inputText" placeholder="Masukkan teks di sini (contoh: Ngapain ngoding mending scroll fesnuk)" />
+        <button onclick="generateImage()">Generate</button>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function generateImage() {
+            const text = document.getElementById('inputText').value || "Ngapain ngoding mending scroll fesnuk";
+            const maxLengthPerLine = 7; // Maksimal karakter per baris
+            const lines = [];
+            let currentLine = "";
+
+            // Pisahkan teks menjadi beberapa baris
+            text.split(" ").forEach(word => {
+                if ((currentLine + word).length > maxLengthPerLine) {
+                    lines.push(currentLine.trim());
+                    currentLine = "";
+                }
+                currentLine += `${word} `;
+            });
+            if (currentLine) lines.push(currentLine.trim());
+
+            // Hitung posisi vertikal agar teks tidak nabrak
+            const lineHeight = 80; // Tinggi tiap baris teks
+            const paddingTop = 60; // Jarak dari atas
+            const startY = paddingTop;
+
+            // SVG dengan efek blur
+            const svgText = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400">
+                    <defs>
+                        <filter id="blurEffect" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+                        </filter>
+                    </defs>
+                    <rect width="100%" height="100%" fill="white" />
+                    ${lines.map((line, i) => `
+                        <!-- Lapisan blur -->
+                        <text 
+                            x="20" 
+                            y="${startY + i * lineHeight}" 
+                            font-size="70" 
+                            fill="rgba(0, 0, 0, 0.4)" 
+                            font-family="Arial, sans-serif" 
+                            text-anchor="start" 
+                            dominant-baseline="hanging"
+                            filter="url(#blurEffect)">
+                            ${line}
+                        </text>
+                        <!-- Teks utama -->
+                        <text 
+                            x="20" 
+                            y="${startY + i * lineHeight}" 
+                            font-size="70" 
+                            fill="black" 
+                            font-family="Arial, sans-serif" 
+                            text-anchor="start" 
+                            dominant-baseline="hanging">
+                            ${line}
+                        </text>`).join('')}
+                </svg>
+            `;
+
+            const output = document.getElementById('output');
+            output.innerHTML = svgText;
+        }
+    </script>
+</body>
+</html>

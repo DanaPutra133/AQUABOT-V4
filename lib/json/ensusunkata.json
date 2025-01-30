@@ -1,0 +1,177 @@
+[
+  {
+    "soal": "O-D-G", 
+    "tipe": "Animal", 
+    "jawaban": "dog"
+  }, 
+  {
+    "soal": "T-S-E-S-U-I", 
+    "tipe": "Things", 
+    "jawaban": "tissue"
+  },
+  {
+    "soal": "T-C-A", 
+    "tipe": "Animal", 
+    "jawaban": "cat"
+  },
+  {
+    "soal": "N-O-L-I", 
+    "tipe": "Animal", 
+    "jawaban": "lion"
+  },
+  {
+    "soal": "B-O-M-C", 
+    "tipe": "Things", 
+    "jawaban": "comb"
+  },
+  {
+    "soal": "P-O-T-T-O-A-H-E-S-T", 
+    "tipe": "Things", 
+    "jawaban": "toothpaste"
+  }, 
+  {
+    "soal": "H-S-U-T-T-O-B-O-R-H", 
+    "tipe": "Things", 
+    "jawaban": "toothbrush"
+  },
+  {
+    "soal": "E-B-E", 
+    "tipe": "Animal", 
+    "jawaban": "bee"
+  },
+  {
+    "soal": "E-N-A-K-S", 
+    "tipe": "Animal", 
+    "jawaban": "snake"
+  },
+  {
+    "soal": "A-A-B-N-N-A", 
+    "tipe": "Fruits", 
+    "jawaban": "banana"
+  },
+  {
+    "soal": "O-N-M-L-E", 
+    "tipe": "Fruits", 
+    "jawaban": "melon"
+  }, 
+  {
+    "soal": "O-L-M-N-E", 
+    "tipe": "Fruits", 
+    "jawaban": "lemon"
+  },
+  {
+    "soal": "A-P-P-L-I-N-A-E-P", 
+    "tipe": "Fruits", 
+    "jawaban": "pineapple"
+  },
+  {
+    "soal": "P-E-R-A", 
+    "tipe": "Fruits", 
+    "jawaban": "pear"
+  },
+  {
+    "soal": "E-T-I-W-H", 
+    "tipe": "Colour", 
+    "jawaban": "white"
+  },
+  {
+    "soal": "T-B-I-R-A-B", 
+    "tipe": "Animal", 
+    "jawaban": "rabbit"
+  }, 
+  {
+    "soal": "T-O-P-R-E-F-O-W-L", 
+    "tipe": "Garden", 
+    "jawaban": "flower pot"
+  },
+  {
+    "soal": "D-P-H-I-O-N-L", 
+    "tipe": "Animal", 
+    "jawaban": "dolphin"
+  },
+  {
+    "soal": "B-E-B-A-R-R", 
+    "tipe": "Job", 
+    "jawaban": "barber"
+  },
+  {
+    "soal": "C-H-E-A-U-F-F-U-R", 
+    "tipe": "Job", 
+    "jawaban": "chauffeur"
+  },
+  {
+    "soal": "H-E-M-A-R-G-R-U-B", 
+    "tipe": "Food / Drink", 
+    "jawaban": "hamburger"
+  }, 
+  {
+    "soal": "U-P-C-E-K-T-H", 
+    "tipe": "Food / Drink", 
+    "jawaban": "ketchup"
+  },
+  {
+    "soal": "E-K-Y-O-N-M", 
+    "tipe": "Animal", 
+    "jawaban": "monkey"
+  },
+  {
+    "soal": "D-B-A-R-E", 
+    "tipe": "Food / Drink", 
+    "jawaban": "bread"
+  },
+  {
+    "soal": "O-F-F-E-C-E", 
+    "tipe": "Food / Drink", 
+    "jawaban": "coffee"
+  },
+  {
+    "soal": "K-E-C-A", 
+    "tipe": "Food / Drink", 
+    "jawaban": "cake"
+  }, 
+  {
+    "soal": "L-O-W", 
+    "tipe": "Animal", 
+    "jawaban": "owl"
+  },
+  {
+    "soal": "R-A-M-C-H", 
+    "tipe": "Month", 
+    "jawaban": "march"
+  },
+  {
+    "soal": "U-T-U-S-G-A", 
+    "tipe": "Month", 
+    "jawaban": "august"
+  },
+  {
+    "soal": "T-E-D-A", 
+    "tipe": "Calender", 
+    "jawaban": "date"
+  },
+  {
+    "soal": "N-E-O", 
+    "tipe": "Number", 
+    "jawaban": "one"
+  }, 
+  {
+    "soal": "F-Y-F-T-I", 
+    "tipe": "Number", 
+    "jawaban": "fifty"
+  },
+  {
+    "soal": "N-R-I-G", 
+    "tipe": "Accessories", 
+    "jawaban": "ring"
+  },
+  {
+    "soal": "P-A-T-N-E-E-L-H", 
+    "tipe": "Animal", 
+    "jawaban": "Elephant"
+  },
+  {
+    "soal": "I-T-E", 
+    "tipe": "Accessories", 
+    "jawaban": "tie"
+  }
+]

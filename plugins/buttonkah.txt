@@ -1,0 +1,36 @@
+Case button support wa beta 
+		 case "m": {
+if (!isOwner) return xreply(`Khusus Owner`)
+let imgdana = await prepareWAMessageMedia({ image: fs.readFileSync("./gudang/imgs/pnlsl/06.jpg")}, { upload: xin.waUploadToServer })
+const msgii = await generateWAMessageFromContent(m.chat, {
+viewOnceMessageV2Extension: {
+message: {
+messageContextInfo: {
+deviceListMetadata: {},
+deviceListMetadataVersion: 2
+}, interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+body: proto.Message.InteractiveMessage.Body.fromObject({
+text: "Xinbot - XcZ"
+}),
+carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+cards: [{
+header: proto.Message.InteractiveMessage.Header.fromObject({
+hasMediaAttachment: true,
+...imgdana
+}),
+nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+buttons: [{
+"name": "single_select",
+"buttonParamsJson": `{ "title": "© XcZ ", "sections": [{ "title": " ⽶ | t.me/xinnr9 ", "highlight_label": \"XinXcZ ᝄ\", "rows": [{ "header": "Click To Popup Menu", "title": "̟", "id": ".xmenu" }]}]}`
+}]
+})
+}
+]
+})
+})}
+}}, {userJid: m.sender, quoted: qpayment})
+await xin.relayMessage(m.chat, msgii.message, {messageId: msgii.key.id})
+}
+
+Sumber |
+https://whatsapp.com/channel/0029VanqtEW3wtb9rFeiIY2l
