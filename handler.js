@@ -442,9 +442,13 @@ module.exports = {
                     if (!isNumber(user.lasttambang)) user.lasttambang = 0
                     if (!isNumber(user.lastngepet)) user.lastngepet = 0
                     if (!isNumber(user.lasttaxi)) user.lasttaxi = 0
-                    if (!isNumber(user.taxi)) user.taxi = 0
+                    if (!isNumber(user.taxi)) user.taxi = 0  
+                    if (!isNumber(user.yaecoin)) user.yaecoin = 0       
+                    if (!isNumber(user.noacoin)) user.noacoin = 0
+                    if (!isNumber(user.kircoin)) user.kircoin = 0
+                    if (!isNumber(user.jobexp)) user.jobexp = 0
                     if (!isNumber(user.lastjobkerja)) user.lastjobkerja = 0
-                    if (!isNumber(user.lastjobchange)) user.lastjobchange = 0  
+                    if (!isNumber(user.lastjobchange)) user.lastjobchange = 0
                 } else global.db.data.users[m.sender] = {
                     lastjobkerja: 0,
                     lastjobchange: 0,
@@ -804,6 +808,7 @@ module.exports = {
                     lastdate: 0,
                     lasttambang: 0,
                     lastngepet: 0,
+                    
                 }
              let chat = global.db.data.chats[m.chat]
             if (typeof chat !== 'object') global.db.data.chats[m.chat] = {}
@@ -846,21 +851,14 @@ module.exports = {
                 if (!('antilinktt' in chat)) chat.antilinktt = false
                 if (!('antilinkttnokick' in chat)) chat.antilinkttnokick = false
                 if (!('antibot' in chat)) chat.antibot = false
-                if (!('autodl' in chat)) chat.autodl = false
                 if (!('autohd' in chat)) chat.autohd = false
-                if (!('autobio' in chat)) chat.autobio = false
-                if (!('rpg' in chat)) chat.rpg = false
-                if (!('autobackup' in chat)) chat.autobackup = false
                 if (!('autodl' in chat)) chat.autodl = true 
             } else global.db.data.chats[m.chat] = {
                 autodl: true,
-                autobackup: false,
-                autobio: false,
                 autohd: false,
                 antiporn: false,
                 isBanned: false,
                 welcome: false,
-                autodl: false,
                 welcometype: 1,
                 detect: false,
                 isBannedTime: false,
@@ -1038,6 +1036,7 @@ module.exports = {
                         fail('rpg', m, this) 
                         continue
                     }
+                    
                     if (plugin.rowner && plugin.owner && !(isROwner || isOwner)) { // Both Owner
                         fail('owner', m, this)
                         continue
