@@ -415,6 +415,7 @@ module.exports = {
                     if (!("breaths" in user)) user.breaths = ""
                     if (!("magic" in user)) user.magic = ""
                     if (!("demon" in user)) user.demon = ""
+                    if (!("job" in user)) user.job = "Not Have"  
                     if (!isNumber(user.darahiblis)) user.darahiblis = 0
                     if (!isNumber(user.lastyoutuber)) user.lastyoutuber = 0
                     if (!isNumber(user.subscribers)) user.subscribers = 0
@@ -441,8 +442,12 @@ module.exports = {
                     if (!isNumber(user.lasttambang)) user.lasttambang = 0
                     if (!isNumber(user.lastngepet)) user.lastngepet = 0
                     if (!isNumber(user.lasttaxi)) user.lasttaxi = 0
-                    if (!isNumber(user.taxi)) user.taxi = 0  
+                    if (!isNumber(user.taxi)) user.taxi = 0
+                    if (!isNumber(user.lastjobkerja)) user.lastjobkerja = 0
+                    if (!isNumber(user.lastjobchange)) user.lastjobchange = 0  
                 } else global.db.data.users[m.sender] = {
+                    lastjobkerja: 0,
+                    lastjobchange: 0,
                     taxi: 0,
                     lasttaxi: 0,
                     lastyoutuber: 0,
@@ -843,7 +848,14 @@ module.exports = {
                 if (!('antibot' in chat)) chat.antibot = false
                 if (!('autodl' in chat)) chat.autodl = false
                 if (!('autohd' in chat)) chat.autohd = false
+                if (!('autobio' in chat)) chat.autobio = false
+                if (!('rpg' in chat)) chat.rpg = false
+                if (!('autobackup' in chat)) chat.autobackup = false
+                if (!('autodl' in chat)) chat.autodl = true 
             } else global.db.data.chats[m.chat] = {
+                autodl: true,
+                autobackup: false,
+                autobio: false,
                 autohd: false,
                 antiporn: false,
                 isBanned: false,
@@ -1022,7 +1034,10 @@ module.exports = {
                         user.commandTotal++
                         user.lastCmd = Date.now()
                     }
-                    
+                    if (plugin.rpg && !global.db.data.chats[m.chat].rpg) { // rpg
+                        fail('rpg', m, this) 
+                        continue
+                    }
                     if (plugin.rowner && plugin.owner && !(isROwner || isOwner)) { // Both Owner
                         fail('owner', m, this)
                         continue

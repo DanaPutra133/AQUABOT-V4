@@ -14,7 +14,5 @@ handler.tags = ['github']
 handler.command = /githubdl/i
 
 handler.limit = true
-handler.group = false
-
 
 module.exports = handler

@@ -17,7 +17,5 @@ function handler(m, { text }) {
 handler.help = ['alay']
 handler.tags = ['fun']
 handler.command = ['alay']
-handler.group = true
-
 
 module.exports = handler

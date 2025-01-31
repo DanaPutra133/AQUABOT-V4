@@ -18,7 +18,6 @@ handler.help = ['tahta <teks>']
 handler.tags = ['tools']
 handler.command = /^((harta)?tahta)$/i
 handler.limit = false
-handler.group = true
 
 module.exports = handler
 

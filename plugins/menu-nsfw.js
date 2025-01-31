@@ -112,7 +112,5 @@ let handler = async (m, { conn, command }) => {
 };
 handler.command = handler.help = ['gay','ahegao','ass','bdsm','blowjob','cuckold','cum','ero','femdom','foot','gangbang','glasses','hentai','gifs','jahy','manga','masturbation','neko','neko2','orgy','tentacles','pussy','panties','thighs','yuri','zettai']
 handler.tags = ['nsfw']
-handler.limit = true
-handler.group = false
-handler.private = true
-module.exports = handler
+handler.limit = true;
+module.exports = handler;

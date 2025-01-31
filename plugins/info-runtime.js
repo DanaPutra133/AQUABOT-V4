@@ -13,7 +13,6 @@ m.reply(ct)
 handler.help = ['runtime']
 handler.tags = ['info']
 handler.command = /^(uptime|runtime)$/i
-handler.group = true
 
 module.exports = handler
 

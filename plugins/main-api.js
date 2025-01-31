@@ -13,5 +13,4 @@ if (!text) throw `Masukan Apikey!`
 handler.command = handler.help = ['checkapi','api'];
 handler.tags = ['main'];
 handler.private = true
-handler.group = true
 module.exports = handler;

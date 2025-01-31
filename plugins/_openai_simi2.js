@@ -38,17 +38,16 @@ handler.before = async (m, { conn }) => {
     let data = json.result
       // Send the chatCompletion response
       conn.sendMessage(m.chat, {
-        text: "⬣───「 *PLANA* 」───⬣" + "\n\n" + data,
+        text: "𝙆𝙪𝙘𝙝𝙞𝙣𝙜 𝘽𝙤𝙩 𝘼𝙞" + "\n\n" + data,
         contextInfo: {
-          externalAdReply: {  
-            // title di bagian gambar
-            title: "Plana-Blue Archive",
-            body: '',
-            // gambar karakter kalian
-            thumbnailUrl:`https://btch.pages.dev/file/abbff76a98455a64d3a07.jpg`,
+          externalAdReply: {
+            title: "𝙆𝙪𝙘𝙝𝙞𝙣𝙜 𝘽𝙤𝙩 𝘼𝙞 2024",
+            body:
+              "𝘽𝙖𝙣𝙩𝙪 𝘿𝙤𝙣𝙖𝙩𝙚 𝙊𝙬𝙣𝙚𝙧 𝘼𝙜𝙖𝙧 𝙩𝙚𝙧𝙪𝙨 𝙪𝙥𝙙𝙖𝙩𝙚 𝘽𝙤𝙩 𝙒𝙝𝙖𝙩𝙨𝙖𝙥𝙥 𝙣𝙮𝙖",
+            thumbnailUrl: 'https://telegra.ph/file/06a2d1650e6d619bb7bc9.jpg',
             sourceUrl: null,
             mediaType: 1,
-            renderLargerThumbnail: true
+            renderLargerThumbnail: true,
           },
         },
       }, { quoted: m });

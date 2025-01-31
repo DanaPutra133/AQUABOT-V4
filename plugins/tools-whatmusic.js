@@ -19,7 +19,6 @@ let handler = async (m, { conn, usedPrefix, command }) => {
 handler.help = ['whatmusic']
 handler.tags = ['tools']
 handler.command = /^(whatmusic)$/i
-handler.limit = 1
-handler.group = true;
+handler.limit = true;
 
 module.exports = handler

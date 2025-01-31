@@ -11,6 +11,4 @@ handler.command = /^(meme)$/i
 handler.tags = ['fun']
 handler.help = ['meme']
 handler.limit = true
-handler.group = true
-
 module.exports = handler

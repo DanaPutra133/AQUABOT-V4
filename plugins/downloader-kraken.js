@@ -1,10 +1,9 @@
 let fetch = require('node-fetch')
 let handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) throw `*🚩 Example:* ${usedPrefix}${command} https://krakenfiles.com/view/neTIvR1wIz/file.html&apikey=GwFGx4gp`
-    await m.reply(wait)
-    let data = await (await fetch(`https://api.botcahx.eu.org/api/download/kraken?url=${text}&apikey=${btc}`)).json()
+    if (!text) throw `*🚩 Example:* ${usedPrefix}${command} https://krakenfiles.com/view/HG9WxZaL08/file.html`
+    let data = await (await fetch(`https://api.betabotz.eu.org/api/download/kraken?url=${text}&apikey=${lann}`)).json()
     let msg = `乂 *K R A K E N  D O W N L O A D E R*\n\n`
-    msg += ` ◦ *Name :* ${data.result.fileName}\n`
+    msg += ` ◦ *Name :* ${data.result.fileName}`
     msg += ` ◦ *View :* ${data.result.views}\n`
     msg += ` ◦ *Size :* ${data.result.fileSize}\n`
     msg += ` ◦ *Type :* ${data.result.fileType}\n`
@@ -23,6 +22,5 @@ handler.command =  /^(krakendl|krakendownload)$/i
 handler.limit = true;
 handler.register = false;
 handler.premium = false;
-handler.group = true;
 
 module.exports = handler

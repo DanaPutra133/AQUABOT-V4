@@ -15,7 +15,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 handler.help = ['stickermeme <teks>|<teks>']
 handler.tags = ['sticker']
 handler.command = /^(s(tic?ker)?me(me)?)$/i
-handler.group = true
+
 handler.limit = false
 
 module.exports = handler

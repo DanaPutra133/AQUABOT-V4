@@ -10,8 +10,6 @@ handler.tags = ['fun'];
 handler.command = /^(taugasih)$/i;
 handler.limit = true;
 handler.admin = false;
-handler.group = true;
 handler.fail = null;
-
 
 module.exports = handler;

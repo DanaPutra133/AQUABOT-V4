@@ -9,9 +9,8 @@ let fetch = require('node-fetch')
 let path = require('path')
 
 let timeout = 120000
-let poin = 10000
+let poin = 1000
 let handler = async (m, { conn, command, usedPrefix }) => {
-  try {
     conn.tebakhewan = conn.tebakhewan ? conn.tebakhewan : {}
     let id = m.chat
     if (id in conn.tebakhewan) {
@@ -36,11 +35,7 @@ REPLAY SOAL UNTUK MENJAWAB
             delete conn.tebakhewan[id]
         }, timeout)
     ]
-  } catch (e) {
-    throw eror
-  }
-};
-
+}
 handler.help = ['tebakhewan']
 handler.tags = ['game']
 handler.command = /^tebakhewan/i
@@ -61,7 +56,7 @@ const url = `https://rimbakita.com/daftar-nama-hewan-lengkap/${randomPageNumber}
 
     return $('div.entry-content.entry-content-single img[class*=wp-image-][data-src]').map((_, element) => {
       const src = $(element).attr('data-src');
-      const alt =  path.basename(src, path.extname(src)).replace(/-/g, ' ');
+      const alt = path.basename(src, path.extname(src)).replace(/-/g, ' ');
       const capitalizedAlt = alt.charAt(0).toUpperCase() + alt.slice(1);
       return { title: capitalizedAlt, url: src };
     }).get();

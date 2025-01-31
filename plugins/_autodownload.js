@@ -419,6 +419,7 @@ async function _snackvideo(url, m) {
 
 handler.before = async function (m, { conn, isPrems }) {
 	let chat = global.db.data.chats[m.chat];
+	if (!chat.autodl) return; 
 
 	if (!m.text) {
 		return;

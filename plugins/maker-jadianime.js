@@ -31,5 +31,4 @@ handler.command = ['toanime', 'jadianime'];
 handler.tags = ['maker'];
 handler.premium = false;
 handler.limit = 5;
-handler.group = true;
 module.exports = handler;

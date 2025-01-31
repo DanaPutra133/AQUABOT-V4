@@ -13,7 +13,5 @@ let handler = async (m, { text }) => {
 handler.help = ['npmsearch']
 handler.tags = ['tools']
 handler.command = /^npm(js|search)?$/i
-handler.group = true
-
 //maapin hyzer
 module.exports = handler

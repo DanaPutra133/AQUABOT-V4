@@ -11,14 +11,12 @@ let handler = async (m, { conn, command }) => {
         }
         return conn.sendMessage(m.chat, deleteMsg);
     } catch {
-        return conn.sendMessage(m.chat, deleteMsg);
+        return conn.sendMessage(m.chat, { delete: m.quoted.vM.key });
     }
 };
 handler.help = ['del', 'delete'];
 handler.tags = ['tools'];
 handler.botaadmin = true;
-handler.command = ['d', 'del', 'delete', 'unsend'];
-handler.admin = true;
-handler.botAdmin = true;
+handler.command = ['del', 'delete', 'unsend'];
 
 module.exports = handler;

@@ -11,5 +11,4 @@ handler.command = /^(darkjokes)$/i
 handler.tags = ['fun']
 handler.help = ['darkjokes']
 handler.limit = true
-handler.group = true
 module.exports = handler

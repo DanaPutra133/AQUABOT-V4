@@ -6,7 +6,7 @@ Instagram: https://instagram.com/tulisan.ku.id
 
 let fetch = require('node-fetch')
 let timeout = 120000
-let hadiah = 10000
+let hadiah = 1000
 let handler = async (m, { conn, command, usedPrefix }) => {
 let imgr = "https://emoji.aranja.com/static/emoji-data/img-apple-160/"
 
@@ -23,7 +23,7 @@ let imgr = "https://emoji.aranja.com/static/emoji-data/img-apple-160/"
 
 Timeout *${(timeout / 1000).toFixed(2)} detik*
 Ketik ${usedPrefix}hemo untuk bantuan
-Bonus: ${hadiah} money\n
+Bonus: ${hadiah} Kredit sosial\n
 REPLAY SOAL UNTUK MENJAWAB
 *E06-E08 di awal (spasi) lalu jawaban*\n
 

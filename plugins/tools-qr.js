@@ -9,7 +9,6 @@ handler.tags = ['tools']
 handler.command = /^qr(code)?$/i
 handler.admin = false
 handler.botAdmin = false
-handler.group = true
 
 handler.fail = null
 

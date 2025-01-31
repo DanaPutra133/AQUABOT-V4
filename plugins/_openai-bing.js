@@ -9,6 +9,7 @@ let handler = async (m, {
   if (command == 'bing') {
     if (!text) throw `Example : ${usedPrefix + command} siapa presiden Indonesia?`;
     try {
+      m.reply(wait)
       let response = await fetch('https://api.betabotz.eu.org/api/search/bing-chat', {
           method: 'POST',
           headers: {
@@ -56,9 +57,7 @@ let handler = async (m, {
 
 handler.command = handler.help = ['bing', 'bingimg']
 handler.tags = ['tools']
-handler.limit = 2
-handler.group = true
-
+handler.limit = true
 
 module.exports = handler
 

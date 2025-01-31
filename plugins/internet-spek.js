@@ -67,7 +67,7 @@ let handler = async (m, { text, conn, usedPrefix, command }) => {
                 previewType: 0,
                 renderLargerThumbnail: true,
                 thumbnailUrl: json.result.image,
-                sourceUrl: json.result.image 
+                sourceUrl: json.result.url
               }
             },
             mentions: [m.sender]

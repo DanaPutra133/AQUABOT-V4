@@ -23,6 +23,5 @@ let handler = async (m, { conn }) => {
 handler.help = ['anime'];
 handler.tags = ['quotes'];
 handler.command = /^(anime)$/i;
-handler.group = true;
 
 module.exports = handler;

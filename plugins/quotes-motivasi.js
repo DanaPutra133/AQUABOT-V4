@@ -11,6 +11,5 @@ throw `Internal server eror!`
 handler.help = ['motivasi']
 handler.tags = ['quotes']
 handler.command = /^(motivasi)$/i
-handler.group = true
 
 module.exports = handler

@@ -35,7 +35,7 @@ let handler = async (m, { text, conn, usedPrefix, command }) => {
 handler.command = handler.help = ['spotifysearch'];
 handler.tags = ['downloader'];
 handler.premium = false;
-handler.group = true;
+handler.group = false;
 handler.limit = true
 
 module.exports = handler;

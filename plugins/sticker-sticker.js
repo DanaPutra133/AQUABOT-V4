@@ -32,6 +32,5 @@ let handler = async (m, { conn, command, usedPrefix }) => {
 handler.help = ['sticker']
 handler.tags = ['sticker']
 handler.command = /^(stiker|s|sticker)$/i
-handler.limit = false
-handler.group = true
+handler.limit = true
 module.exports = handler

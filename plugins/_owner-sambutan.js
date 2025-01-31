@@ -1,4 +1,4 @@
-/*// const owner1 = '6281289694906@s.whatsapp.net';
+// const owner1 = '6281289694906@s.whatsapp.net';
 // const owner2 = '@s.whatsapp.net';
 const owner3 = '62895628117900@s.whatsapp.net';
 // const owner4 = '@s.whatsapp.net';
@@ -59,5 +59,3 @@ module.exports = handler
 
 //base code by adrian
 //edit by dana
-
-*/

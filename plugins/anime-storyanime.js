@@ -14,6 +14,4 @@ handler.help = ['storyanime'];
 handler.tags = ['downloader'];
 handler.command = /^(storyanime)$/i;
 handler.limir = true 
-handler.group = true
-
 module.exports = handler;

@@ -168,9 +168,7 @@ extendedTextMessage:{
 handler.help = ['ping', 'speed'];
 handler.tags = ['info'];
 handler.command = /^(ping|speed|pong|ingfo)$/i
-handler.group = true
 module.exports = handler;
-
 
 function clockString(ms) {
   var d = isNaN(ms) ? '--' : Math.floor(ms / 86400000)

@@ -26,8 +26,6 @@ handler.help = ['zodiac *2002 02 25*']
 handler.tags = ['tools', 'internet', 'fun']
 
 handler.command = /^zodia[kc]$/i
-handler.group = true
-
 
 module.exports = handler
 

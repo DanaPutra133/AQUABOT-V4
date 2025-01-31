@@ -3,7 +3,6 @@ const uploadImage = require('../lib/uploadImage.js');
 
 async function handler(m, { conn, usedPrefix, command }) {
   try {
-    m.reply(wait);
     const q = m.quoted ? m.quoted : m;
     const mime = (q.msg || q).mimetype || q.mediaType || '';
     if (/^image/.test(mime) && !/webp/.test(mime)) {
@@ -18,7 +17,7 @@ async function handler(m, { conn, usedPrefix, command }) {
     }
   } catch (e) {
     console.error(e);
-    m.reply(`Identifikasi gagal. Silakan coba lagi. (JANGAN NYALAKAN OPSI HD FOTO!)`);
+    m.reply(`Identifikasi gagal. Silakan coba lagi.`);
   }
 }
 
@@ -27,6 +26,5 @@ handler.tags = ['tools'];
 handler.command = ['remini'];
 handler.premium = false;
 handler.limit = false;
-handler.group = false;
 
 module.exports = handler;

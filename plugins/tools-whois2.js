@@ -23,5 +23,4 @@ const handler = async (m, { text, usedPrefix, command }) => {
 handler.command = ['whois2'];
 handler.tags = ['internet'];
 handler.premium = false;
-handler.group = true;
 module.exports = handler;

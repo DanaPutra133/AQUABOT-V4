@@ -23,7 +23,7 @@ let handler = async (m, { text, usedPrefix, command }) => {
     }
 
     // Ambil data dari API
-    let response = await fetch(`https://api.betabotz.eu.org/api/tools/countdown?tanggal=${tanggal}&bulan=${bulan}&tahun=${tahun}&apikey=aquamarin`);
+    let response = await fetch(`https://api.betabotz.eu.org/api/tools/countdown?tanggal=${tanggal}&bulan=${bulan}&tahun=${tahun}&apikey=${lann}`);
     let json = await response.json();
 
     // Debug API Response

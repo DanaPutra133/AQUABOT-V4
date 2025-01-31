@@ -26,7 +26,5 @@ m.reply(`*_RESOLUSI:_* ${width} x ${height}
 handler.help = ['cekresolution *<foto>*', 'cekreso *<foto>*']
 handler.tags = ['tools']
 handler.command = /^(cekreso(lution)?)$/i
-handler.group = true
-
 
 module.exports = handler

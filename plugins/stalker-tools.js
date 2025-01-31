@@ -124,6 +124,5 @@ let handler = async (m, {
 handler.command = handler.help = ['ffstalk', 'mlstalk','supersusstalk','npmstalk','repostalk']
 handler.tags = ['stalk']
 handler.limit = true
-handler.group = true
 
 module.exports = handler              

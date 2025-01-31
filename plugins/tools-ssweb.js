@@ -36,6 +36,5 @@ handler.command = ['ssweb', 'sspc', 'ss',]
 
 handler.limit = true;
 handler.fail = null;
-handler.group = true;
 
 module.exports = handler;

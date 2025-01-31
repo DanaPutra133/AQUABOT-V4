@@ -57,6 +57,5 @@ let handler = async m => m.reply(`
 handler.help = ['kodebahasa']
 handler.tags = ['internet']
 handler.command = /^kodebahasa$/i
-handler.group = true
 
 module.exports = handler

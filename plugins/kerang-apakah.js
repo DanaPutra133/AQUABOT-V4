@@ -11,7 +11,7 @@ handler.tags = ['kerang']
 handler.customPrefix = /(\?$)/
 handler.command = /^apakah$/i
 handler.owner = false
-handler.group = true
+
 handler.fail = null
 
 module.exports = handler

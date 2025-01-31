@@ -1,29 +1,33 @@
-let fetch = require('node-fetch');
+const axios = require('axios');
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) throw `*Example:* ${usedPrefix + command} https://www.youtube.com/watch?v=Z28dtg_QmFw`;
-  m.reply(wait)
-  try {
-    const response = await fetch(`https://api.botcahx.eu.org/api/dowloader/yt?url=${encodeURIComponent(text)}&apikey=${btc}`);
-    const result = await response.json();
-
-    if (result.status && result.result && result.result.mp3) {
-      await conn.sendMessage(m.chat, { 
-        audio: { url: result.result.mp3 }, 
-        mimetype: 'audio/mpeg' 
-      }, { quoted: m });
-    } else {
-      throw 'Error: Unable to fetch audio';
-    }
-  } catch (error) {
-    throw eror
-  }
+    if (!text) throw `Masukan URL!\n\ncontoh:\n${usedPrefix + command} https://youtu.be/4rDOsvzTicY?si=3Ps-SJyRGzMa83QT`;    
+   
+        if (!text) throw 'masukan link youtube';   
+        m.reply(wait);      
+        const response = await axios.get(`https://api.betabotz.eu.org/api/download/ytmp3?url=${text}&apikey=${lann}`);        
+        const res = response.data.result;      
+        var { mp3, id, title, source, duration } = res;
+        let caption = `*Title:* ${title}\n*Duration:* ${duration}`
+        // await conn.sendFile(m.chat, mp3, null, m);
+        await conn.sendMessage(m.chat, { 
+            document: { url: mp3 }, 
+            mimetype: 'audio/mpeg',
+            fileName: `${title}.mp3`,
+            caption: caption
+        }, { quoted: m });
 };
-
-handler.help = handler.command = ['ytmp3', 'yta'];
+handler.help = ['ytmp3'];
+handler.command = /^(ytmp3)$/i
 handler.tags = ['downloader'];
-handler.exp = 0;
 handler.limit = true;
+handler.group = false;
 handler.premium = false;
+handler.owner = false;
+handler.admin = false;
+handler.botAdmin = false;
+handler.fail = null;
+handler.private = false;
 
 module.exports = handler;
+

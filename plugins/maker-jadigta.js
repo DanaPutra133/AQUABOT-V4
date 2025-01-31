@@ -30,5 +30,4 @@ handler.help = handler.command = ['jadigta','togta'];
 handler.tags = ['maker'];
 handler.premium = false;
 handler.limit = true;
-handler.group = true;
 module.exports = handler;

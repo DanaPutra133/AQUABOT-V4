@@ -9,7 +9,7 @@ let isAutoResetEnabled = false;
 let autoResetTimeout = null; 
 
 let handler = async (m, { conn, args, command }) => {
-    let lim = 100; 
+    let lim = 10; 
 
     if (args.length === 0) {
         
@@ -47,7 +47,7 @@ let handler = async (m, { conn, args, command }) => {
 function resetLimit(conn, lim) {
     let list = Object.entries(global.db.data.users);
     list.map(([user, data]) => (Number(data.limit = lim)));
-    conn.reply('120363262711448670@g.us', `*Limit berhasil direset ${lim} / user*`, null); // Kirim info ke grup tertentu
+    conn.reply('120363361439264023@g.us', `*Limit berhasil direset ${lim} / user*`, null); // Kirim info ke grup tertentu
 }
 
 function getTimeUntilMidnight() {

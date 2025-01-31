@@ -19,7 +19,5 @@ handler.help = ['alay']
 handler.tags = ['fun']
 handler.command = ['case']
 handler.limit = true
-handler.group = true
-
 
 module.exports = handler

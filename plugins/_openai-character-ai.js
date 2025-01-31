@@ -20,7 +20,5 @@ handler.owner = false
 handler.limit = false
 handler.group = false
 handler.private = false
-handler.group = true
-
 
 module.exports = handler

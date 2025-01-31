@@ -8,6 +8,7 @@ let handler = async (m, { conn, usedPrefix, command }) => {
     if (/^image/.test(mime) && !/webp/.test(mime)) {
       const img = await q.download();
       const out = await uploadImage(img);
+      m.reply(wait);
       if (command === 'hd') {
         const api = await fetch(`https://api.betabotz.eu.org/api/tools/remini?url=${out}&apikey=${lann}`);
         const image = await api.json();
@@ -45,15 +46,13 @@ let handler = async (m, { conn, usedPrefix, command }) => {
     }
   } catch (e) {
     console.error(e);
-    throw `🚩 *Server Error* silahkan gunakan .remini`
+    throw `🚩 *Server Error*`
   }
 }
 
 handler.command = handler.help = ['hd', 'hd2', 'hd3','removebg','nobg'];
 handler.tags = ['tools'];
 handler.premium = false;
-handler.limit = true;
-handler.group = true
-
+handler.limit = false;
 
 module.exports = handler;

@@ -20,14 +20,15 @@ handler.before = function (m, { match, usedPrefix, text, args }) {
  ◦ Kempiripan: *${parseInt(som)}%*`
 	 if (mean) this.relayMessage(m.chat,  {
     requestPaymentMessage: {
-      // requestFrom: '0@s.whatsapp.net',
+      currencyCodeIso4217: 'IDR',
+      requestFrom: '0@s.whatsapp.net',
       noteMessage: {
       extendedTextMessage: {
       text: tio,
       contextInfo: {
       mentionedJid: [m.sender],
       externalAdReply: {
-      showAdAttribution: false
+      showAdAttribution: true
       }}}}}}, {})
 	}
   }

@@ -19,5 +19,4 @@ handler.help = ['disk']
 handler.tags = ['info']
 handler.command = /^(disk)$/i
 handler.premium = false
-handler.group = true
 module.exports = handler

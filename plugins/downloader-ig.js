@@ -13,9 +13,9 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
        
        const limitnya = 3
        
-       for (let i = 0; i < Math.min(limitnya, res.result.length); i++) {
+       for (let i = 0; i < Math.min(limitnya, res.message.length); i++) {
            await sleep(3000)
-           conn.sendFile(m.chat, res.result[i].url, null, `*Instagram Downloader*`, m)
+           conn.sendFile(m.chat, res.message[i]._url, null, `*Instagram Downloader*`, m)
        }
    } catch (e) {
        throw eror

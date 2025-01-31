@@ -13,7 +13,7 @@ Berapa banyak yang ingin Anda pertaruhkan?
     let time = users.lastslot + 5000
     if (new Date - users.lastslot < 5000) throw `⏳ Tunggu *${msToTime(time - new Date())}* Untuk menggunakan lagi`
     if (apuesta < 100) throw '✳️ tambahkan *MONEY* Untuk menggunakan lagi'
-    if (users.money < apuesta) {
+    if (users.xp < apuesta) {
         throw `✳️ Anda tidak memiliki cukup *MONEY*\nCek MONEY mu di *.balance*`
     }
 
@@ -42,13 +42,13 @@ Berapa banyak yang ingin Anda pertaruhkan?
     let end;
     if (a == b && b == c) {
         end = `🎁 *GACOR KANG!!!* WON\n *+${apuesta + apuesta} MONEY*`
-        users.money += apuesta + apuesta
+        users.xp += apuesta + apuesta
     } else if (a == b || a == c || b == c) {
         end = `🔮 Lanjut lagi bang, belum stop kalau belum gacor 💲💲 \nTambahan *+${reg} money*`
-        users.money += reg
+        users.xp += reg
     } else {
         end = `😔 Rungkad *-${apuesta} money*`
-        users.money -= apuesta
+        users.xp -= apuesta
     }
     users.lastslot = new Date * 1
     return await m.reply(
@@ -69,7 +69,7 @@ handler.command = ['slot']
 handler.group = true
 handler.rpg = true
 
-module.exports = handler;
+module.exports = handler
 
 function msToTime(duration) {
     var milliseconds = parseInt((duration % 1000) / 100),

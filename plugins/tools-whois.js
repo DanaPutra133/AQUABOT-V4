@@ -25,5 +25,4 @@ handler.help = ['whois', 'whoislookup'];
 handler.tags = ['tools'];
 handler.premium = false;
 handler.limit = true
-handler.group = true
 module.exports = handler;

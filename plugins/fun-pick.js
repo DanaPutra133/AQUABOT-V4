@@ -11,7 +11,5 @@ ${new Array(Math.min(users.length, args[0])).fill().map(() => {
 handler.help = ['pick <jumlah> <teks>']
 handler.tags = ['fun']
 handler.command = /^pick/i
-handler.group = true
-
 
 module.exports = handler

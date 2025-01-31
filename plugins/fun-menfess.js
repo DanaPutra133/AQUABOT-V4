@@ -41,8 +41,6 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 handler.tags = ['fun']
 handler.help = ['menfess']
 handler.command = /^(menfess|menfes)$/i
-handler.private = false
-handler.owner = true
-
+handler.private = true
 
 module.exports = handler

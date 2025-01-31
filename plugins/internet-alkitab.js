@@ -19,6 +19,5 @@ let handler = async (m, { text, usedPrefix, command }) => {
 handler.help = ['alkitab'].map(v => v + ' <pencarian>')
 handler.tags = ['internet']
 handler.command = /^(alkitab)$/i
-handler.group = true
 
 module.exports = handler

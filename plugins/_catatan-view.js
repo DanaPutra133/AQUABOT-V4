@@ -25,7 +25,5 @@ conn.reply(m.chat, `${isi}`, m, false, {
 handler.help = ['lihatcatatan <title>']
 handler.tags = ['internet']
 handler.command = /^lihatcatatan$/i
-handler.group = true
-
 
 module.exports = handler

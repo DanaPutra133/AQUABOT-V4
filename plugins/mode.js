@@ -26,7 +26,6 @@ handler.tags = ['main']
 handler.customPrefix = /^(mode)$/i 
 handler.command = new RegExp
 handler.limit = false
-handler.group = true
 
 module.exports = handler
 

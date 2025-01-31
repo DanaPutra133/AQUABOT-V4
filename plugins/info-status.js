@@ -90,7 +90,6 @@ extendedTextMessage:{
 handler.help = ['', 'bot'].map(v => 'status' + v)
 handler.tags = ['info']
 handler.command = /^(bot)?stat(us)?(bot)?$/i
-handler.group = true
 
 module.exports = handler
 

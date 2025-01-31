@@ -20,5 +20,4 @@ handler.help = ['emojimix']
 handler.tags = ['sticker']
 handler.command = /^(emojimix)$/i
 handler.limit = true
-handler.group = true
 module.exports = handler

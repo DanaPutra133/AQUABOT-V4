@@ -41,7 +41,6 @@ let handler = async (m, {
 };
 
 handler.command = handler.help = ['douyinslide', 'douyinfoto','ttslide','tiktokslide'];
-handler.group = true;
 handler.tags = ['downloader'];
 handler.limit = true;
 

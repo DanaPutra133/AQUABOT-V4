@@ -27,7 +27,7 @@ handler.tags = ['downloader']
 handler.command = /^asupan$/i
 handler.owner = false
 handler.premium = false
-handler.group = true
+handler.group = false
 handler.private = false
 
 function pickRandom(list) {

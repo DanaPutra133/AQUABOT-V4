@@ -1,47 +1,45 @@
-let axios = require('axios');
+const axios = require('axios');
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
     if (!text) throw `*Example:* ${usedPrefix + command} hai`;
-    conn.btch = conn.btch ? conn.btch : {};
-    if (!conn.btch[m.sender]) {
-        conn.btch[m.sender] = {
+    conn.beta = conn.beta ? conn.beta : {};
+    if (!conn.beta[m.sender]) {
+        conn.beta[m.sender] = {
             pesan: []
         };
-        conn.btch[m.sender].timeout = setTimeout(() => {
-            delete conn.btch[m.sender];
+        conn.beta[m.sender].timeout = setTimeout(() => {
+            delete conn.beta[m.sender];
         }, 300000);
 
         m.reply(`Halo \`${m.name}\`👋, Saya siap membantu anda!`);
     } else {
-        clearTimeout(conn.btch[m.sender].timeout);
-        conn.btch[m.sender].timeout = setTimeout(() => {
-            delete conn.btch[m.sender];
+        clearTimeout(conn.beta[m.sender].timeout);
+        conn.beta[m.sender].timeout = setTimeout(() => {
+            delete conn.beta[m.sender];
         }, 300000);
     }
 
-    const previousMessages = conn.btch[m.sender].pesan;
+    let name = conn.getName(m.sender);
+    const previousMessages = conn.beta[m.sender].pesan;
   
-  
-  /**
- * @description Ubah prompt ini sesuai dengan keinginanmu.
- * @note Usahakan memberikan logika yang masuk akal dan mudah dipahami!
- */
-
+/** - Ubah prompt ini sesuaikan dengan keinginan mu 
+    - Usahakan berikan logic yang masuk akal dan mudah di pahami!
+**/
     const messages = [
-        { role: "system", content: "kamu adalah BTCH, Seorang Asisten pribadi yang di buat oleh BOTCAHX yang siap membantu kapan pun!" },
-        { role: "assistant", content: `Saya BTCH, asisten pribadi yang siap membantu kamu kapan pun! Apa yang bisa saya bantu hari ini?` },
+        { role: "system", content: "Kamu adalah BetaBotz Ai Sebuah Ai Yang diciptakan oleh Lann,bantu setiap orang dengan ramah:),berikan emoticon di setiap jawaban" },
+        { role: "assistant", content: `Kamu adalah BetaBotz Ai,ai bot yang diciptakan oleh Lann untuk membantu semua permintaan dari user,jawab setiap pertanyaan dengan ramah dan sertai emoticon` },
         ...previousMessages.map((msg, i) => ({ role: i % 2 === 0 ? 'user' : 'assistant', content: msg })),
         { role: "user", content: text }
     ];
     try {
-        const chat = async function(message) {
+        const aiBeta = async function(message) {
             return new Promise(async (resolve, reject) => {
                 try {
                     const params = {
                         message: message,
-                        apikey: btc
+                        apikey: lann
                     };
-                    const { data } = await axios.post('https://api.botcahx.eu.org/api/search/openai-custom', params);
+                    const { data } = await axios.post('https://api.betabotz.eu.org/api/search/openai-custom', params);
                     resolve(data);
                 } catch (error) {
                     reject(error);
@@ -49,14 +47,10 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
             });
         };
 
-        let res = await chat(messages);
+        let res = await aiBeta(messages);
         if (res && res.result) {
             await m.reply(res.result);
-            conn.btch[m.sender].pesan = [
-                ...conn.btch[m.sender].pesan,
-                text,
-                res.result
-            ];
+            conn.beta[m.sender].pesan = messages.map(msg => msg.content);
         } else {
             throw "Kesalahan dalam mengambil data";
         }
@@ -68,7 +62,4 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 handler.command = handler.help = ['ai','openai','chatgpt'];
 handler.tags = ['tools'];
 handler.premium = false
-handler.limit = true;
-handler.premium = false;
-handler.group = true;
 module.exports = handler;

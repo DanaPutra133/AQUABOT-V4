@@ -41,6 +41,5 @@ handler.help = ['ghstalk <username>']
 handler.tags = ['stalk']
 handler.command = /^(ghstalk|githubstalk)$/i
 handler.limit = true
-handler.group = true
 
 module.exports = handler

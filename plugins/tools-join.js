@@ -12,6 +12,5 @@ handler.tags = ['tools']
 handler.command = /^join$/i
 
 handler.premium = true
-handler.group = true
 
 module.exports = handler

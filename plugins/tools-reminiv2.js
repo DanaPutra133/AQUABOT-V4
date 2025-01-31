@@ -15,12 +15,6 @@ async function handler(m, { conn, usedPrefix, command, text }) {
       const image = await api.json();
       const { url } = image 
        conn.sendFile(m.chat, url, null, wm, m);
-    //   await conn.sendMessage(m.chat, { 
-    //     document: { url: url }, 
-    //     mimetype: 'JPG',
-    //     fileName: `${url}.jpg`,
-    //     caption: 'gede banget ANJ'
-    // }, { quoted: m });
     } else {
       m.reply(`Masukan foto/ Resolusi scale!\n\ncontoh:${usedPrefix + command} 2 \nuntuk scale dari foto yang akan di up ada list ini\n\nScale 2 = low, 4 = medium, 6 = high, 8 = extream, 16 = awesome\n\n Jika gagal ulangi lagi dengan scale yang lebih rendah`);
     }

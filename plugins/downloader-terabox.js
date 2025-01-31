@@ -3,7 +3,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     if (!text) throw `*🚩 Example:* ${usedPrefix}${command} https://terabox.com/s/1aD9T7_Xe0oroBwlfzyWXUA`
     await m.reply(wait)
     try {
-        let data = await (await fetch(`https://api.botcahx.eu.org/api/download/terabox?url=${text}&apikey=${btc}`)).json()
+        let data = await (await fetch(`https://api.betabotz.eu.org/api/download/terabox?url=${text}&apikey=${lann}`)).json()
         
         if (!data.result || data.result.length === 0) {
             throw 'No files found in the response'
@@ -26,7 +26,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
                 externalAdReply: {
                     title: 'Terabox Downloader',
                     body: `Processing ${data.result.length} file(s)`,
-                    thumbnailUrl: 'https://pomf2.lain.la/f/ihnv9wct.jpg',
+                    thumbnailUrl: 'https://api.betabotz.eu.org/api/tools/get-upload?id=f/ihnv9wct.jpg',
                     sourceUrl: null,
                     mediaType: 1,
                     renderLargerThumbnail: true
@@ -55,7 +55,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
                     await new Promise(resolve => setTimeout(resolve, 5000))
                 }
             } catch (eror) {
-                await conn.reply(m.sender, `Failed to process file: ${file.name}`, m)
+                await conn.reply(m.chat, `Failed to process file: ${file.name}`, m)
             }
         }
     } catch (error) {

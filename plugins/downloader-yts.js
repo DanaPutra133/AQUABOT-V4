@@ -22,7 +22,5 @@ ${v.videoCount} video
 handler.help = ['', 'earch'].map(v => 'yts' + v + ' <pencarian>')
 handler.tags = ['tools', 'internet', 'downloader']
 handler.command = /^yts(earch)?$/i
-handler.group = true
-
 
 module.exports = handler

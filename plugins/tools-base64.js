@@ -10,7 +10,5 @@ let handler = async (m, { command, text }) => {
 handler.help = ['encrypt', 'decrypt']
 handler.tags = ['tools']
 handler.command = /^(encrypt|decrypt)$/i
-handler.group = true
-
 
 module.exports = handler

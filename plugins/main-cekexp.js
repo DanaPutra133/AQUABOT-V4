@@ -1,26 +1,16 @@
 let fetch = require('node-fetch')
-let handler = async (m, { conn, command, text }) => {
-if (command == 'cekexpbtc' )  {
-    let api1 = await fetch(`https://api.botcahx.eu.org/api/checkexp?username=${text}`)
-    let body = await api1.text()
+let handler = async (m, { text }) => {
+if (!text) throw `Masukan Username Di Website Api!`
+  try {
+    let api = await fetch(`https://api.betabotz.eu.org/api/checkexp?username=${text}`)
+    let body = await api.text()
     m.reply(body)  
-  } else if (command == 'cekexplann') 
-    {
-      let api2 = await fetch(`https://api.betabotz.eu.org/api/checkexp?username=${text}`)
-      let body = await api2.text()
-      m.reply(body)  
+  } catch (e) {
+    console.log(e) 
+    m.reply('Username tidak terdaftar!')
   }
 }          
-handler.command = handler.help = ['cekexpbtc','cekexplann'];
+handler.command = handler.help = ['checkexp','cekexp', 'expapi'];
 handler.tags = ['main'];
-handler.private = false
+handler.private = true
 module.exports = handler;
-
-
-
-// let api2 = await fetch(`https://api.botchax.eu.org/api/checkexp?username=${text}`)
-
-
-// catch (e) {
-//   console.log(e) 
-//   m.reply('Username tidak terdaftar!')

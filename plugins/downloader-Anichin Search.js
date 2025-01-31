@@ -1,3 +1,4 @@
+
 let fetch = require('node-fetch');
 
 let handler = async (m, { conn, usedPrefix, command, args }) => {
@@ -37,9 +38,9 @@ await conn.relayMessage(m.chat, {
 };
 
 
-handler.help = ['anichin <judul>'];
+handler.help = ['anichin'].map(v => v + ' <judul>');
 handler.tags = ['internet'];
-handler.command = /^(anichin)$/i;
+handler.command = /^(anichin|v)$/i;
 handler.limit = true;
 handler.group = true;
 

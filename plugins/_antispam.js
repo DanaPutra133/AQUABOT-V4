@@ -40,5 +40,3 @@ exports.before = async function (m, { isAdmin, isOwner }) {
         };
     }
 };
-
-//tes 123
