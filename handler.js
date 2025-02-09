@@ -9,7 +9,7 @@ module.exports = {
         if (global.db.data == null) await loadDatabase()
         this.msgqueque = this.msgqueque || []
         // console.log(chatUpdate)
-        if (!chatUpdate) return
+        if (!chatUpdate || !Array.isArray(chatUpdate.messages)) return
         // if (chatUpdate.messages.length > 2 || !chatUpdate.messages.length) return
         if (chatUpdate.messages.length > 1) console.log(chatUpdate.messages)
         let m = chatUpdate.messages[chatUpdate.messages.length - 1]
@@ -853,7 +853,13 @@ module.exports = {
                 if (!('antibot' in chat)) chat.antibot = false
                 if (!('autohd' in chat)) chat.autohd = false
                 if (!('autodl' in chat)) chat.autodl = true 
+                if (!('notifgempa' in chat)) chat.notifgempa = false
+                if (!('notifcuaca' in chat)) chat.notifcuaca = false
+                if (!('notifsholat' in chat)) chat.notifsholat = false
             } else global.db.data.chats[m.chat] = {
+                notifsholat: false,
+                notifgempa: false,
+                notifcuaca: false,
                 autodl: true,
                 autohd: false,
                 antiporn: false,
@@ -892,7 +898,7 @@ module.exports = {
                 antilinktt: false, 
                 antilinkttnokick: false, 
                 antibot: false, 
-                rpg: false, 
+                rpg: false
             }
             let memgc = global.db.data.chats[m.chat].memgc[m.sender]
             if (typeof memgc !== 'object') global.db.data.chats[m.chat].memgc[m.sender] = {}
@@ -1290,3 +1296,18 @@ fs.watchFile(file, () => {
     delete require.cache[file]
     if (global.reloadHandler) console.log(global.reloadHandler())
 })
+
+conn.preSudo = async function (command, who, m) {
+    let msg = {
+        key: {
+            remoteJid: m.chat,
+            fromMe: false,
+            id: m.key.id
+        },
+        message: {
+            conversation: command
+        },
+        participant: who
+    };
+    return msg;
+};
