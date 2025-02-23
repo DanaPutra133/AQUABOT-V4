@@ -55,7 +55,34 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
             throw "Kesalahan dalam mengambil data";
         }
     } catch (e) {
-        throw eror
+        console.error('API pertama gagal:', e);
+        try {
+            const aiBetaFallback = async function(message) {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        const params = {
+                            message: message,
+                            apikey: btc
+                        };
+                        const { data } = await axios.post('https://api.botcahx.eu.org/api/search/openai-custom', params);
+                        resolve(data);
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            };
+
+            let res = await aiBetaFallback(messages);
+            if (res && res.result) {
+                await m.reply(res.result);
+                conn.beta[m.sender].pesan = messages.map(msg => msg.content);
+            } else {
+                throw "Kesalahan dalam mengambil data";
+            }
+        } catch (e) {
+            console.error('API kedua gagal:', e);
+            m.reply('Maaf, fitur error. Silakan gunakan fitur .lapor untuk melaporkan masalah ini.');
+        }
     }
 };
 

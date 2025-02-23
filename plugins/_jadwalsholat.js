@@ -44,7 +44,35 @@ ${jadwalSholat}
             throw 'Error: Tidak ada data untuk tanggal hari ini';
         }
     } catch (error) {
-        m.reply('Terjadi kesalahan: ' + error);
+        console.error('API pertama gagal:', error);
+        try {
+            const res = await (await fetch(`https://api.botcahx.eu.org/api/tools/jadwalshalat?kota=${text}&apikey=${btc}`)).json();
+            
+            if (!res.status || res.result.code !== 200) {
+                throw 'Error: API response tidak valid';
+            }
+
+            const prayerTimes = getPrayerTimes(res);
+            
+            if (prayerTimes) {
+                let timings = prayerTimes.timings;
+                let jadwalSholat = Object.entries(timings)
+                    .map(([name, time]) => `*${name}:* ${time}`)
+                    .join('\n');
+                
+                let message = `
+Jadwal Sholat untuk *${text}*
+${jadwalSholat}
+`.trim();
+                
+                m.reply(message);
+            } else {
+                throw 'Error: Tidak ada data untuk tanggal hari ini';
+            }
+        } catch (error) {
+            console.error('API kedua gagal:', error);
+            m.reply('Maaf, fitur error. Silakan gunakan fitur .lapor untuk melaporkan masalah ini.');
+        }
     }
 };
 

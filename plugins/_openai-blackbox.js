@@ -9,10 +9,19 @@ try {
   await m.reply(wait)
   var apii = await fetch(`https://api.betabotz.eu.org/api/search/blackbox-chat?text=${text}&apikey=${lann}`)
   var res = await apii.json()
+  if (!res.status) throw new Error('Invalid API Key');
   await m.reply(res.message)
 } catch (err) {
-  console.error(err)
-  throw "Terjadi kesalahan dalam menjawab pertanyaan"
+  console.error('API pertama gagal:', err)
+  try {
+    var apii = await fetch(`https://api.botcahx.eu.org/api/search/blackbox-chat?text=${text}&apikey=${btc}`)
+    var res = await apii.json()
+    if (!res.status) throw new Error('Invalid API Key');
+    await m.reply(res.message)
+  } catch (err) {
+    console.error('API kedua gagal:', err)
+    m.reply('Maaf, fitur error. Silakan gunakan fitur .lapor untuk melaporkan masalah ini.')
+  }
 }
 }
 handler.command = handler.help = ['blackbox','blackboxai','aicoding'];
