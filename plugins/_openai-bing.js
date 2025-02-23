@@ -10,7 +10,7 @@ let handler = async (m, {
     if (!text) throw `Example : ${usedPrefix + command} siapa presiden Indonesia?`;
     try {
       m.reply(wait)
-      let response = await fetch('https://api.tabotz.eu.org/api/search/bing-chat', {
+      let response = await fetch('https://api.betabotz.eu.org/api/search/bing-chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
