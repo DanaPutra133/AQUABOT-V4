@@ -1,3 +1,9 @@
+/*
+ Jangan delete wm ini,kalo mau recode silahkan tapi sertain juga credits saya Lann
+ Dibuat pada 22 February 2025
+ © Betabotz
+*/
+
 let handler = async (m, { conn, args, command, usedPrefix }) => {
     if (!args.length) {
         return conn.reply(m.chat, `✨ *Example Usage:* \n🔍 ${usedPrefix}${command} fitur`, m);
