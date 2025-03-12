@@ -17,11 +17,11 @@ global.antiporn = true // Auto delete pesan porno (bot harus admin)
 global.qris = 'https://cdn.btch.bz/file/fd7714ee03f6970d8fb30.jpg'
 
 //INI WAJIB DI ISI!//
-global.lann = 'minatoaqua' 
+global.lann = '' 
 //Daftar terlebih dahulu https://api.betabotz.eu.org
 
 //INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
-global.btc = 'dana'
+global.btc = ''
 //Daftar https://api.botcahx.eu.org
  
 global.APIs = {   
