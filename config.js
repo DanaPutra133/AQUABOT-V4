@@ -1,8 +1,8 @@
-global.owner = ['6281289694906', '62895628117900', '6282221792667']  
-global.mods = ['6281289694906', '62895628117900'] 
-global.prems = ['6281289694906', '62895628117900']
+global.owner = ['', '', '']  
+global.mods = ['', ''] 
+global.prems = ['', '']
 global.nameowner = 'dana'
-global.numberowner = '6281289694906'
+global.numberowner = ''
 global.mail = 'danaputra1001@gmail.com' 
 global.gc = 'https://chat.whatsapp.com/EUKH9asOX4y8DkikAtueEj'
 global.instagram = 'https://instagram.com/dana_putra13'
@@ -29,8 +29,8 @@ global.APIs = {
   btc: 'https://api.botcahx.eu.org'
 }
 global.APIKeys = { 
-  'https://api.betabotz.eu.org': 'minatoaqua', 
-  'https://api.botcahx.eu.org': 'dana'
+  'https://api.betabotz.eu.org': '', 
+  'https://api.botcahx.eu.org': ''
 }
 
 let fs = require('fs')
