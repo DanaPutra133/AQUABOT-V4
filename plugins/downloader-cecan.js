@@ -13,7 +13,7 @@ let handler = async (m, { conn, command }) => {
     conn.sendFile(m.chat, buffer, 'hasil.jpg', `Random ${command}`, m)
 }
 
-handler.command = ['china','vietnam','thailand','indonesia','korea','japan','malaysia','justinaxie','jeni','jiso','ryujin','rose','hijaber']
+handler.help = handler.command = ['china','vietnam','thailand','indonesia','korea','japan','malaysia','justinaxie','jeni','jiso','ryujin','rose','hijaber']
 handler.tags = ['downloader'];
 handler.limit = true;
 module.exports = handler;
