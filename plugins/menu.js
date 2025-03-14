@@ -18,7 +18,7 @@ let moment = require('moment-timezone');
 let levelling = require('../lib/levelling');
 
 let arrayMenu = [
-    'all', 'ai', 'main', 'downloader', 'rpg', 'rpgG', 'sticker', 'advanced', 'xp', 'fun', 'game', 'github', 'group', 'image', 'nsfw', 'info', 'internet', 'islam', 'kerang', 'maker', 'news', 'owner', 'voice', 'quotes', 'store', 'stalk', 'shortlink', 'tools', 'anonymous'
+    'all', 'ai', 'main', 'database', 'downloader', 'rpg', 'rpgG', 'sticker', 'advanced', 'xp', 'fun', 'game', 'github', 'group', 'image', 'nsfw', 'info', 'internet', 'islam', 'kerang', 'maker', 'news', 'owner', 'voice', 'quotes', 'store', 'stalk', 'shortlink', 'tools', 'anonymous'
 ];
 
 const allTags = arrayMenu.reduce((acc, tag) => {
@@ -28,7 +28,7 @@ const allTags = arrayMenu.reduce((acc, tag) => {
 allTags['all'] = 'SEMUA MENU';
 
 const defaultMenu = {
-    before: `Hi %name\nI am an automated system (WhatsApp Bot) that can help to do something, search and get data / information only through WhatsApp.\n\n◦ *Library:* Baileys\n◦ *Function:* Assistant\n\n┌  ◦ Uptime : %uptime\n│  ◦ Tanggal : %date\n│  ◦ Waktu : %time\n└  ◦ Prefix Used : *[ %p ]*`.trimStart(),
+    before: `Hi %name\nI am an automated system (WhatsApp Bot) that can help to do something, search and get data / information only through WhatsApp.\n\n◦ *Library:* Baileys\n◦ *Function:* Assistant\n\n┌  ◦ Uptime : %uptime\n│  ◦ Tanggal : %date\n│  ◦ Waktu : %time\n└  ◦ Prefix Used : *[ %_p ]*`.trimStart(),
     header: '┌  ◦ *%category*',
     body: '│  ◦ %cmd %islimit %isPremium',
     footer: '└  ',
@@ -124,7 +124,7 @@ function sendMenu(m, conn, text, replace) {
                     mediaType: 1,
                     previewType: 0,
                     renderLargerThumbnail: true,
-                    thumbnailUrl: 'https://telegra.ph/file/3a34bfa58714bdef500d9.jpg',
+                    thumbnailUrl: 'https://i.supa.codes/SLfSX',
                     sourceUrl: 'https://whatsapp.com/channel/0029Va8ZH8fFXUuc69TGVw1q'
                 }
             },
