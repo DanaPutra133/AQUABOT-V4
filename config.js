@@ -17,7 +17,7 @@ global.antiporn = true // Auto delete pesan porno (bot harus admin)
 global.qris = 'https://cdn.btch.bz/file/fd7714ee03f6970d8fb30.jpg'
 
 //INI WAJIB DI ISI!//
-global.lann = '' 
+global.lann = 'hari' 
 //Daftar terlebih dahulu https://api.betabotz.eu.org
 
 //INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
@@ -29,7 +29,7 @@ global.APIs = {
   btc: 'https://api.botcahx.eu.org'
 }
 global.APIKeys = { 
-  'https://api.betabotz.eu.org': '', 
+  'https://api.betabotz.eu.org': 'hari', 
   'https://api.botcahx.eu.org': ''
 }
 
