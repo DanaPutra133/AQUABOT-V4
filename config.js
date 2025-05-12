@@ -23,7 +23,7 @@ global.lann = ''
 //INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
 global.btc = ''
 //Daftar https://api.botcahx.eu.org
- 
+//wajib daftar kedua nya! 
 global.APIs = {   
   lann: 'https://api.betabotz.eu.org',
   btc: 'https://api.botcahx.eu.org'
