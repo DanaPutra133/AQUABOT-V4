@@ -17,8 +17,12 @@ global.antiporn = true // Auto delete pesan porno (bot harus admin)
 global.qris = 'https://cdn.btch.bz/file/fd7714ee03f6970d8fb30.jpg'
 
 //INI WAJIB DI ISI!//
-global.lann = 'hari' 
+global.lann = '' 
 //Daftar terlebih dahulu https://api.betabotz.eu.org
+
+//untuk dapat apikey ini bisa chat owner api di 081289694906
+global.dana = '' 
+
 
 //INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
 global.btc = ''
@@ -26,11 +30,13 @@ global.btc = ''
 //wajib daftar kedua nya! 
 global.APIs = {   
   lann: 'https://api.betabotz.eu.org',
-  btc: 'https://api.botcahx.eu.org'
+  btc: 'https://api.botcahx.eu.org',
+  dana: 'https://api.danafxc.my.id'
 }
 global.APIKeys = { 
-  'https://api.betabotz.eu.org': 'hari', 
-  'https://api.botcahx.eu.org': ''
+  'https://api.betabotz.eu.org': '', 
+  'https://api.botcahx.eu.org': '',
+  'https://api.danafxc.my.id': '' 
 }
 
 let fs = require('fs')
