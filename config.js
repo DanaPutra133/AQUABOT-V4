@@ -1,42 +1,35 @@
-global.owner = ['', '', '']  
-global.mods = ['', ''] 
-global.prems = ['', '']
-global.nameowner = 'dana'
-global.numberowner = ''
-global.mail = 'danaputra1001@gmail.com' 
-global.gc = 'https://chat.whatsapp.com/EUKH9asOX4y8DkikAtueEj'
-global.instagram = 'https://instagram.com/dana_putra13'
-global.wm = 'Aqua Bot'
+global.owner = ['62895401166720', '27733308485886']  
+global.mods = ['62895401166720', '27733308485886'] 
+global.prems = ['62895401166720', '27733308485886']
+global.nameowner = 'Lann'
+global.numberowner = '62895401166720'
+global.mail = 'support@tioprm.eu.org' 
+global.gc = 'https://chat.whatsapp.com/G4f1fTpz9zL4EH3FyIcaPR'
+global.instagram = 'https://instagram.com/erlanrahmat_14'
+global.wm = '© Tio'
 global.wait = '_*Tunggu sedang di proses...*_'
 global.eror = '_*Server Error*_'
 global.stiker_wait = '*⫹⫺ Stiker sedang dibuat...*'
-global.packname = 'aqua bot'
-global.author = '@dana_putra13'
+global.packname = 'Made With'
+global.author = 'Bot WhatsApp'
 global.maxwarn = '2' // Peringatan maksimum
 global.antiporn = true // Auto delete pesan porno (bot harus admin)
-global.qris = 'https://cdn.btch.bz/file/fd7714ee03f6970d8fb30.jpg'
 
 //INI WAJIB DI ISI!//
-global.lann = '' 
+global.lann = 'YOUR_APIKEY_HERE' 
 //Daftar terlebih dahulu https://api.betabotz.eu.org
 
-//untuk dapat apikey ini bisa chat owner api di 081289694906
-global.dana = '' 
-
-
 //INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
-global.btc = ''
-//Daftar https://api.botcahx.eu.org
-//wajib daftar kedua nya! 
+global.btc = 'YOUR_APIKEY_HERE'
+//Daftar https://api.botcahx.eu.org 
+
 global.APIs = {   
   lann: 'https://api.betabotz.eu.org',
-  btc: 'https://api.botcahx.eu.org',
-  dana: 'https://api.danafxc.my.id'
+  btc: 'https://api.botcahx.eu.org'
 }
 global.APIKeys = { 
-  'https://api.betabotz.eu.org': '', 
-  'https://api.botcahx.eu.org': '',
-  'https://api.danafxc.my.id': '' 
+  'https://api.betabotz.eu.org': global.lann, 
+  'https://api.botcahx.eu.org': global.btc //OPSIONAL
 }
 
 let fs = require('fs')
@@ -48,5 +41,3 @@ fs.watchFile(file, () => {
   delete require.cache[file]
   require(file)
 })
-
-
