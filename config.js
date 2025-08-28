@@ -23,13 +23,19 @@ global.lann = 'YOUR_APIKEY_HERE'
 global.btc = 'YOUR_APIKEY_HERE'
 //Daftar https://api.botcahx.eu.org 
 
+//INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
+global.dana = 'aquaakukin1234' 
+//Daftar https://api.danafxc.my.id 
+
 global.APIs = {   
   lann: 'https://api.betabotz.eu.org',
-  btc: 'https://api.botcahx.eu.org'
+  btc: 'https://api.botcahx.eu.org',
+  dana: 'https://api.danafxc.my.id'
 }
 global.APIKeys = { 
   'https://api.betabotz.eu.org': global.lann, 
-  'https://api.botcahx.eu.org': global.btc //OPSIONAL
+  'https://api.botcahx.eu.org': global.btc, //OPSIONAL
+  'https://api.danafxc.my.id': global.dana //OPSIONAL
 }
 
 let fs = require('fs')

@@ -8,7 +8,7 @@ let handler = async (m, { conn, usedPrefix }) => {
     conn.reply(m.chat, 'Masih ada soal belum terjawab di chat ini', conn.tebakpokemon[id][0])
     throw false
   }
-  let src = await (await fetch(`https://api.betabotz.eu.org/api/game/tebakpokemon?apikey=${lann}`)).json()
+  let src = await (await fetch(`https://api.danafxc.my.id/api/tebakpokemon?apikey=aqua`)).json()
   let json = src[Math.floor(Math.random() * src.length)]
   if (!json) throw "Terjadi kesalahan, ulangi lagi perintah!"
   let caption = `

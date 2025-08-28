@@ -1,7 +1,7 @@
 var axios = require('axios');
 var handler = async (m, { conn }) => {
   try {
-    var response = await axios.get(`https://api.danafxc.my.id/api/gempa?apikey=${dana}`);
+    var response = await axios.get(`https://api.danafxc.my.id/api/gempa?apikey=aqua`);
     var dataGempa = response.data.data; 
     var caption = `*Informasi Gempa Terkini*\n\n` +
                   `*Tanggal:* ${dataGempa.Tanggal}\n` +

@@ -12,7 +12,7 @@ let handler = async (m, { conn, usedPrefix }) => {
 
     let json
     try {
-        let res = await fetch(`https://api.botcahx.eu.org/api/game/tebaktempat?apikey=${btc}`)
+        let res = await fetch(`https://api.danafxc.my.id/api/tebak_tempat?apikey=aqua`)
         if (!res.ok) throw new Error('Gagal mengambil data dari API')
         let result = await res.json()
         json = result[Math.floor(Math.random() * result.length)] // Pilih soal secara acak

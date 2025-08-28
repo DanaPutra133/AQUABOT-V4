@@ -9,9 +9,8 @@ let handler = async (m, { conn, usedPrefix }) => {
     conn.reply(m.chat, 'Masih ada soal belum terjawab di chat ini', conn.tebaktokoh[id][0])
     throw false
   }
-  let src = JSON.parse(fs.readFileSync('./lib/json/tebaknamatokoh.json', 'utf-8'));
+  let src = await (await fetch(`https://api.betabotz.eu.org/api/game/tebaknamatokoh?apikey=${lann}`)).json()
   let json = src[Math.floor(Math.random() * src.length)]
-  if (!json) throw "Terjadi kesalahan, ulangi lagi perintah!"
   let caption = `
 ≡ _GAME TEBAK TOKOH_ ≡ 
 ${json.soal}

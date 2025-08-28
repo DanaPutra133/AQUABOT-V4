@@ -10,7 +10,7 @@ let handler = async (m, { conn, usedPrefix }) => {
         throw false
     }
     // di sini dia ngambil data dari api
-    let src = await (await fetch(`https://api.betabotz.eu.org/api/game/tebakkode?apikey=${lann}`)).json()
+    let src = await (await fetch(`https://api.danafxc.my.id/api/tebakkode?apikey=aqua`)).json()
     let json = src[Math.floor(Math.random() * src.length)]
     // buat caption buat di tampilin di wa
     let options = json.pilihan.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt}`).join('\n')

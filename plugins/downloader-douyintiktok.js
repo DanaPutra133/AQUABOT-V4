@@ -11,10 +11,10 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         throw `URL Tidak Ditemukan!`;
     }
 
-    if (command === 'tiktok' || command === 'tt' || command === 'ttdl' || command === 'ttnowm' || command === 'tiktokdl' || command === 'tiktoknowm') {
+    if (command === 'tiktok' || command === 'tt' || command === 'tiktokdl' || command === 'tiktoknowm') {
         capt = `乂 *T I K T O K*`;
         urlApi = `https://api.betabotz.eu.org/api/download/tiktok?url=${text}&apikey=${lann}`;
-    } else if (command === 'douyin' || command === 'douyindl') {
+    } else if (command === 'douyin') {
         capt = `乂 *D O U Y I N*`;
         urlApi = `https://api.betabotz.eu.org/api/download/douyin?url=${text}&apikey=${lann}`;
     }
@@ -42,7 +42,8 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         throw `🚩 Terjadi kesalahan, coba lagi nanti.`;
     }
 };
-handler.help = handler.command = ['tiktok', 'tt', 'ttdl', 'ttnowm', 'tiktokdl', 'tiktoknowm', 'douyin', 'douyindl'];
+
+handler.command = /^(tiktok|tt|tiktokdl|tiktoknowm|douyin)$/i;
 handler.tags = ['downloader'];
 handler.limit = true;
 handler.group = false;
@@ -54,5 +55,3 @@ handler.fail = null;
 handler.private = false;
 
 module.exports = handler;
-
-//updates
