@@ -1,12 +1,12 @@
 global.owner = ['62895401166720', '27733308485886']  
 global.mods = ['62895401166720', '27733308485886'] 
 global.prems = ['62895401166720', '27733308485886']
-global.nameowner = 'Lann'
+global.nameowner = 'dana'
 global.numberowner = '62895401166720'
-global.mail = 'support@tioprm.eu.org' 
+global.mail = 'danaputra10012@gmail.com' 
 global.gc = 'https://chat.whatsapp.com/G4f1fTpz9zL4EH3FyIcaPR'
 global.instagram = 'https://instagram.com/erlanrahmat_14'
-global.wm = '© Tio'
+global.wm = '© dana'
 global.wait = '_*Tunggu sedang di proses...*_'
 global.eror = '_*Server Error*_'
 global.stiker_wait = '*⫹⫺ Stiker sedang dibuat...*'
