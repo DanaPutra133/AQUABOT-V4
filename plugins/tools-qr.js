@@ -1,15 +1,25 @@
-let qrcode = require("qrcode")
+const axios = require('axios');
 
 let handler = async (m, { conn, text }) => {
-  if (!text) throw 'teksnya mana?'
-  conn.sendFile(m.chat, await qrcode.toDataURL(text.slice(0, 2048), { scale: 8 }), 'qrcode.png', '', m)
-}
-handler.help = ['', 'code'].map(v => 'qr' + v + ' <teks>')
-handler.tags = ['tools']
-handler.command = /^qr(code)?$/i
-handler.admin = false
-handler.botAdmin = false
+  if (!text) throw 'Masukkan teks atau URL yang ingin dijadikan QR code!';
 
-handler.fail = null
+  try {
+    m.reply('⏳ Sedang membuat QR Code...');
+   const apiUrl = `https://api.danafxc.my.id/api/proxy/tools/qrcode?apikey=${dana}&url=${encodeURIComponent(text)}`;
 
-module.exports = handler
+    const response = await axios.post(apiUrl, null, {
+      responseType: 'arraybuffer' 
+    });
+    conn.sendFile(m.chat, response.data, 'qrcode.png', `QR Code untuk:\n${text}`, m);
+
+  } catch (error) {
+    console.error('Error saat membuat QR Code via API:', error);
+    m.reply('Gagal membuat QR Code. Silakan coba lagi nanti.');
+  }
+};
+
+handler.help = ['qrcode <teks>'];
+handler.tags = ['tools'];
+handler.command = /^qr(code)?$/i;
+
+module.exports = handler;

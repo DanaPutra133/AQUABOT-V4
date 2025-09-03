@@ -8,8 +8,8 @@ let handler = async (m, { conn, usedPrefix }) => {
     conn.reply(m.chat, 'Masih ada soal belum terjawab di chat ini', conn.tebakjkt[id][0])
     throw false
   }
-  if (!src) src = await (await fetch(`https://api.danafxc.my.id/api/tebakjkt48?apikey=aqua`)).json()
-  let json = src[Math.floor(Math.random() * src.length)]
+  if (!src) src = await (await fetch(`https://api.danafxc.my.id/api/proxy/games/tebakjkt48?apikey=${dana}`)).json()
+  let json = src
   if (!json) throw "Terjadi kesalahan, ulangi lagi perintah!"
   let caption = `
 ≡ _GAME TEBAK GAMBAR_

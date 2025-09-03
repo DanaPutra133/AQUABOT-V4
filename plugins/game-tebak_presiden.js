@@ -10,8 +10,8 @@ let handler = async (m, { conn, usedPrefix }) => {
         throw false
     }
     // di sini dia ngambil data dari api
-    let src = await (await fetch(`https://api.betabotz.eu.org/api/game/tebakpresiden?apikey=${lann}`)).json()
-    let json = src[Math.floor(Math.random() * src.length)]
+    let src = await (await fetch(`https://api.danafxc.my.id/api/proxy/games/tebakpresiden?apikey=${dana}`)).json()
+    let json = src
     // buat caption buat di tampilin di wa
     let caption = `
 ${json.soal}

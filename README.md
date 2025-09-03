@@ -42,15 +42,18 @@
 ## Website API
 
 * **BOTCAHX (Opsional):** [`Register`](https://api.botcahx.eu.org)
+* **AQUA (Opsional):** [`Register`](https://api.danafxc.my.id)
 * **Lann (Wajib):** [`Register`](https://api.betabotz.eu.org)
 
-### ðŸ”§ Konfigurasi ApiKey
+### Konfigurasi ApiKey Betabotz, Botcahx dan AQUA
 
 1. Setelah mendapatkan ApiKey, masukkan ke `config.js`:
 
    ```js
    global.btc = 'API_KEY_BOTCAHX';
    global.lann = 'API_KEY_LANN';
+   global.lann = 'API_KEY_LANN';
+   global.dana = 'API_KEY_AQUA';
    ```
 
 2. Jalankan bot dan ketik `.getip`

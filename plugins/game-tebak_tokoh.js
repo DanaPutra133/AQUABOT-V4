@@ -9,8 +9,8 @@ let handler = async (m, { conn, usedPrefix }) => {
     conn.reply(m.chat, 'Masih ada soal belum terjawab di chat ini', conn.tebaktokoh[id][0])
     throw false
   }
-  let src = await (await fetch(`https://api.betabotz.eu.org/api/game/tebaknamatokoh?apikey=${lann}`)).json()
-  let json = src[Math.floor(Math.random() * src.length)]
+  let src = await (await fetch(`https://api.danafxc.my.id/api/proxy/games/tebaknamatokoh?apikey=${dana}`)).json()
+  let json = src
   let caption = `
 ≡ _GAME TEBAK TOKOH_ ≡ 
 ${json.soal}

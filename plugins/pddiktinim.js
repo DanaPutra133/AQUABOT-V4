@@ -1,41 +1,46 @@
 const axios = require('axios');
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) throw `Masukkan NIM!\n\ncontoh: ${usedPrefix + command} 10954342`;
+let handler = async (m, { conn, text, usedPrefix, command })  => {
+    // Ganti dengan API key Anda
 
-    const nim = text.trim();
+    if (!text) throw `Masukkan Nama atau NIM Mahasiswa yang ingin dicari.\n\n*Contoh:*\n${usedPrefix + command} jondoy`;
 
     try {
-        const response = await axios.get(`https://api.danafxc.my.id/api/pddkiti/search-mahasiswa-by-nim?apikey=mark%20pembohong&nim=${nim}`);
+        await m.reply('⏳ Sedang mencari data mahasiswa...');
 
-        const data = response.data;
-        if (data.status) {
-            const mahasiswa = data.data;
-            const result = `
-=== PDDIKTI ===
-- *Nama*: ${mahasiswa.nama}
-- *NIM*: ${mahasiswa.nim}
-- *Perguruan Tinggi*: ${mahasiswa.nama_pt} (${mahasiswa.kode_pt.trim()})
-- *Program Studi*: ${mahasiswa.prodi} (${mahasiswa.kode_prodi})
-- *Jenis Kelamin*: ${mahasiswa.jenis_kelamin}
-- *Jenjang*: ${mahasiswa.jenjang}
-- *Status*: ${mahasiswa.status_saat_ini}
-- *Tanggal Masuk*: ${new Date(mahasiswa.tanggal_masuk).toLocaleDateString()}
-================
-            `.trim();
+        // Menggunakan encodeURIComponent untuk memastikan input aman untuk URL
+        const query = encodeURIComponent(text.trim());
+        
+        const response = await axios.get(`https://api.danafxc.my.id/api/proxy/features/pddikti-browser/${query}?apikey=${dana}`);
 
-            await conn.reply(m.chat, result, m);
-        } else {
-            await conn.reply(m.chat, `Gagal mengambil data: ${data.message}`, m);
+        const result = response.data;
+        if (!result.status || !result.data || result.data.length === 0) {
+            throw new Error(result.message || `Data untuk "${text}" tidak ditemukan.`);
         }
+
+        const mahasiswaList = result.data;
+                let replyText = `*🔍 Ditemukan ${mahasiswaList.length} hasil untuk "${text}":*\n\n`;
+        
+        mahasiswaList.forEach((mahasiswa, index) => {
+            replyText += `*─── [ Hasil ${index + 1} ] ───*\n`;
+            replyText += `🎓 *Nama:* ${mahasiswa.nama}\n`;
+            replyText += `🔢 *NIM:* ${mahasiswa.nim}\n`;
+            replyText += `🏛️ *Perguruan Tinggi:* ${mahasiswa.perguruan_tinggi}\n`;
+            replyText += `📚 *Program Studi:* ${mahasiswa.program_studi}\n`;
+            replyText += `📚 *Link Detail:* ${mahasiswa.link_detail}\n`;
+            replyText += `\n`;
+        });
+
+        await conn.reply(m.chat, replyText.trim(), m);
+
     } catch (error) {
-        await conn.reply(m.chat, 'Terjadi kesalahan saat mengambil data. Pastikan NIM yang dimasukkan benar.', m);
+        console.error(error);
+        await conn.reply(m.chat, `Terjadi kesalahan: ${error.message}`, m);
     }
 };
 
-handler.help = ['pddnim'];
-handler.tags = ['tools'];
-handler.command = /^(pddnim)$/i; 
-handler.group = false; 
+handler.help = ['caripddikti <nama/nim>'];
+handler.tags = ['tools', 'education'];
+handler.command = /^(pddikti|caripddikti)$/i;
 
 module.exports = handler;
