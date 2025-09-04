@@ -42,7 +42,7 @@ Contoh penggunaan: ${usedPrefix}math medium
   }
 
   try {
-    const url = `https://api.danafxc.my.id/api/proxy/games/math?apikey=${dana}`;
+    const url = `https://api.danafxc.my.id/api/proxy/games?q=math&apikey=${dana}`;
     const res = await fetch(url);
     const json = await res.json();
     const soalDitemukan = json.filter(q => q.level && q.level.toLowerCase() === mode);

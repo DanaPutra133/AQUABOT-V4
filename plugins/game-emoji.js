@@ -10,7 +10,7 @@ let handler = async (m, { conn, usedPrefix }) => {
         throw false
     }
     // di sini dia ngambil data dari api
-    let src = await (await fetch(`https://api.danafxc.my.id/api/proxy/games/tebakemoji?apikey=${dana}`)).json()
+    let src = await (await fetch(`https://api.danafxc.my.id/api/proxy/games?q=tebakemoji&apikey=${dana}`)).json()
     let json = src
     // buat caption buat di tampilin di wa
     let caption = `

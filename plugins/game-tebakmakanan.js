@@ -8,7 +8,7 @@ let handler = async (m, { conn, usedPrefix }) => {
     conn.reply(m.chat, 'Masih ada soal belum terjawab di chat ini', conn.tebakmakanan[id][0])
     throw false
   }
-  let src = await (await fetch(`https://api.danafxc.my.id/api/proxy/games/tebakmakanan?apikey=${dana}`)).json()
+  let src = await (await fetch(`https://api.danafxc.my.id/api/proxy/games?q=tebakmakanan&apikey=${dana}`)).json()
   let json = src
   if (!json) throw "Terjadi kesalahan, ulangi lagi perintah!"
   let caption = `

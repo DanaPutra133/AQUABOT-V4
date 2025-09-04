@@ -7,7 +7,7 @@ let handler = async (m, { conn, command }) => {
         const res = await (await fetch(`https://api.betabotz.eu.org/api/random/katabucin?apikey=${lann}`)).json();
         anu += res.bucin;
     } else if (command === 'katailham') {
-        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes/kata_ilham?apikey=${dana}`)).json();
+        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=kata_ilham&apikey=${dana}`)).json();
         anu += res.hasil;
     } else if (command === 'katadilan') {
         const res = await (await fetch(`https://api.betabotz.eu.org/api/random/katadilan?apikey=${lann}`)).json();
@@ -25,25 +25,25 @@ let handler = async (m, { conn, command }) => {
         const res = await (await fetch(`https://api.betabotz.eu.org/api/random/ngawur?apikey=${lann}`)).json();
         anu += res.hasl;
     } else if (command === 'jawa') {
-        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes/jawa?apikey=${dana}`)).json();
+        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=jawa&apikey=${dana}`)).json();
         anu += res.quotes;
     } else if (command === 'quotes') {
         const res = await (await fetch(`https://api.betabotz.eu.org/api/random/quotes?apikey=${lann}`)).json();
         anu += res.quotes;
     } else if (command === 'sunda') {
-        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes/sunda?apikey=${dana}`)).json();
+        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=sunda&apikey=${dana}`)).json();
         anu += res.hasl;
     } else if (command === 'batak') {
-        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes/batak?apikey=${dana}`)).json();
+        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=batak&apikey=${dana}`)).json();
         anu += res.hasl;
     } else if (command === 'aceh') {
-        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes/aceh?apikey=${dana}`)).json();
+        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=aceh&apikey=${dana}`)).json();
         anu += res.hasl;
     } else if (command === 'cina') {
-        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes/china?apikey=${dana}`)).json();
+        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=china&apikey=${dana}`)).json();
         anu += res.hasl;
     } else if (command === 'minangkabau') {
-        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes/minangkabau?apikey=${dana}`)).json();
+        const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=minangkabau&apikey=${dana}`)).json();
         anu += res.hasl;
     }
     m.reply(anu);

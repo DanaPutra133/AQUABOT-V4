@@ -15,7 +15,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         }
 
         m.reply(`⏳ Sedang mencari gambar random dari kategori *${kategori}*...`);
-        const apiUrl = `https://api.danafxc.my.id/api/proxy/pict/gambar?apikey=${dana}&kategori=${kategori}`;
+        const apiUrl = `https://api.danafxc.my.id/api/proxy/pict/gambar?q=${kategori}&apikey=${dana}`;
 
         const response = await axios.get(apiUrl, {
             responseType: 'arraybuffer'

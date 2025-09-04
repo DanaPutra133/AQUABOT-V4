@@ -24,7 +24,7 @@ global.btc = 'YOUR_APIKEY_HERE'
 //Daftar https://api.botcahx.eu.org 
 
 //INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
-global.dana = 'aquaakukin1234' 
+global.dana = 'YOUR_APIKEY_HERE' 
 //Daftar https://api.danafxc.my.id 
 
 global.APIs = {   
