@@ -1,22 +1,23 @@
 const axios = require('axios');
 
-let handler = async (m, { conn, args, usedPrefix, command }) => {
-    let text;
-    if (args.length >= 1) {
-        text = args.slice(0).join(" ");
-    } else if (m.quoted && m.quoted.text) {
-        text = m.quoted.text;
-    } else {
-        throw `Masukkan teks atau reply sebuah pesan.\n\n*Contoh:*\n${usedPrefix + command} Kata-kata`;
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+
+    let quoteText = text || (m.quoted ? m.quoted.text : '');
+
+    if (!quoteText) {
+        throw `Masukkan teks atau reply sebuah pesan.\n\n*Contoh:*\n${usedPrefix + command} Kata-kata mutiara`;
     }
-    if (text.length > 500) return m.reply('Teks terlalu panjang, maksimal 500 karakter!');
+
+    if (quoteText.length > 500) return m.reply('Teks terlalu panjang, maksimal 500 karakter!');
 
     try {
-        const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/iqc?text=${encodeURIComponent(text)}&apikey=${dana}`;
+        const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/iqc?text=${encodeURIComponent(quoteText)}&apikey=${dana}`;
+
         const response = await axios.get(apiUrl, {
             responseType: 'arraybuffer'
         });
-        conn.sendFile(m.chat, response.data, m);
+
+        conn.sendFile(m.chat, response.data,  m);
 
     } catch (error) {
         console.error('Error pada fitur iqc:', error);
