@@ -7,14 +7,12 @@ let handler = async (m, { conn, text }) => {
     let targetUser;
 
     if (m.quoted) {
-        // Logika saat me-reply pesan (sudah benar dan tangguh)
         targetUser = m.quoted.sender;
         textForQuote = m.quoted.text;
 
         if (text) {
-            username = text; // Gunakan nama kustom jika ada
+            username = text; 
         } else {
-            // Logika fallback canggih untuk nama otomatis
             let potentialName = m.quoted.pushName || conn.getName(targetUser);
             if (/^[\s\d+-]+$/.test(potentialName)) {
                  username = targetUser.split('@')[0];
@@ -23,13 +21,9 @@ let handler = async (m, { conn, text }) => {
             }
         }
     } else {
-        // --- SKENARIO TANPA ME-REPLY ---
         targetUser = m.sender;
         textForQuote = text;
-        
-        // --- PERBAIKAN DI SINI ---
-        // Kembali menggunakan m.name yang lebih andal untuk pengirim sendiri
-        username = m.name; 
+                username = m.name; 
     }
    
     if (!textForQuote) {
