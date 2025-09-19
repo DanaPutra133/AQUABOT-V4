@@ -19,7 +19,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
         let img = await q.download();
         let [top, middle, bottom] = text.split('|');
-        const params = { apikey: dana }; 
+        const params = { apikey: global.dana }; 
         if (top) params.top = top;
         if (middle) params.middle = middle;
         if (bottom) params.bottom = bottom;
