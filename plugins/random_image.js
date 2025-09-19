@@ -1,6 +1,5 @@
 const axios = require('axios');
 
-
 const kategoriList = ['wallpaper', 'profilepict', 'waifu']; 
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
@@ -15,16 +14,20 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         }
 
         m.reply(`⏳ Sedang mencari gambar random dari kategori *${kategori}*...`);
+        
         const apiUrl = `https://api.danafxc.my.id/api/proxy/pict/gambar?q=${kategori}&apikey=${dana}`;
-
-        const response = await axios.get(apiUrl, {
-            responseType: 'arraybuffer'
-        });
-        conn.sendFile(m.chat, response.data, 'random.jpg', `Ini gambar random *${kategori}* untukmu!`, m);
+        const response = await axios.get(apiUrl);
+        const jsonData = response.data;
+        if (jsonData && jsonData.status && jsonData.urls && jsonData.urls.length > 0) {
+            const imageUrl = jsonData.urls[0];
+                        conn.sendFile(m.chat, imageUrl, 'random.jpg', `Ini gambar random *${kategori}* untukmu!`, m);
+        } else {
+            throw new Error('API tidak mengembalikan URL gambar yang valid.');
+        }
 
     } catch (error) {
         console.error('Error pada fitur random:', error);
-        m.reply('Gagal mengambil gambar. Mungkin sedang ada masalah di server, coba lagi nanti.');
+        m.reply('Gagal mengambil gambar. Mungkin sedang ada masalah di server atau kategori ini sedang kosong.');
     }
 };
 

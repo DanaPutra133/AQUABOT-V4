@@ -1,21 +1,39 @@
 let { sticker5 } = require('../lib/sticker.js');
 let axios = require('axios');
 
-let handler = async (m, { conn, args }) => {
-    let text;
-    if (args.length >= 1) {
-        text = args.slice(0).join(" ");
-    } else if (m.quoted && m.quoted.text) {
-        text = m.quoted.text;
+let handler = async (m, { conn, text }) => {
+    let textForQuote;
+    let username;
+    let targetUser;
+
+    if (m.quoted) {
+        targetUser = m.quoted.sender;
+        textForQuote = m.quoted.text;
+
+        if (text) {
+            username = text; 
+        } else {
+            let potentialName = m.quoted.pushName || conn.getName(targetUser);
+            if (/^[\s\d+-]+$/.test(potentialName)) {
+                 username = targetUser.split('@')[0];
+            } else {
+                username = potentialName;
+            }
+        }
     } else {
-        throw "Input teks atau reply teks yang ingin dijadikan quote!";
+        targetUser = m.sender;
+        textForQuote = text;
+                username = m.name; 
     }
    
-    if (text.length > 100) return m.reply('Maksimal 100 Teks!');
+    if (!textForQuote) {
+        throw "Teks untuk quote tidak ditemukan! Reply pesan berisi teks atau ketik teks setelah command.";
+    }
+
+    if (textForQuote.length > 100) return m.reply('Maksimal 100 Teks!');
 
     try {
         m.reply('Sedang membuat stiker quote...');
-
         let targetUser;
         let username;
         
@@ -29,7 +47,6 @@ let handler = async (m, { conn, args }) => {
         
         const avatar = await conn.profilePictureUrl(targetUser, 'image').catch(_ => 'https://telegra.ph/file/320b066dc81928b782c7b.png');
                 const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/qc?apikey=${dana}&text=${encodeURIComponent(text)}&username=${encodeURIComponent(username)}&avatar=${encodeURIComponent(avatar)}`;
-
         const response = await axios.post(apiUrl, null, {
             responseType: 'arraybuffer'
         });
