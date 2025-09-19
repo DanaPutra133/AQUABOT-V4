@@ -14,20 +14,21 @@ let handler = async (m, { conn, args }) => {
     if (text.length > 100) return m.reply('Maksimal 100 Teks!');
 
     try {
-        
+        m.reply('Sedang membuat stiker quote...');
+
         let targetUser;
         let username;
+        
         if (m.quoted) {
             targetUser = m.quoted.sender;
-            username = m.quoted.name;
+            username = conn.getName(targetUser); 
         } else {
             targetUser = m.sender;
-            username = m.name;
+            username = conn.getName(targetUser); 
         }
         
         const avatar = await conn.profilePictureUrl(targetUser, 'image').catch(_ => 'https://telegra.ph/file/320b066dc81928b782c7b.png');
-        
-        const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/qc?apikey=${dana}&text=${encodeURIComponent(text)}&username=${encodeURIComponent(username)}&avatar=${encodeURIComponent(avatar)}`;
+                const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/qc?apikey=${dana}&text=${encodeURIComponent(text)}&username=${encodeURIComponent(username)}&avatar=${encodeURIComponent(avatar)}`;
 
         const response = await axios.post(apiUrl, null, {
             responseType: 'arraybuffer'
@@ -48,9 +49,9 @@ let handler = async (m, { conn, args }) => {
     }
 };
 
-handler.help = ['qc2 '];
+handler.help = ['qc2 <teks> (sambil reply)'];
 handler.tags = ['sticker'];
 handler.limit = true;
-handler.command = /^(qc2|quotely2)$/i;
+handler.command = /^(qc2|quotely2)$/i; 
 
 module.exports = handler;
