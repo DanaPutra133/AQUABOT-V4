@@ -1,66 +1,72 @@
-let fs = require('fs')
-let fetch = require('node-fetch')
-let winScore = 500
-let rewardAmount = 100 
+let fs = require('fs');
+let fetch = require('node-fetch');
+let winScore = 500;
+let rewardAmount = 100;
 
 async function handler(m) {
-    conn.family = conn.family ? conn.family : {}
-    let id = m.chat
+    conn.family = conn.family ? conn.family : {};
+    let id = m.chat;
+
     if (id in conn.family) {
-        if (conn.family[id].id !== undefined) return conn.reply(m.chat, 'Masih ada kuis yang belum terjawab di chat ini' + '\nTunggu 3 menit untuk mengakhiri', conn.family[id].msg)
-        delete conn.family[id]
-        throw false
+        conn.reply(m.chat, 'Masih ada permainan Family 100 yang belum selesai di chat ini.', conn.family[id].msg);
+        throw false;
     }
-    conn.family[id] = {}
-    let src = await (await fetch(`https://api.betabotz.eu.org/api/game/family100-2?apikey=${lann}`)).json()
-    let json = src[Math.floor(Math.random() * src.length)]
 
-    let caption = `
+    try {        
+        let res = await fetch(`https://api.danafxc.my.id/api/proxy/games?q=family&apikey=${dana}`);
+        if (!res.ok) throw await res.text();
+        
+        let src = await res.json();
+        let json = src.data || src; 
+    
 
- ┌─⊷ *SOAL*
+        let caption = `
+┌─⊷ *FAMILY 100*
 ▢ *Soal:* ${json.soal}
-▢ Terdapat *${json.jawaban.length}* jawaban${json.jawaban.find(v => v.includes(' ')) ? `
-▢ (beberapa jawaban terdapat spasi)
-▢ tunggu 3 menit untuk mengakhiri
-▢ ketik *nyerah* untuk menyelesaikan permainan
+▢ Terdapat *${json.jawaban.length}* jawaban.
+▢ Ketik jawaban yang menurutmu benar!
+▢ Ketik *nyerah* untuk mengakhiri permainan.
 └──────────────
-`: ''}
 
-+${rewardAmount} kredit sosial! tiap jawaban benar
-    `.trim()
-    conn.family[id] = {
-        id,
-        msg: await m.reply(caption),
-        ...json,
-        terjawab: Array.from(json.jawaban, () => false),
-        winScore,
-        rewardAmount, 
-        timeout: setTimeout(() => {
-            if (conn.family[id]) {
-                let allAnswers = conn.family[id].jawaban.map((jawaban, index) => `(${index + 1}) ${jawaban}`).join('\n')
-                conn.reply(m.chat, `Waktu habis! Game berakhir.\n\nJawaban yang benar:\n${allAnswers}`, conn.family[id].msg)
-                delete conn.family[id]
-            }
-        }, 180000) // 3 minutes
++${rewardAmount} XP untuk setiap jawaban benar!
+        `.trim();
+
+        conn.family[id] = {
+            id,
+            msg: await m.reply(caption),
+            ...json,
+            terjawab: Array(json.jawaban.length).fill(false), 
+            winScore,
+            rewardAmount,
+            timeout: setTimeout(() => {
+                if (conn.family[id]) {
+                    let allAnswers = conn.family[id].jawaban.map((jawaban, index) => `${index + 1}. ${jawaban}`).join('\n');
+                    conn.reply(m.chat, `Waktu habis! Game berakhir.\n\n*Semua Jawaban:*\n${allAnswers}`, conn.family[id].msg);
+                    delete conn.family[id];
+                }
+            }, 180000) // 3 menit
+        };
+    } catch (e) {
+        console.error(e);
+        m.reply('Gagal memulai game. Mungkin sedang ada masalah dengan API.');
     }
 }
-handler.help = ['family100']
-handler.tags = ['game']
-handler.group = true
-handler.command = /^family100$/i
+
+handler.help = ['family100'];
+handler.tags = ['game'];
+handler.group = true;
+handler.command = /^family100$/i;
 
 handler.nyerah = async function (m) {
-    let id = m.chat
-    if (id in conn.family) {
-        conn.reply(m.chat, 'Permainan berakhir karena menyerah.', conn.family[id].msg)
-        clearTimeout(conn.family[id].timeout)
-        delete conn.family[id]
-    } else {
-        conn.reply(m.chat, 'Tidak ada permainan yang sedang berlangsung.', m)
+    let id = m.chat;
+    if (!(id in conn.family)) {
+        return m.reply('Tidak ada permainan Family 100 yang sedang berlangsung.');
     }
-}
+    let game = conn.family[id];
+    let allAnswers = game.jawaban.map((jawaban, index) => `${index + 1}. ${jawaban}`).join('\n');
+    m.reply(`Permainan berakhir karena menyerah.\n\n*Semua Jawaban:*\n${allAnswers}`, game.msg);
+    clearTimeout(game.timeout);
+    delete conn.family[id];
+};
 
-module.exports = handler
-
-//danaputra_133
-//y
+module.exports = handler;
