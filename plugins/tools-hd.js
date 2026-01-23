@@ -50,7 +50,7 @@ let handler = async (m, { conn, usedPrefix, command }) => {
   }
 }
 
-handler.command = handler.help = ['hd', 'hd2', 'hd3','removebg','nobg'];
+handler.command = handler.help = ['hd2', 'hd3','removebg','nobg'];
 handler.tags = ['tools'];
 handler.premium = false;
 handler.limit = false;

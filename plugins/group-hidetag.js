@@ -15,9 +15,8 @@ const fkontak = {
 }
      conn.sendMessage(m.chat, { text: text, mentions: participants.map(a => a.id) }, {quoted:m})
 }
-handler.help = ['hidetag <pesan>']
-handler.tags = ['group']
-handler.command = /^(hidetag|h)$/i
+handler.customPrefix = /^h$/i;
+handler.command = new RegExp();
 
 handler.group = true
 handler.admin = true

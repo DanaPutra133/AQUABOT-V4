@@ -29,7 +29,6 @@ let handler = async (m, { conn, command, usedPrefix }) => {
   }
 }
 
-handler.help = ['sticker']
-handler.tags = ['sticker']
-handler.command = /^(stiker|s|sticker)$/i
-module.exports = handler
+handler.customPrefix = /^s$/i;
+handler.command = new RegExp();
+module.exports = handler;

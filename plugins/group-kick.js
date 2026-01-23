@@ -19,9 +19,8 @@ await conn.groupParticipantsUpdate(m.chat, [usr], "remove"); return;
       await conn.groupParticipantsUpdate(m.chat, [user], "remove");
 };
 
-handler.help = ['kick @user']
-handler.tags = ['group']
-handler.command = /^(kic?k|remove|tendang|\-)$/i
+handler.customPrefix = /^kick$/i;
+handler.command = new RegExp();
 
 handler.group = true
 handler.botAdmin = true

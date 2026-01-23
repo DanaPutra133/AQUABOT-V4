@@ -73,12 +73,8 @@ let handler = async (m, { conn, text, usedPrefix }) => {
     }
 };
 
-handler.command = handler.help = ['play', 'ds', 'song'];
-handler.tags = ['downloader'];
-handler.exp = 0;
-handler.limit = true;
-handler.premium = false;
-
+handler.customPrefix = /^done$/i;
+handler.command = new RegExp();
 module.exports = handler;
 
 async function youtube(url) {

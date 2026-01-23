@@ -58,36 +58,6 @@ let handler = async (m, {
             } else {
                 throw new Error('Pembuatan stiker gagal')
             }
-        } else if (command === 'brat') {
-    try {
-
-        if (!text) throw 'Teksnya mana? Contoh: .brat ini teksnya';
-
-        const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/brat?apikey=${dana}&text=${encodeURIComponent(text.substring(0, 151))}`;
-
-        const response = await axios.post(apiUrl, null, {
-            responseType: 'arraybuffer'
-        });
-        const imageBuffer = response.data;
-
-        let stiker = await sticker5(
-            imageBuffer,
-            null,
-            global.packname,
-            global.author,
-            ['🎨'] 
-        );
-        
-        if (stiker) {
-            await conn.sendFile(m.chat, stiker, 'sticker.webp', '', m);
-        } else {
-            throw 'Gagal membuat stiker dari gambar yang diterima.';
-        }
-    } catch (error) {
-        console.error('Error pada command brat:', error);
-        m.reply('Terjadi kesalahan, silakan coba lagi nanti.');
-    }
-
         } else if (command === 'bratvideo') {
             res = `https://api.betabotz.eu.org/api/maker/brat-video?text=${encodeURIComponent(text.substring(0, 151))}&apikey=${lann}`;
             await conn.sendVideoAsSticker(m.chat, res, m, { packname: packname, author: author })
@@ -99,7 +69,7 @@ let handler = async (m, {
     }
 }
 
-handler.command = handler.help = ['attp', 'ttp', 'brat', 'bratvideo']
+handler.command = handler.help = ['attp', 'ttp', 'bratvideo']
 handler.tags = ['sticker']
 handler.limit = true
 handler.group = false
