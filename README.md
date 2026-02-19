@@ -55,9 +55,16 @@
    global.lann = 'API_KEY_LANN';
    global.dana = 'API_KEY_AQUA';
    ```
+2. atau kamu bisa memasukan nya ke `.env` dari `.env.example`, setelah itu hapus komentar gunakan yang menggunakan .env di `config.js`:
 
-2. Jalankan bot dan ketik `.getip`
-3. Buka [`Profile API`](https://api.betabotz.eu.org), whitelist IP bot di:
+   ```js
+   API_KEY_BETABOTZ=
+   API_KEY_BETABOTZ_AKSESKEY=
+   API_KEY_BTC=
+   API_KEY_DANA=
+   ```
+3. Jalankan bot dan ketik `.getip`
+4. Buka [`Profile API`](https://api.betabotz.eu.org), whitelist IP bot di:
    `Settings -> Management IP`, lalu tempelkan IP dari hasil `.getip`.
 
 ---
