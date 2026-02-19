@@ -17,7 +17,7 @@ module.exports = {
     if (!m) return;
     //console.log(JSON.stringify(m, null, 4))
     try {
-      m = (await simple.smsg(this, m)) || m;
+      m = simple.smsg(this, m) || m;
       if (!m) return;
       // console.log(m)
       m.exp = 0;
@@ -63,7 +63,7 @@ module.exports = {
           if (!isNumber(user.troopcamp)) user.troopcamp = 0;
           if (!isNumber(user.coin)) user.coin = 0;
           if (!isNumber(user.atm)) user.atm = 0;
-          if (!isNumber(user.limit)) user.limit = 10;
+          if (!isNumber(user.limit)) user.limit = 100;
           if (!isNumber(user.glimit)) user.glimit = 10;
           if (!isNumber(user.tprem)) user.tprem = 0;
           if (!isNumber(user.tigame)) user.tigame = 5;
@@ -346,7 +346,6 @@ module.exports = {
           if (!isNumber(user.lastgift)) user.lastgift = 0;
           if (!isNumber(user.lastrob)) user.lastrob = 0;
           if (!isNumber(user.lastngojek)) user.lastngojek = 0;
-
           if (!isNumber(user.lastngewe)) user.lastngewe = 0;
           if (!isNumber(user.ngewe)) user.ngewe = 0;
           if (!isNumber(user.jualan)) user.jualan = 0;
@@ -415,13 +414,7 @@ module.exports = {
           if (!("breaths" in user)) user.breaths = "";
           if (!("magic" in user)) user.magic = "";
           if (!("demon" in user)) user.demon = "";
-          if (!("job" in user)) user.job = "Not Have";
           if (!isNumber(user.darahiblis)) user.darahiblis = 0;
-          if (!isNumber(user.lastyoutuber)) user.lastyoutuber = 0;
-          if (!isNumber(user.subscribers)) user.subscribers = 0;
-          if (!isNumber(user.viewers)) user.viewers = 0;
-          if (!isNumber(user.like)) user.like = 0;
-          if (!isNumber(user.playButton)) user.playButton = 0;
           if (!isNumber(user.demonblood)) user.demonblood = 0;
           if (!isNumber(user.demonkill)) user.demonkill = 0;
           if (!isNumber(user.hashirakill)) user.hashirakill = 0;
@@ -443,12 +436,13 @@ module.exports = {
           if (!isNumber(user.lastngepet)) user.lastngepet = 0;
           if (!isNumber(user.lasttaxi)) user.lasttaxi = 0;
           if (!isNumber(user.taxi)) user.taxi = 0;
-          if (!isNumber(user.lastjobkerja)) user.lastjobkerja = 0;
-          if (!isNumber(user.lastjobchange)) user.lastjobchange = 0;
+          if (!isNumber(user.lastyoutuber)) user.lastyoutuber = 0;
+          if (!isNumber(user.subscribers)) user.subscribers = 0;
+          if (!isNumber(user.viewers)) user.viewers = 0;
+          if (!isNumber(user.like)) user.like = 0;
+          if (!isNumber(user.playButton)) user.playButton = 0;
         } else
           global.db.data.users[m.sender] = {
-            lastjobkerja: 0,
-            lastjobchange: 0,
             taxi: 0,
             lasttaxi: 0,
             lastyoutuber: 0,
@@ -482,7 +476,7 @@ module.exports = {
             exp: 0,
             coin: 0,
             atm: 0,
-            limit: 10,
+            limit: 100,
             skata: 0,
             tigame: 999,
             lastclaim: 0,
@@ -818,8 +812,8 @@ module.exports = {
           if (!("listStr" in chat)) chat.listStr = {};
           if (!("sWelcome" in chat))
             chat.sWelcome =
-              "*Selamat datang @user!*\n\n     Di group @subject\n\n╭─────「 *intro* 」\n│\n│─⪼ Nama : \n│─⪼ Umur :\n│─⪼ Askot :\n│─⪼ Gender :\n╰─────────────\n\n> semoga betah";
-          if (!("sBye" in chat)) chat.sBye = "Al-fatihah untuk @user";
+              "Hai, @user!\nSelamat datang di grup @subject\n\n@desc";
+          if (!("sBye" in chat)) chat.sBye = "Selamat tinggal @user!";
           if (!("sPromote" in chat)) chat.sPromote = "";
           if (!("sDemote" in chat)) chat.sDemote = "";
           if (!("delete" in chat)) chat.delete = true;
@@ -828,7 +822,6 @@ module.exports = {
           if (!("antiSticker" in chat)) chat.antiSticker = false;
           if (!("antiStickernokick" in chat)) chat.antiStickernokick = false;
           if (!("viewonce" in chat)) chat.viewonce = false;
-          if (!("antiporn" in chat)) chat.antiporn = false;
           if (!("antiToxic" in chat)) chat.antiToxic = false;
           if (!isNumber(chat.expired)) chat.expired = 0;
           if (!("memgc" in chat)) chat.memgc = {};
@@ -849,38 +842,19 @@ module.exports = {
           if (!("antilinktt" in chat)) chat.antilinktt = false;
           if (!("antilinkttnokick" in chat)) chat.antilinkttnokick = false;
           if (!("antibot" in chat)) chat.antibot = false;
-          if (!("autohd" in chat)) chat.autohd = false;
-          if (!("autobio" in chat)) chat.autobio = false;
           if (!("rpg" in chat)) chat.rpg = false;
           if (!("nsfw" in chat)) chat.nsfw = false;
-          if (!("autobackup" in chat)) chat.autobackup = false;
-          if (!("autodl" in chat)) chat.autodl = true;
-          if (!("notifgempa" in chat)) chat.notifgempa = false;
-          if (!("notifcuaca" in chat)) chat.notifcuaca = false;
-          if (!("notifsholat" in chat)) chat.notifsholat = false;
-          if (!("autotranslate" in chat)) chat.autotranslate = false;
-          if (!("antitagsw" in chat)) chat.antitagsw = false;
         } else
           global.db.data.chats[m.chat] = {
-            autotranslate: false,
-            notifsholat: false,
-            notifgempa: false,
-            notifcuaca: false,
-            autodl: true,
-            autobackup: false,
-            autobio: false,
-            autohd: false,
-            antiporn: false,
             isBanned: false,
-            welcome: false,
+            welcome: true,
             welcometype: 1,
             detect: false,
             isBannedTime: false,
             mute: false,
             listStr: {},
-            sWelcome:
-              "*Selamat datang @user!*\n\n     Di group @subject\n\n╭─────「 *intro* 」\n│\n│─⪼ Nama : \n│─⪼ Umur :\n│─⪼ Askot :\n│─⪼ Gender :\n╰─────────────\n\n> semoga betah",
-            sBye: "Al-fatihah untuk @user",
+            sWelcome: "Hai, @user!\nSelamat datang di grup @subject\n\n@desc",
+            sBye: "Selamat tinggal @user!",
             sPromote: "",
             sDemote: "",
             delete: false,
@@ -889,7 +863,7 @@ module.exports = {
             antiSticker: false,
             antiStickernokick: false,
             viewonce: false,
-            antiToxic: false,
+            antiToxic: true,
             antilinkig: false,
             antilinkignokick: false,
             antilinkyt: false,
@@ -908,14 +882,15 @@ module.exports = {
             antilinkttnokick: false,
             antibot: false,
             rpg: false,
-            nsfw: false,
-            antitagsw: false,
-            antidelete: false,
-            autoacc: false,
           };
-        let memgc = global.db.data.chats[m.chat].memgc[m.sender];
-        if (typeof memgc !== "object")
+        let memgc = global.db.data.chats[m.chat]?.memgc?.[m.sender];
+        if (typeof memgc !== "object" || memgc === null) {
+          global.db.data.chats[m.chat] = global.db.data.chats[m.chat] || {};
+          global.db.data.chats[m.chat].memgc =
+            global.db.data.chats[m.chat].memgc || {};
           global.db.data.chats[m.chat].memgc[m.sender] = {};
+          memgc = global.db.data.chats[m.chat].memgc[m.sender];
+        }
         if (memgc) {
           if (!("blacklist" in memgc)) memgc.blacklist = false;
           if (!("banned" in memgc)) memgc.banned = false;
@@ -925,7 +900,7 @@ module.exports = {
           if (!isNumber(memgc.command)) memgc.command = 0;
           if (!isNumber(memgc.commandTotal)) memgc.commandTotal = 0;
           if (!isNumber(memgc.lastseen)) memgc.lastseen = 0;
-        } else
+        } else {
           global.db.data.chats[m.chat].memgc[m.sender] = {
             blacklist: false,
             banned: false,
@@ -936,6 +911,7 @@ module.exports = {
             commandTotal: 0,
             lastseen: 0,
           };
+        }
       } catch (e) {
         console.error(e);
       }
@@ -962,6 +938,7 @@ module.exports = {
           console.error(e);
         }
       }
+      //if (m.id.startsWith('BAE5') && m.id.length === 16 || m.isBaileys && m.fromMe) return
       if (
         m.id.startsWith("3EB0") ||
         (m.id.startsWith("BAE5") && m.id.length === 16) ||
@@ -971,55 +948,47 @@ module.exports = {
       m.exp += Math.ceil(Math.random() * 10);
 
       let usedPrefix;
-
       let _user =
         global.db.data &&
         global.db.data.users &&
         global.db.data.users[m.sender];
 
-      const detectwhat = m.sender.includes("@lid") ? "@lid" : "@s.whatsapp.net";
-      const ownerNumbers = global.owner.map((v) => v.replace(/[^0-9]/g, ""));
-      const mappedOwners = ownerNumbers.map((v) => v + detectwhat);
-      console.log(
-        "DEBUG: mappedOwners (JID format for comparison):",
-        mappedOwners,
-      );
-      const isROwner = mappedOwners.includes(m.sender);
-      const isOwner = isROwner || m.fromMe;
-      const isMods =
-        isROwner ||
+      //let isROwner = [global.conn.user.jid, ...global.owner].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
+      let isROwner = [global.conn.user.jid, ...global.owner]
+        .map((v) => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net")
+        .includes(
+          m.sender.endsWith("@lid")
+            ? conn.getJid(m.sender)?.replace(/[^0-9]/g, "") + "@s.whatsapp.net"
+            : m.sender.replace(/[^0-9]/g, "") + "@s.whatsapp.net",
+        );
+      let isOwner = isROwner || m.fromMe;
+      let isMods =
+        isOwner ||
         global.mods
-          .map((v) => v.replace(/[^0-9]/g, "") + detectwhat)
+          .map((v) => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net")
           .includes(m.sender);
-      const isPrems =
+      let isPrems =
         isROwner ||
-        global.prems
-          .map((v) => v.replace(/[^0-9]/g, "") + detectwhat)
-          .includes(m.sender) ||
         db.data.users[m.sender].premiumTime > 0 ||
-        db.data.users[m.sender].premium === true;
-      async function getLidFromJid(id, conn) {
-        if (id.endsWith("@lid")) return id;
-        const res = await conn.onWhatsApp(id).catch(() => []);
-        return res[0]?.lid || id;
-      }
-      global.getLidFromJid = getLidFromJid;
-      const senderLid = await getLidFromJid(m.sender, this);
-      const botLid = await getLidFromJid(this.user.jid, this);
-      const senderJid = m.sender;
-      const botJid = this.user.jid;
+        db.data.users[m.sender].premium;
       const groupMetadata =
-        (m.isGroup ? (conn.chats[m.chat] || {}).metadata : {}) || {};
-      const participants = m.isGroup ? groupMetadata.participants || [] : [];
+        (m.isGroup
+          ? (conn.chats[m.chat] || {}).metadata ||
+            (await this.groupMetadata(m.chat).catch((_) => null))
+          : {}) || {};
+      const participants = (m.isGroup ? groupMetadata.participants : []) || [];
       const user =
-        participants.find((p) => p.id === senderLid || p.id === senderJid) ||
+        participants.find((u) => u.id === m.sender) ||
+        participants.find((u) => u.phoneNumber === m.sender) ||
         {};
       const bot =
-        participants.find((p) => p.id === botLid || p.id === botJid) || {};
+        participants.find((u) => u.id === this.user.jid) ||
+        participants.find((u) => u.phoneNumber === this.user.jid) ||
+        {};
       const isRAdmin = user?.admin === "superadmin" || false;
       const isAdmin = isRAdmin || user?.admin === "admin" || false;
-      const isBotAdmin = !!bot?.admin || false;
-
+      const isBotAdmin =
+        bot?.admin === "admin" || bot?.admin === "superadmin" || false;
       for (let name in global.plugins) {
         let plugin = global.plugins[name];
         if (!plugin) continue;
@@ -1123,6 +1092,12 @@ module.exports = {
             user.commandTotal++;
             user.lastCmd = Date.now();
           }
+
+          if (plugin.rowner && plugin.owner && !(isROwner || isOwner)) {
+            // Both Owner
+            fail("owner", m, this);
+            continue;
+          }
           if (plugin.rpg && !global.db.data.chats[m.chat].rpg) {
             // rpg
             fail("rpg", m, this);
@@ -1131,11 +1106,6 @@ module.exports = {
           if (plugin.nsfw && !global.db.data.chats[m.chat].nsfw) {
             // nsfw
             fail("nsfw", m, this);
-            continue;
-          }
-          if (plugin.rowner && plugin.owner && !(isROwner || isOwner)) {
-            // Both Owner
-            fail("owner", m, this);
             continue;
           }
           if (plugin.rowner && !isROwner) {
@@ -1243,10 +1213,9 @@ module.exports = {
                   .filter((v) => v != this.user.jid)) {
                   let data = (await this.onWhatsApp(jid))[0] || {};
                   if (data.exists)
-                    m.reply(
-                      `*Plugin:* ${m.plugin}\n*Sender:* @${m.sender.split`@`[0]}\n*Chat:* ${m.chat}\n*Chat Name:* ${await this.getName(m.chat)}\n*Command:* ${usedPrefix}${command} ${args.join(" ")}\n\n\`\`\`${text}\`\`\``.trim(),
-                      data.jid,
-                      { mentions: [m.sender] },
+                    //m.reply(`*Plugin:* ${m.plugin}\n*Sender:* @${m.sender.split`@`[0]}\n*Chat:* ${m.chat}\n*Chat Name:* ${await this.getName(m.chat)}\n*Command:* ${usedPrefix}${command} ${args.join(' ')}\n\n\`\`\`${text}\`\`\``.trim(), data.jid, { mentions: [m.sender] })
+                    console.error(
+                      `Plugin:${m.plugin} | Sender:@${m.sender.split("@")[0]} | Chat:${m.chat} | ChatName:${await this.getName(m.chat)} | Command:${usedPrefix}${command} ${args.join(" ")} | Error:${text}`,
                     );
                 }
               m.reply(text);
@@ -1310,25 +1279,16 @@ module.exports = {
         console.log(m, m.quoted, e);
       }
       if (opts["autoread"]) await this.readMessages([m.key]);
-      let chat = global.db.data.chats[m.chat];
-
-      user.chat++;
-      user.chatTotal++;
-      user.lastseen = Date.now();
-
-      if (m.isGroup) {
-        chat.memgc[m.sender].chat++;
-        chat.memgc[m.sender].chatTotal++;
-        chat.memgc[m.sender].lastseen = Date.now();
-      }
     }
   },
+
   async participantsUpdate({ id, participants, action }) {
     if (opts["self"]) return;
-    // if (id in conn.chats) return // First login will spam
     if (global.isInit) return;
+
     let chat = db.data.chats[id] || {};
     let text = "";
+
     switch (action) {
       case "add":
       case "remove":
@@ -1336,71 +1296,69 @@ module.exports = {
       case "invite":
       case "invite_v4":
         if (chat.welcome) {
-          let groupMetadata =
-            (await this.groupMetadata(id)) || (conn.chats[id] || {}).metadata;
+          let groupMetadata = await this.groupMetadata(id).catch(() => null);
+          if (!groupMetadata) break;
+
           for (let user of participants) {
+            let jid = user;
+            if (typeof user === "object") {
+              jid = user.phoneNumber || user.id || user.jid || user;
+            }
+            if (
+              !jid ||
+              (!jid.includes("@s.whatsapp.net") && !jid.includes("@lid"))
+            )
+              continue;
+
             let pp = "https://telegra.ph/file/70e8de9b1879568954f09.jpg";
             try {
-              pp = await this.profilePictureUrl(user, "image");
-            } catch (e) {
-            } finally {
-              text = (
-                action === "add"
-                  ? (
-                      chat.sWelcome ||
-                      this.welcome ||
-                      conn.welcome ||
-                      "Welcome, @user!"
-                    )
-                      .replace("@subject", await this.getName(id))
-                      .replace(
-                        "@desc",
-                        groupMetadata.desc ? groupMetadata.desc.toString() : "",
-                      )
-                  : chat.sBye || this.bye || conn.bye || "Bye, @user!"
-              ).replace("@user", "@" + user.split("@")[0]);
-              await this.sendMessage(
-                id,
-                { text: text, contextInfo: { mentionedJid: [user] } },
-                { quoted: null },
-              );
-              /**this.sendMessage(id, {
-                            text: text,
-                            contextInfo: {
-			    mentionedJid: [user],
-                            externalAdReply: {  
-                            title: action === 'add' ? 'Selamat Datang' : 'Selamat tinggal',
-                            body: global.wm,
-                            thumbnailUrl: pp,
-                            sourceUrl: 'https://api.botcahx.eu.org',
-                            mediaType: 1,
-                            renderLargerThumbnail: true 
-                            }}}, { quoted: null })**/
-            }
+              pp = await this.profilePictureUrl(jid, "image");
+            } catch {}
+
+            const isAdd = ["add", "invite", "invite_v4"].includes(action);
+
+            text = (
+              isAdd
+                ? chat.sWelcome ||
+                  this.welcome ||
+                  conn.welcome ||
+                  "Welcome, @user!"
+                : chat.sBye || this.bye || conn.bye || "Bye, @user!"
+            )
+              .replace("@subject", groupMetadata.subject || "this group")
+              .replace("@desc", groupMetadata.desc?.toString() || "")
+              .replace("@user", "@" + jid.split("@")[0]);
+
+            await this.sendMessage(id, {
+              text,
+              mentions: [jid],
+            });
+            /*
+                    await this.sendMessage(id, {
+                        text: text,
+                        mentions: [jid],
+                        contextInfo: {
+                            externalAdReply: {
+                                title: isAdd ? 'Selamat Datang' : 'Selamat Tinggal',
+                                body: global.wm || 'Bot WhatsApp',
+                                thumbnailUrl: pp,
+                                sourceUrl: 'https://api.botcahx.eu.org',
+                                mediaType: 1,
+                                renderLargerThumbnail: true
+                            }
+                        }
+                    })
+ */
           }
         }
         break;
-      case "promote":
-        text =
-          chat.sPromote ||
-          this.spromote ||
-          conn.spromote ||
-          "@user ```is now Admin```";
-      case "demote":
-        if (!text)
-          text =
-            chat.sDemote ||
-            this.sdemote ||
-            conn.sdemote ||
-            "@user ```is no longer Admin```";
-        text = text.replace("@user", "@" + participants[0].split("@")[0]);
-        if (chat.detect)
-          this.sendMessage(id, text, {
-            contextInfo: {
-              mentionedJid: this.parseMention(text),
-            },
-          });
-        break;
+      // case 'promote':
+      // text = (chat.sPromote || this.spromote || conn.spromote || '@user ```is now Admin```')
+      // case 'demote':
+      // if (!text) text = (chat.sDemote || this.sdemote || conn.sdemote || '@user ```is no longer Admin```')
+      // text = text.replace('@user', '@' + participants[0].split('@')[0])
+      // if (chat.detect) this.sendMessage(id, { text }, { mentions: [participants[0]] })
+      // break
     }
   },
   async delete({ remoteJid, fromMe, id, participant }) {
@@ -1441,7 +1399,7 @@ global.dfail = (type, m, conn) => {
     admin: "Perintah ini hanya untuk *Admin* grup!",
     botAdmin: "Jadikan bot sebagai *Admin* untuk menggunakan perintah ini!",
     unreg:
-      "Silahkan daftar untuk menggunakan fitur ini dengan cara mengetik:\n\n*.daftar nama.umur*\n\nContoh: *#daftar budi.16*",
+      "Silahkan daftar untuk menggunakan fitur ini dengan cara mengetik:\n\n*#daftar nama.umur*\n\nContoh: *#daftar Mansur.16*",
     restrict: "Fitur ini di *disable*!",
   }[type];
   if (msg) return m.reply(msg);

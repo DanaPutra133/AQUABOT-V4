@@ -1,14 +1,32 @@
-let handler = async (m, { conn }) => {
-    conn.tebakemoji = conn.tebakemoji ? conn.tebakemoji : {}
+const similarity = require('similarity')
+const threshold = 0.72
+
+let handler = m => m
+
+handler.before = async function (m) {
     let id = m.chat
-    if (!(id in conn.tebakemoji)) throw false
-    let json = conn.tebakemoji[id][1]
-    conn.reply(m.chat, '```' + json.jawaban.replace(/[AIUEOaiueo]/ig, '_') + '```', m)
+    if (!m.quoted) return !0
+    this.tebakemoji = this.tebakemoji ? this.tebakemoji : {}
+    if (!(id in this.tebakemoji)) return !0
+    if (m.quoted.id !== this.tebakemoji[id][0].key.id) return !0
+    let json = this.tebakemoji[id][1]
+    let jawaban = json.jawaban.toLowerCase().trim()
+    let teksUser = (m.text || '').toLowerCase().trim()
+    if (!teksUser) return !0
+    if (teksUser === jawaban) {
+        global.db.data.users[m.sender].exp += this.tebakemoji[id][2]
+        m.reply(`*Benar!*\n+${this.tebakemoji[id][2]} Kredit sosial`)
+        clearTimeout(this.tebakemoji[id][3])
+        delete this.tebakemoji[id]
+    } 
+    else if (similarity(teksUser, jawaban) >= threshold) {
+        m.reply(`*Dikit Lagi!*`)
+    } 
+    else {
+        m.reply(`*Salah!*`)
+    }
+    return !0
 }
-handler.command = /^hemo$/i
 
-handler.limit = true
-
+handler.exp = 0
 module.exports = handler
-
-//danaputra133
