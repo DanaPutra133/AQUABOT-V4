@@ -51,8 +51,8 @@ let handler = async (m, { conn, args, text, usedPrefix, command }) => {
   };
 
   };    
-handler.customPrefix = /^brat$/i;
-handler.command = new RegExp();handler.tags = ["sticker"];
+handler.command = handler.help = ["brat"];
+handler.tags = ["sticker"];
 handler.limit = true;
 handler.group = false;
 
