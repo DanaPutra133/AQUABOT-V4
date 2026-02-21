@@ -6,7 +6,7 @@ let handler = async (m, { conn }) => {
     let json = await res.json();
       conn.sendFile(m.chat, json.result.url, 'anime_story.mp4', "*STORY ANIME*", m);
   } catch (e) {
-    throw `*Error:* ${eror}`;
+    throw `*Error:* ${eror}, Kirim error ini dengan !lapor`;
   }
 };
 
@@ -15,3 +15,4 @@ handler.tags = ['downloader'];
 handler.command = /^(storyanime)$/i;
 handler.limir = true 
 module.exports = handler;
+  
