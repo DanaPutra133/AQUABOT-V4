@@ -22,8 +22,7 @@ let handler = async (m, { conn, usedPrefix, command }) => {
   }
 }
 
-handler.customPrefix = /^hd$/i;
-handler.command = new RegExp();
+handler.command = handler.help = ["hd", "remini"];
 handler.tags = ["sticker"];
 handler.premium = false;
 handler.limit = false;
