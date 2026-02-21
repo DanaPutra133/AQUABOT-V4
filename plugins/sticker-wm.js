@@ -35,6 +35,7 @@ let handler = async (m, { conn, text, usedPrefix, command}) => {
   }
 }
 
-handler.customPrefix = /^wm$/i;
-handler.command = new RegExp();
+handler.help = ["wm"];
+handler.tags = ["tools"];
+handler.command = /^wm$/i;
 module.exports = handler;

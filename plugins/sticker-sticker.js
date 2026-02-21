@@ -29,6 +29,7 @@ let handler = async (m, { conn, command, usedPrefix }) => {
   }
 }
 
-handler.customPrefix = /^s$/i;
-handler.command = new RegExp();
+handler.help = ["s"];
+handler.tags = ["tools"];
+handler.command = /^s$/i;
 module.exports = handler;

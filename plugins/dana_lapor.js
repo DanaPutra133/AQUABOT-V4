@@ -7,18 +7,18 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         if (text.length > 100) throw `teks terlalu panjang, maksimal 100 karakter!`
         let img = await q.download();
         let teks = `*PESAN ERROR!*\n\nDari : *@${m.sender.split`@`[0]}*\n\nPESAN : ${text}\n`;
-        conn.sendMessage('120363216901617825@g.us', {
+        conn.sendMessage(global.groupLapor,{
             image: img,
             caption: teks,
             contextInfo: {
                 mentionedJid: [
                     m.sender,
-                    '6281289694906@s.whatsapp.net',
+                    ...global.owner.map(v => v + "@s.whatsapp.net")
                 ]
             }
         });
 
-        m.reply(`Pesan terkirim ke owner!\n\n mohon tungu ya :D`);
+        m.reply(`Pesan terkirim ke owner!\n\n mohon tunggu ya :D`);
     } else {
         m.reply(`*Reply atau Kirim gambar screenshot error nya dengan caption* \`${usedPrefix}fitur, error nya apa\``);
     }
