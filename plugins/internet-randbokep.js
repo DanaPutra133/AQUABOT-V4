@@ -36,7 +36,7 @@ handler.tags = ["internet"];
 handler.premium = true;
 handler.nsfw = true;
 handler.limit = 500;
-
+handler.nsfw = true;
 module.exports = handler;
 
 function getRandomResult(data) {

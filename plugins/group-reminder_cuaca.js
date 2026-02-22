@@ -5,7 +5,7 @@ let location = 'Jakarta';
 
 async function getWeatherInfo() {
     try {
-        const url = `https://api.danafxc.my.id/api/proxy/features/cuaca?kota=${encodeURIComponent(location)}&apikey=aquaakukin1234`;
+        const url = `https://api.danafxc.my.id/api/proxy/features/cuaca?kota=${encodeURIComponent(location)}&apikey=${dana}`;
         const response = await axios.get(url);
         const res = response.data.data;
 
@@ -24,7 +24,6 @@ async function getWeatherInfo() {
             humidity: res.kelembapan,
             windSpeed: res.angin,
         };
-        
 
         console.log(`
         Lokasi: ${weatherInfo.location}
