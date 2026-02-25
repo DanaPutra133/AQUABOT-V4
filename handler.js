@@ -961,16 +961,9 @@ module.exports = {
             ? conn.getJid(m.sender)?.replace(/[^0-9]/g, "") + "@s.whatsapp.net"
             : m.sender.replace(/[^0-9]/g, "") + "@s.whatsapp.net",
         );
-      let isOwner = isROwner || m.fromMe;
-      let isMods =
-        isOwner ||
-        global.mods
-          .map((v) => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net")
-          .includes(m.sender);
-      let isPrems =
-        isROwner ||
-        db.data.users[m.sender].premiumTime > 0 ||
-        db.data.users[m.sender].premium;
+      let isOwner = isROwner || m.fromMe
+            let isMods = isOwner || global.mods.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
+            let isPrems = isROwner || (db.data.users[m.sender].premiumTime > 0 || db.data.users[m.sender].premium)
       const groupMetadata =
         (m.isGroup
           ? (conn.chats[m.chat] || {}).metadata ||
