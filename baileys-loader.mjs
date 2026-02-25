@@ -14,6 +14,12 @@ export const loadBaileys = async () => {
         fetchLatestBaileysVersion: baileys.fetchLatestBaileysVersion,
         proto: baileys.proto,
         Browsers: baileys.Browsers,
-        makeWASocket: baileys.default || baileys.makeWASocket
+        makeWASocket: baileys.default || baileys.makeWASocket,
+        makeWALegacySocket: baileys.makeWALegacySocket,
+        extractMessageContent: baileys.extractMessageContent,
+        getBinaryNodeChild: baileys.getBinaryNodeChild,
+        areJidsSameUser: baileys.areJidsSameUser,
+        WAMessageStubType: baileys.WAMessageStubType,
+        WA_DEFAULT_EPHEMERAL: baileys.WA_DEFAULT_EPHEMERAL
     };
 };
