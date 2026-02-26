@@ -11,13 +11,11 @@ async function getGempaInfo() {
         const res = response.data.data; // Access the 'data' object directly
 
         if (!res) {
-            console.log('Data gempa tidak tersedia');
             return;
         }
 
         // Compare using DateTime for more robust checking
         if (lastGempaData && lastGempaData.DateTime === res.DateTime) {
-            console.log('Data gempa belum berubah, tidak ada pengingat.');
             return;
         }
 

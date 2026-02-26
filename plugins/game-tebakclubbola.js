@@ -11,7 +11,7 @@ let handler = async (m, { conn, usedPrefix }) => {
 
   let json
   try {
-    json = await (await fetch(`https://api.danafxc.my.id/api/proxy/games/games?q=tebakclubbola&apikey=${dana}`)).json()
+    json = await (await fetch(`https://api.danafxc.my.id/api/proxy/games?q=tebakclubbola&apikey=${dana}`)).json()
   } catch (e) {
     console.error(e)
     throw "Gagal mengambil data dari API, coba lagi nanti."

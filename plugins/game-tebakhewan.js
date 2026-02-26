@@ -24,7 +24,7 @@ let handler = async (m, { conn, usedPrefix }) => {
 ≡ _GAME TEBAK HEWAN
 
 ┌─⊷ *SOAL*
-▢ Deskripsi Anime: *${json.deskripsi}*
+▢ Deskripsi HEWAN: *${json.deskripsi}*
 ▢ Clue: *${json.clue}*
 ▢ Timeout *${(timeout / 1000).toFixed(2)} detik*
 ▢ Bonus: ${poin} money
@@ -32,7 +32,7 @@ let handler = async (m, { conn, usedPrefix }) => {
 ▢ *REPLAY* pesan ini untuk\nmenjawab
 └──────────────
 
-    `.trim()
+    `.trim();
   conn.tebakhewan[id] = [
     await conn.sendMessage(m.chat, { image: { url: json.img }, caption: caption}, { quoted: m }),
     json, poin,
