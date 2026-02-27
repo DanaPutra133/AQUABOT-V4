@@ -8,7 +8,7 @@ let handler = async (m, { conn, command }) => {
         anu += res.bucin;
     } else if (command === 'katailham') {
         const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=kata_ilham&apikey=${dana}`)).json();
-        anu += res.hasil;
+        anu += res.result;
     } else if (command === 'katadilan') {
         const res = await (await fetch(`https://api.betabotz.eu.org/api/random/katadilan?apikey=${lann}`)).json();
         anu += res.dilan;
@@ -26,25 +26,25 @@ let handler = async (m, { conn, command }) => {
         anu += res.hasl;
     } else if (command === 'jawa') {
         const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=jawa&apikey=${dana}`)).json();
-        anu += res.quotes;
+        anu += res.result;
     } else if (command === 'quotes') {
         const res = await (await fetch(`https://api.betabotz.eu.org/api/random/quotes?apikey=${lann}`)).json();
         anu += res.quotes;
     } else if (command === 'sunda') {
         const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=sunda&apikey=${dana}`)).json();
-        anu += res.hasl;
+        anu += res.result;
     } else if (command === 'batak') {
         const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=batak&apikey=${dana}`)).json();
-        anu += res.hasl;
+        anu += res.result;
     } else if (command === 'aceh') {
         const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=aceh&apikey=${dana}`)).json();
-        anu += res.hasl;
+        anu += res.result;
     } else if (command === 'cina') {
         const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=china&apikey=${dana}`)).json();
-        anu += res.hasl;
+        anu += res.result;
     } else if (command === 'minangkabau') {
         const res = await (await fetch(`https://api.danafxc.my.id/api/proxy/quotes?q=minangkabau&apikey=${dana}`)).json();
-        anu += res.hasl;
+        anu += res.result;
     }
     m.reply(anu);
 };

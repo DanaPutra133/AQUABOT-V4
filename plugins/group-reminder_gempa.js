@@ -16,7 +16,7 @@ async function getGempaInfo() {
 
         // Compare using DateTime for more robust checking
         if (lastGempaData && lastGempaData.DateTime === res.DateTime) {
-            return;
+            return;p
         }
 
         lastGempaData = res;
