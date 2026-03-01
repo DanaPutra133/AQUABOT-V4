@@ -6,26 +6,30 @@ let handler = async (m, { conn, text }) => {
     let username;
     let targetUser;
 
+    // Logic: if reply and text contains '|', split to username|teks, else username = replied user
     if (m.quoted) {
         targetUser = m.quoted.sender;
-        textForQuote = m.quoted.text;
-
-        if (text) {
-            username = text; 
+        if (text && text.includes('|')) {
+            let [nameInput, ...msgArr] = text.split('|');
+            username = nameInput.trim();
+            textForQuote = msgArr.join('|').trim();
+            if (!textForQuote) textForQuote = m.quoted.text;
         } else {
-            let potentialName = m.quoted.pushName || conn.getName(targetUser);
-            if (/^[\s\d+-]+$/.test(potentialName)) {
-                 username = targetUser.split('@')[0];
-            } else {
-                username = potentialName;
-            }
+            username = m.quoted.pushName || await conn.getName(targetUser);
+            textForQuote = text ? text : m.quoted.text;
         }
     } else {
         targetUser = m.sender;
-        textForQuote = text;
-                username = m.name; 
+        if (text && text.includes('|')) {
+            let [nameInput, ...msgArr] = text.split('|');
+            username = nameInput.trim();
+            textForQuote = msgArr.join('|').trim();
+        } else {
+            username = m.name;
+            textForQuote = text;
+        }
     }
-   
+
     if (!textForQuote) {
         throw "Teks untuk quote tidak ditemukan! Reply pesan berisi teks atau ketik teks setelah command.";
     }
@@ -34,26 +38,15 @@ let handler = async (m, { conn, text }) => {
 
     try {
         m.reply('Sedang membuat stiker quote...');
-        let targetUser;
-        let username;
-        
-        if (m.quoted) {
-            targetUser = m.quoted.sender;
-            username = conn.getName(targetUser); 
-        } else {
-            targetUser = m.sender;
-            username = conn.getName(targetUser); 
-        }
-        
         const avatar = await conn.profilePictureUrl(targetUser, 'image').catch(_ => 'https://telegra.ph/file/320b066dc81928b782c7b.png');
-                const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/qc?apikey=${dana}&text=${encodeURIComponent(text)}&username=${encodeURIComponent(username)}&avatar=${encodeURIComponent(avatar)}`;
+        const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/qc?apikey=${dana}&text=${encodeURIComponent(textForQuote)}&username=${encodeURIComponent(username)}&avatar=${encodeURIComponent(avatar)}`;
         const response = await axios.post(apiUrl, null, {
             responseType: 'arraybuffer'
         });
 
         const imageBuffer = response.data;
         let stiker = await sticker5(imageBuffer, false, global.packname, global.author);
-        
+
         if (stiker) {
             return conn.sendFile(m.chat, stiker, 'Quotely.webp', '', m);
         } else {

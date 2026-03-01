@@ -48,7 +48,10 @@ const apiColor = randomColor[Math.floor(Math.random() * randomColor.length)];
     if (stiker) return conn.sendFile(m.chat, stiker, 'Quotly.webp', '', m)
 }
 
-handler.customPrefix = /^qc$/i;
-handler.command = new RegExp();
+handler.help = ["qc <teks> (sambil reply)"];
+handler.tags = ["sticker"];
+handler.limit = true;
+handler.command = /^(qc|quotely)$/i; 
+
 
 module.exports = handler
