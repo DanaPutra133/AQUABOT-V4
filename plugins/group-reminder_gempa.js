@@ -84,7 +84,6 @@ async function sendReminderToGroup(chatId, text, imageUrl) {
 
 function startGempaReminder() {
     setInterval(() => {
-        console.log('Mengecek data gempa terbaru...');
         getGempaInfo();
     }, 60 * 1000); // Checks every 1 minute
 }
