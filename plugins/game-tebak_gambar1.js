@@ -1,6 +1,6 @@
 let timeout = 100000
 let poin = 10000
-let src
+let fetch = require("node-fetch");
 let handler = async (m, { conn, usedPrefix }) => {
   conn.tebakgambar = conn.tebakgambar ? conn.tebakgambar : {}
   let id = m.chat
@@ -8,7 +8,7 @@ let handler = async (m, { conn, usedPrefix }) => {
     conn.reply(m.chat, 'Masih ada soal belum terjawab di chat ini', conn.tebakgambar[id][0])
     throw false
   }
-  if (!src) src = await (await fetch(`https://api.betabotz.eu.org/api/game/tebakgambar?apikey=${lann}`)).json()
+  let src = await (await fetch(`https://api.betabotz.eu.org/api/game/tebakgambar?apikey=${lann}`)).json()
   let json = src
   if (!json) throw "Terjadi kesalahan, ulangi lagi perintah!"
   let caption = `
@@ -22,7 +22,7 @@ let handler = async (m, { conn, usedPrefix }) => {
 ▢ *REPLAY* pesan ini untuk\nmenjawab
 └──────────────
 
-    `.trim()
+    `.trim();
   conn.tebakgambar[id] = [
     await conn.sendMessage(m.chat, { image: { url: json.img }, caption: caption}, { quoted: m }),
     json, poin,
