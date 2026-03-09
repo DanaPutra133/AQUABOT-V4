@@ -9,7 +9,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         const jsonData = response.data;
         if (jsonData && jsonData.status && jsonData.urls && jsonData.urls.length > 0) {
             const imageUrl = jsonData.urls[0];
-                        conn.sendFile(m.chat, imageUrl, 'random.jpg', `Ini gambar random *${kategori}* untukmu!`, m);
+                        conn.sendMessage(m.chat, imageUrl, 'random.jpg', `Ini gambar random *${kategori}* untukmu!`, m);
         } else {
             throw new Error('API tidak mengembalikan URL gambar yang valid.');
         }
