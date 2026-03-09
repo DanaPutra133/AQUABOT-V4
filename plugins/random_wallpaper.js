@@ -4,7 +4,7 @@ const axios = require('axios');
 let handler = async (m, { conn }) => {
     try {
         m.reply("⏳ Sedang mencari gambar random wallpaper...");
-        const apiUrl = `https://api.danafxc.my.id/api/proxy/pict/gambar?q=wallpaper&apikey=${dana}`;
+        const apiUrl = `https://api.danafxc.my.id/api/proxy/pict/gambar?q=profilepict&apikey=${dana}`;
         const response = await axios.get(apiUrl);
         const jsonData = response.data;
         if (jsonData && jsonData.status && jsonData.urls && jsonData.urls.length > 0) {
