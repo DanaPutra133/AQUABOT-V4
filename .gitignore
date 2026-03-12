@@ -3,3 +3,4 @@ package-lock.json
 database.json
 sessions
 .env
+plugins/info-listgroup.json
