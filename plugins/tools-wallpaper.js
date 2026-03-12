@@ -16,7 +16,7 @@ let handler = async (m, { conn }) => {
 
 handler.tags = ['image', 'internet'];
 handler.help = ['wallpaper']; 
-handler.command = /^(wallpaper)$/i; 
+handler.command = /^(wallpaper2)$/i; 
 handler.limit = true;
 
 module.exports = handler;
