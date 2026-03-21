@@ -63,8 +63,8 @@ let fetch = require('node-fetch')
 let numberowner = global.numberowner
 
 let handler = async (m, { conn, command }) => {
-    let buffer = await fetch(`https://i.supa.codes/Sr8Rh0`).then(res => res.buffer())
-    conn.sendFile(m.chat, buffer, 'hasil.jpg', `*Jika telah melakukan pembayaran silahkan kirimkan bukti pembayaran ke WhatsApp ${numberowner}.*
+    let buffer = await fetch(`https://uploader.danafxc.my.id/images/da172e75-95ef-470b-92e1-e9c8b106734b.jpeg`).then(res => res.buffer())
+    conn.sendFile(m.chat, buffer, 'hasil.jpg', `*kamu bisa chat owner untuk konfirmasi/ bertanya seputar bot di nomor berikut: ${numberowner}.*
         
 🌟 PRICE LIST BOT WHATSAPP 🌟
 📲 Layanan profesional dengan update gratis, service 24/7, dan maintenance gratis
@@ -102,17 +102,6 @@ BENEFIT
 ✅ Service 24/7
 ✅ Maintenance Gratis
 ✅ Custom fitur 
-✅ Store fitur 
-✅ Custom apikey API 
-
-💡 4. Paket 1 Tahun (+ Garansi 6 Bulan)
-💰 Harga:
-	⁠Source Code dari Saya: Rp75.000
-✨ Fitur:
-✅ Update Gratis
-✅ Service 24/7
-✅ Maintenance Gratis
-✅ Custom fitur
 ✅ Store fitur 
 ✅ Custom apikey API 
 
