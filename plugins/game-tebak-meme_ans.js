@@ -1,4 +1,3 @@
-let poin = 10000;
 const similarity = require("similarity");
 const threshold = 0.72;
 
@@ -15,9 +14,8 @@ handler.before = async function (m) {
   let teksUser = (m.text || "").toLowerCase().trim();
   if (!teksUser) return !0;
   if (teksUser === Jawaban) {
-    global.db.data.users[m.sender].exp += this.tebakmeme[id][2];
-    let caption3 = `*Benar!*\n+${this.tebakmeme[id][2]} money`;
-    users.money += poin;
+    global.db.data.users[m.sender].money += this.tebakmeme[id][2];
+    let caption3 = `*Benar!*\n+${this.tebakmeme[id][2]} Kredit sosial`;
     conn.sendMessage(m.chat,  { image: { url: json.Img }, caption: caption3},{ quoted: m })
     clearTimeout(this.tebakmeme[id][3]);
     delete this.tebakmeme[id];

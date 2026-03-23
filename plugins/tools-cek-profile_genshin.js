@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) throw `Masukkan UID Genshin Impact yang ingin Anda cari.\n\n*Contoh:*\n${usedPrefix + command} 816373749`;
+    if (!text) throw `Masukkan UID Genshin Impact yang ingin Anda cari.\n\n*Contoh:*\n${usedPrefix + command} 843829161`;
 
     if (!/^\d{9}$/.test(text)) {
         throw `Format UID tidak valid. UID harus terdiri dari 9 digit angka.`;
@@ -30,22 +30,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
 - 🏆 *Achievement:* ${player.finishAchievementNum || '0'}
 - 🌀 *Spiral Abyss:* Floor ${player.towerFloorIndex || '0'} - Chamber ${player.towerLevelIndex || '0'}
-
-- 🌟 *Karakter di Profil:* ${player.showAvatarInfoList ? player.showAvatarInfoList.length : '0'} Karakter
 `;
-
-        // Menambahkan daftar semua karakter yang ditampilkan di profil
-        if (player.showAvatarInfoList && player.showAvatarInfoList.length > 0) {
-            replyText += `\n*Karakter Showcase:*\n`;
-            
-            // --- PERUBAHAN DI SINI ---
-            // Menghapus .slice(0, 5) untuk menampilkan semua karakter
-            player.showAvatarInfoList.forEach(avatar => {
-                replyText += `- Level ${avatar.level} (Avatar ID: ${avatar.avatarId})\n`;
-            });
-            // --- AKHIR PERUBAHAN ---
-        }
-
         m.reply(replyText.trim());
 
     } catch (error) {
