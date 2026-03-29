@@ -21,3 +21,41 @@ handler.before = async function (m, { user, isBotAdmin, isAdmin }) {
 }
 
 module.exports = handler
+
+
+// di bawah kode jika user send link grub lain maka pesan nya akan di hapus
+/*
+
+let handler = m => m
+
+let linkRegex = /chat.whatsapp.com\/([0-9A-Za-z]{20,24})/i
+handler.before = async function (m, { user, isBotAdmin, isAdmin }) {
+  if ((m.isBaileys && m.fromMe) || m.fromMe || !m.isGroup) return true
+  let chat = global.db.data.chats[m.chat]
+  let isGroupLink = linkRegex.exec(m.text)
+
+  if (chat.antiLink && isGroupLink) {
+    await m.reply(`*「 ANTI LINK 」*\n\nDetected *${await conn.getName(m.sender)}* kamu terdeteksi mengirim link grub lain! Pesan akan dihapus.`)
+    try {
+      let res = m.message.extendedTextMessage?.contextInfo;
+      let deleteMsg = { delete: { remoteJid: m.chat, fromMe: false } };
+      if (res && res.participant) {
+        deleteMsg.delete.id = res.stanzaId;
+        deleteMsg.delete.participant = res.participant;
+      } else if (res && res.stanzaId) {
+        deleteMsg.delete.id = res.stanzaId;
+      } else {
+        deleteMsg.delete.id = m.key.id;
+        deleteMsg.delete.participant = m.key.participant || m.sender;
+      }
+      await conn.sendMessage(m.chat, deleteMsg);
+    } catch {
+      await conn.sendMessage(m.chat, { delete: m.key });
+    }
+  }
+  return true
+}
+
+module.exports = handler
+
+*/
