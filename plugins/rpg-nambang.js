@@ -7,7 +7,7 @@ let handler = async (m, { conn }) => {
   
   if (new Date - global.db.data.users[m.sender].lastnambang > 300000) {
       user.lastnambang = new Date * 1
-
+   /*
       let randomaku1 = `${Math.floor(Math.random() * 10)}`
       let randomaku2 = `${Math.floor(Math.random() * 10)}`
       let randomaku4 = `${Math.floor(Math.random() * 5)}`
@@ -45,7 +45,7 @@ let handler = async (m, { conn }) => {
           ➕ ✨ diamond = [ ${zero3} ] 		 
           ${wm}`
       ]
-
+*/
       let { key } = await conn.sendMessage(m.chat, {text: 'mencari tempat nambang.....'})
       for (let i = 0; i < arr.length; i++) {
           await new Promise(resolve => setTimeout(resolve, 10000));
