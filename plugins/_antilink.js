@@ -24,38 +24,21 @@ module.exports = handler
 
 
 // di bawah kode jika user send link grub lain maka pesan nya akan di hapus
-/*
+/* let handler = m => m
 
-let handler = m => m
-
-let linkRegex = /chat.whatsapp.com\/([0-9A-Za-z]{20,24})/i
-handler.before = async function (m, { user, isBotAdmin, isAdmin }) {
-  if ((m.isBaileys && m.fromMe) || m.fromMe || !m.isGroup) return true
-  let chat = global.db.data.chats[m.chat]
-  let isGroupLink = linkRegex.exec(m.text)
+handler.before = async function (m, { isAdmin, isBotAdmin }) {
+  if (m.isBaileys || m.fromMe || !m.isGroup) return true``
+  let chat = global.db.data.chats[m.chat] 
+  const isGroupLink = /(chat.whatsapp.com\/([0-9A-Za-z]{20,24}))/i.test(m.text)
 
   if (chat.antiLink && isGroupLink) {
-    await m.reply(`*「 ANTI LINK 」*\n\nDetected *${await conn.getName(m.sender)}* kamu terdeteksi mengirim link grub lain! Pesan akan dihapus.`)
-    try {
-      let res = m.message.extendedTextMessage?.contextInfo;
-      let deleteMsg = { delete: { remoteJid: m.chat, fromMe: false } };
-      if (res && res.participant) {
-        deleteMsg.delete.id = res.stanzaId;
-        deleteMsg.delete.participant = res.participant;
-      } else if (res && res.stanzaId) {
-        deleteMsg.delete.id = res.stanzaId;
-      } else {
-        deleteMsg.delete.id = m.key.id;
-        deleteMsg.delete.participant = m.key.participant || m.sender;
-      }
-      await conn.sendMessage(m.chat, deleteMsg);
-    } catch {
-      await conn.sendMessage(m.chat, { delete: m.key });
-    }
+    if (isAdmin) return m.reply('*Eh sorry admin, kamu mah bebas kirim link.*')
+    if (!isBotAdmin) return m.reply('*Bot harus jadi admin supaya bisa hapus link ini!*')
+    await conn.sendMessage(m.chat, { delete: m.key })
+    
   }
+  
   return true
 }
 
-module.exports = handler
-
-*/
+module.exports = handler */
