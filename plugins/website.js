@@ -4,6 +4,7 @@ let krtu = `web`
 m.reply(`
 > https://api.betabotz.eu.org
 > https://tools.betabotz.eu.org
+> https://api.danafxc.my.id
 
 `.trim()) 
 }
