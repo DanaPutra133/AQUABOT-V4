@@ -3,7 +3,7 @@
 handler.before = async function (m, { isAdmin, isBotAdmin }) {
   if (m.isBaileys || m.fromMe || !m.isGroup) return true``
   let chat = global.db.data.chats[m.chat] 
-  const isChLink = /https?:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+/gi.test(m.text)
+  const isChLink = /whatsapp\.com\/channel\/([0-9A-Za-z]+)/i.test(m.text);
 
   if (chat.antilinkch && isChLink) {
     if (isAdmin) return m.reply('*Eh sorry admin, kamu mah bebas kirim link.*')
