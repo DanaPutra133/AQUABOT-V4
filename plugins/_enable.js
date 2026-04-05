@@ -310,14 +310,14 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.rpg = isEnable;
       break;
-    case "antiLinkCh":
+    case "antilinkch":
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
           global.dfail("admin", m, conn);
           throw false;
         }
       }
-      chat.antiLinkCh = isEnable;
+      chat.antilinkch = isEnable;
       break;
     case "autodl":
       if (m.isGroup) {
@@ -333,7 +333,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
         return m.reply(
           `
 List option:
-| antiLinkCh
+| antilinkch
 | autodl
 | autobackup
 | rpg
