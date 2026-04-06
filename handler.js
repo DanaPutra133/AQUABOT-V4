@@ -261,6 +261,7 @@ module.exports = {
           if ((!"Banneduser") in user) user.Banneduser = false;
           if ((!"BannedReason") in user) user.BannedReason = "";
           if (!isNumber(user.warn)) user.warn = 0;
+          if (!isNumber(user.warnLink)) user.warnLink = 0;
           if (!("banned" in user)) user.banned = false;
           if (!isNumber(user.bannedTime)) user.bannedTime = 0;
 
@@ -662,6 +663,7 @@ module.exports = {
             banned: false,
             bannedTime: 0,
             warn: 0,
+            warnLink: 0,
             afk: -1,
             afkReason: "",
             anakkucing: 0,
@@ -865,8 +867,10 @@ module.exports = {
           if (!("autotranslate" in chat)) chat.autotranslate = false;
           if (!("antitagsw" in chat)) chat.antitagsw = false;
           if (!("autoacc" in chat)) chat.autoacc = false;
+          if (!("antiLinkCh" in chat)) chat.antiLinkCh = false;
         } else
           global.db.data.chats[m.chat] = {
+            antiLinkCh: false,
             autoacc: false,
             autotranslate: false,
             notifsholat: false,
