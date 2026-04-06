@@ -261,6 +261,7 @@ module.exports = {
           if ((!"Banneduser") in user) user.Banneduser = false;
           if ((!"BannedReason") in user) user.BannedReason = "";
           if (!isNumber(user.warn)) user.warn = 0;
+          if (!isNumber(user.warnLink)) user.warnLink = 0;
           if (!("banned" in user)) user.banned = false;
           if (!isNumber(user.bannedTime)) user.bannedTime = 0;
 
@@ -658,6 +659,7 @@ module.exports = {
             banned: false,
             bannedTime: 0,
             warn: 0,
+            warnLink: 0,
             afk: -1,
             afkReason: "",
             anakkucing: 0,
