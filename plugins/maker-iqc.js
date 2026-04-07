@@ -25,8 +25,10 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     }
 };
 
-handler.customPrefix = /^iqc$/i;
-handler.command = new RegExp();
-handler.command = /^(iqc|imagequote)$/i;
 
+handler.help = ["iqc <teks> (sambil reply)"];
+handler.tags = ["sticker"];
+handler.limit = false;
+handler.command = /^(iqc)$/i;
+ 
 module.exports = handler;
