@@ -319,6 +319,15 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.antilinkch = isEnable;
       break;
+    case "antitagsw":
+      if (m.isGroup) {
+        if (!(isAdmin || isOwner)) {
+          global.dfail("admin", m, conn);
+          throw false;
+        }
+      }
+      chat.antitagsw = isEnable;
+      break;
     case "autodl":
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
@@ -334,6 +343,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
           `
 List option:
 | antilinkch
+| antitagsw
 | autodl
 | autobackup
 | rpg

@@ -868,8 +868,10 @@ module.exports = {
           if (!("antitagsw" in chat)) chat.antitagsw = false;
           if (!("autoacc" in chat)) chat.autoacc = false;
           if (!("antiLinkCh" in chat)) chat.antiLinkCh = false;
+          if (!("antitagsw" in chat)) chat.antitagsw = false;
         } else
           global.db.data.chats[m.chat] = {
+            antitagsw: false,
             antiLinkCh: false,
             autoacc: false,
             autotranslate: false,
