@@ -1,4 +1,5 @@
-const { trimUndefined } = require('@adiwajshing/baileys');
+const { loadBaileys } = require('../baileys-loader.mjs')
+let baileys
 let fetch = require('node-fetch')
 const axios = require('axios');
 
@@ -324,26 +325,20 @@ async function downloadInstagram(link, m) {
 
 // DOWNLOADER FACEBOOK 
 async function downloadFacebook(link, m) {
-    try {
-        if (global.db.data.users[m.sender].limit > 0) {
-            const response = await fetch(`https://api.betabotz.eu.org/api/download/fbdown?url=${link}&apikey=${lann}`);
-            const js = await response.json();
-
-            if (!js.result || !js.result[0] || !js.result[0]._url) {
-                throw new Error('Link tidak valid atau video tidak ditemukan.');
-            }
-
-            global.db.data.users[m.sender].limit -= 1;
-            conn.sendFile(m.chat, js.result[0]._url, 'fb.mp4', '', m);
-        } else {
-            conn.reply(m.chat, 'limit kamu habis!', m);
-        }
-    } catch (error) {
-        console.error(error);
-        conn.reply(m.chat, `_*Terjadi kesalahan!*_`, m);
-    }
+	try {
+		if (global.db.data.users[m.sender].limit > 0) {
+			const response = await fetch(`https://api.betabotz.eu.org/api/download/fbdown?url=${link}&apikey=${lann}`);
+			var js = await response.json()
+			global.db.data.users[m.sender].limit -= 1
+			conn.sendFile(m.chat, js.result[1]._url, 'fb.mp4', '', m);
+		}
+		else {
+			conn.reply(m.chat, 'limit kamu habis!', m);
+		}
+	} catch (error) {
+		console.error(error);
+	}
 }
-
 // DOWNLOADER SPOTIFY
 async function _spotify(link, m) {
 	try {
