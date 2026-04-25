@@ -237,6 +237,15 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.antiSticker = isEnable;
       break;
+    case "antistickerlottie":
+      if (m.isGroup) {
+        if (!(isAdmin || isOwner)) {
+          global.dfail("admin", m, conn);
+          throw false;
+        }
+      }
+      chat.antiStickerLottie = isEnable;
+      break;
     case "viewonce":
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
@@ -362,6 +371,7 @@ List option:
 | autosticker
 | autolevelup
 | antisticker
+| antiStickerLottie
 | autoacc
 | detect
 | viewonce
