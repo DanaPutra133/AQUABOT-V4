@@ -5,11 +5,11 @@ const { promisify } = require('util');
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) {
-    throw `Format salah!\n\nContoh penggunaan:\n*${usedPrefix + command} Nama Lagu | Nama Artis | 3:45 | 1:20*\n\n_(Jangan lupa sambil reply/balas gambar untuk covernya)_`;
+    throw `Format salah!\n\nContoh penggunaan:\n*${usedPrefix + command} top | Nama Lagu | Nama Artis | 3:45 | 1:20*\n\n_(Jangan lupa sambil reply/balas gambar untuk covernya)_`;
   }
 
-  let [judul, artis, durasi, WaktuSekarang] = text.split('|').map(v => v.trim());
-  if (!judul || !artis || !durasi || !WaktuSekarang) {
+  let [top, judul, artis, durasi, WaktuSekarang] = text.split('|').map(v => v.trim());
+  if (!top || !judul || !artis || !durasi || !WaktuSekarang) {
     throw `Argumen tidak lengkap!\nPastikan ada pemisah garis vertikal (|).\nContoh: ${usedPrefix + command} C.H.R.I.S.Y.E | Diskoria | 3:45 | 1:20`;
   }
 
@@ -67,6 +67,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       {
         params: {
           apikey: dana,
+          top: top,
           judul: judul,
           artis: artis,
           durasi: durasi,
