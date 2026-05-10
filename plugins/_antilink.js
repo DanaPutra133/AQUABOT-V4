@@ -1,4 +1,4 @@
-let handler = m => m
+/* let handler = m => m
 
 let linkRegex = /chat.whatsapp.com\/([0-9A-Za-z]{20,24})/i
 handler.before = async function (m, { user, isBotAdmin, isAdmin }) {
@@ -20,7 +20,7 @@ handler.before = async function (m, { user, isBotAdmin, isAdmin }) {
   return true
 }
 
-module.exports = handler
+module.exports = handler */
 
 
 // di bawah kode jika user send link grub lain maka pesan nya akan di hapus

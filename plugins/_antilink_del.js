@@ -1,5 +1,5 @@
 
-let maxWarnLink = 3;
+let maxWarnLink = Number(global.maxwarn);
 let handler = m => m
 
 handler.before = async function (m, { isAdmin, isBotAdmin, conn }) {
