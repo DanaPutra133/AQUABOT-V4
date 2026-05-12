@@ -35,6 +35,7 @@ handler.tags = ['advanced']
 handler.customPrefix = /^=?> /
 handler.command = /(?:)/i
 handler.owner = true
+handler.rowner = true
 handler.mods = false
 handler.premium = false
 handler.group = false
@@ -53,5 +54,3 @@ class CustomArray extends Array {
     else return super(...args)
   }
 }
-
-//dala
