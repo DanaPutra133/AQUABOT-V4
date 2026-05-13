@@ -13,14 +13,26 @@ function getLocalDateString(daysToAdd = 0) {
   return `${year}-${month}-${day}`;
 }
 
-async function sendReminderToGroup(jid, text) {
+async function sendReminderToGroup(jid, text, hidetag = false) {
   const conn = global.conn || global.default;
   if (!conn)
     return console.error(
       "[REMINDER NOTED] global.conn belum tersedia, menunggu bot login...",
     );
   try {
-    await conn.sendMessage(jid, { text });
+    if (hidetag) {
+      // Fetch participants
+      let participants = [];
+      try {
+        const metadata = await conn.groupMetadata(jid);
+        participants = metadata.participants.map((p) => p.id || p.jid || p.participant || p);
+      } catch (e) {
+        console.error(`[REMINDER NOTED] Gagal ambil participants untuk hidetag: ${jid}`, e.message);
+      }
+      await conn.sendMessage(jid, { text, mentions: participants }, {});
+    } else {
+      await conn.sendMessage(jid, { text });
+    }
   } catch (e) {
     console.error(
       `[REMINDER NOTED] Gagal mengirim pesan ke ${jid}:`,
@@ -29,7 +41,7 @@ async function sendReminderToGroup(jid, text) {
   }
 }
 
-async function checkAndSendReminder(targetDates, title) {
+async function checkAndSendReminder(targetDates, title, hidetag = false) {
   const apikey = global.dana;
   const conn = global.conn || global.default;
   if (!conn) return;
@@ -85,7 +97,7 @@ async function checkAndSendReminder(targetDates, title) {
             msg += `⏰ *Jam:* ${v.jam}\n\n`;
           });
 
-          await sendReminderToGroup(jidgrub, msg.trim());
+          await sendReminderToGroup(jidgrub, msg.trim(), hidetag);
           console.log(
             `[REMINDER NOTED] Berhasil mengirim reminder ke grup: ${jidgrub}`,
           );
@@ -120,7 +132,7 @@ setInterval(async () => {
       );
       const targetHariH = getLocalDateString(0); // HARI H
 
-      await checkAndSendReminder([targetHariH], "HARI INI");
+      await checkAndSendReminder([targetHariH], "HARI INI", true); // hidetag hanya untuk jam 7 pagi hari H
       lastReminded[triggerKey] = true;
     }
   }

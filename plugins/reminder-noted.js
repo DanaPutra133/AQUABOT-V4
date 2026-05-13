@@ -127,7 +127,7 @@ _Contoh:_ ${usedPrefix}${command} noted 13:20|2026-04-30|Meeting project baru`)
 
 handler.help = ['reminder']
 handler.tags = ['group']
-handler.command = /^reminder$/i
+handler.command = ["reminder", "noted"]; 
 handler.group = true
 
 module.exports = handler

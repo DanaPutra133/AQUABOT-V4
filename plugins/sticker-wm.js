@@ -1,5 +1,8 @@
 const uploadFile = require('../lib/uploadFile')
-const uploadImage = require('../lib/uploadImage')
+const axios = require('axios');
+const FormData = require('form-data');
+const { fromBuffer } = require('file-type');
+const { promisify } = require('util');
 let fetch = require("node-fetch")
 
 let handler = async (m, { conn, text, usedPrefix, command}) => {
@@ -13,7 +16,39 @@ let handler = async (m, { conn, text, usedPrefix, command}) => {
     let img = await q.download()
     if (!img) throw `Balas gambar/video/stiker dengan perintah ${usedPrefix} ${command}`
 
-    let media = await uploadImage(img, "true")
+    let fileSizeLimit = 5 * 1024 * 1024; 
+    if (img.length > fileSizeLimit) {
+      throw 'Ukuran media melebihi batas 5MB';
+    }
+
+    const { ext } = await fromBuffer(img) || {};
+    const form = new FormData();
+    form.append('image', img, {
+      filename: `upload.${ext}`,
+      contentType: mime,
+    });
+
+    const getLength = promisify(form.getLength).bind(form);
+    const contentLength = await getLength();
+
+    const response = await axios.post(
+      `https://api.danafxc.my.id/api/proxy/features/upload?apikey=${dana}`,
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          'Content-Length': contentLength,
+        },
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+      }
+    );
+
+    const result = response.data;
+    if (!result || !result.url) {
+      throw new Error(`Gagal mengunggah file. Respons API tidak valid: ${JSON.stringify(result)}`);
+    }
+    let media = result.url;
     if (q.isAnimated === true) {
       let res = await fetch(`https://api.betabotz.eu.org/api/tools/webp2mp4?url=${media}&apikey=${lann}`)
       let json = await res.json()
