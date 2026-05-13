@@ -368,7 +368,7 @@ module.exports = {
           if (!isNumber(user.lastrampok)) user.lastrampok = 0;
           if (!("registered" in user)) user.registered = false;
           if (!user.registered) {
-          if (!('name' in user)) user.name = await this.getName(m.sender)
+            if (!("name" in user)) user.name = await this.getName(m.sender);
 
             if (!isNumber(user.apel)) user.apel = 0;
             if (!isNumber(user.anggur)) user.anggur = 0;
@@ -832,7 +832,6 @@ module.exports = {
           if (!("antiLink" in chat)) chat.antiLink = false;
           if (!("antiLinknokick" in chat)) chat.antiLinknokick = false;
           if (!("antiSticker" in chat)) chat.antiSticker = false;
-          if (!("antiStickerLottie" in chat)) chat.antiStickerLottie = false;
           if (!("antiStickernokick" in chat)) chat.antiStickernokick = false;
           if (!("viewonce" in chat)) chat.viewonce = false;
           if (!("antiporn" in chat)) chat.antiporn = false;
@@ -898,7 +897,6 @@ module.exports = {
             antiLink: false,
             antiLinknokick: false,
             antiSticker: false,
-            antiStickerLottie: false,
             antiStickernokick: false,
             viewonce: false,
             antiToxic: false,
@@ -996,23 +994,41 @@ module.exports = {
 
       //let isROwner = [global.conn.user.jid, ...global.owner].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
       let isROwner = [global.conn.user.jid, ...global.owner]
-              .map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net')
-              .includes(
-                m.sender.endsWith('@lid') 
-                  ? conn.getJid(m.sender)?.replace(/[^0-9]/g, '') + '@s.whatsapp.net' 
-                  : m.sender.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
-              );
-      let isOwner = isROwner || m.fromMe
-            let isMods = isOwner || global.mods.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
-            let isPrems = isROwner || (db.data.users[m.sender].premiumTime > 0 || db.data.users[m.sender].premium)
+        .map((v) => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net")
+        .includes(
+          m.sender.endsWith("@lid")
+            ? conn.getJid(m.sender)?.replace(/[^0-9]/g, "") + "@s.whatsapp.net"
+            : m.sender.replace(/[^0-9]/g, "") + "@s.whatsapp.net",
+        );
+      let isOwner = isROwner || m.fromMe;
+      let isMods =
+        isOwner ||
+        global.mods
+          .map((v) => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net")
+          .includes(m.sender);
+      let isPrems =
+        isROwner ||
+        db.data.users[m.sender].premiumTime > 0 ||
+        db.data.users[m.sender].premium;
 
-            const groupMetadata = (m.isGroup ? (conn.chats[m.chat] || {}).metadata || (await this.groupMetadata(m.chat).catch((_) => null)) : {}) || {};
-            const participants = (m.isGroup ? groupMetadata.participants : []) || [];
-            const user = participants.find((u) => (u.jid || u.phoneNumber || u.id) === m.sender) || {};
-            const bot  = participants.find((u) => (u.jid || u.phoneNumber || u.id) === this.user.jid) || {};
-            const isRAdmin    = user?.admin === 'superadmin' || false;
-            const isAdmin     = isRAdmin || user?.admin === 'admin' || false;
-            const isBotAdmin  = bot?.admin === 'admin' || bot?.admin === 'superadmin' || false;
+      const groupMetadata =
+        (m.isGroup
+          ? (conn.chats[m.chat] || {}).metadata ||
+            (await this.groupMetadata(m.chat).catch((_) => null))
+          : {}) || {};
+      const participants = (m.isGroup ? groupMetadata.participants : []) || [];
+      const user =
+        participants.find(
+          (u) => (u.jid || u.phoneNumber || u.id) === m.sender,
+        ) || {};
+      const bot =
+        participants.find(
+          (u) => (u.jid || u.phoneNumber || u.id) === this.user.jid,
+        ) || {};
+      const isRAdmin = user?.admin === "superadmin" || false;
+      const isAdmin = isRAdmin || user?.admin === "admin" || false;
+      const isBotAdmin =
+        bot?.admin === "admin" || bot?.admin === "superadmin" || false;
       for (let name in global.plugins) {
         let plugin = global.plugins[name];
         if (!plugin) continue;
@@ -1336,12 +1352,14 @@ module.exports = {
 
             const isAdd = ["add", "invite", "invite_v4"].includes(action);
 
-            text = (isAdd
-                        ? (chat.sWelcome || this.welcome || 'Selamat datang @user 👋')
-                        : (chat.sBye || this.bye || 'Selamat tinggal @user 👋'))
-                        .replace('@subject', groupMetadata.subject || 'Group')
-                        .replace('@desc', groupMetadata.desc?.toString() || '')
-                        .replace('@user', '@' + jid.split('@')[0])
+            text = (
+              isAdd
+                ? chat.sWelcome || this.welcome || "Selamat datang @user 👋"
+                : chat.sBye || this.bye || "Selamat tinggal @user 👋"
+            )
+              .replace("@subject", groupMetadata.subject || "Group")
+              .replace("@desc", groupMetadata.desc?.toString() || "")
+              .replace("@user", "@" + jid.split("@")[0]);
 
             await this.sendMessage(id, {
               text,
