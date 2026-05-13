@@ -1,8 +1,11 @@
-const { generateWAMessageContent, generateWAMessageFromContent, proto } = require('@adiwajshing/baileys');
+const { loadBaileys } = require('../baileys-loader.mjs')
+let baileys
 
 const qrisUrl = 'https://files.catbox.moe/spv9di.jpg'; 
 
 const handler = async (message, { conn }) => {
+  if (!baileys) baileys = await loadBaileys();
+  const { generateWAMessageContent, generateWAMessageFromContent, proto } = baileys;
     const replyMessage = `Metode Pembayaran:\n\nDana: 081289694906\n\nSilakan lakukan pembayaran dan kirim bukti pembayaran dengan caption ID Transaksi.`;
     await message.reply(replyMessage);
 
@@ -31,4 +34,4 @@ module.exports = handler;
 // no copas code dari luar, logic pakai kepala
 // bebas ubah karena open source
 // danaputra133
-// tutorial pakai ada di: https://youtu.be/sFj3Mh-z1Jk
+// tutorial pakai ada di: https://youtu.be/P7K5ycatYJA
