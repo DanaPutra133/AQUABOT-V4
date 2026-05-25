@@ -16,41 +16,55 @@ let handler = async (m, { conn, args, text, usedPrefix, command }) => {
     : m.quoted && m.quoted.description
     ? m.quoted.description
     : "";
+
   if (!text) throw `Example : ${usedPrefix + command} Lagi Ruwet`;
 
-  let res;
   var error = fs.readFileSync(`./media/sticker/emror.webp`);
+
   try {
-    if (!text) throw "Teksnya mana? Contoh: .brat ini teksnya";
+    let imageBuffer;
+    try {
+      const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/brat?apikey=${dana}&text=${encodeURIComponent(
+        text.substring(0, 151)
+      )}`;
 
-    const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/brat?apikey=${dana}&text=${encodeURIComponent(
-      text.substring(0, 151)
-    )}`;
+      const response = await axios.post(apiUrl, null, {
+        responseType: "arraybuffer",
+      });
 
-    const response = await axios.post(apiUrl, null, {
-      responseType: "arraybuffer",
-    });
-    const imageBuffer = response.data;
+      imageBuffer = response.data;
+    } catch (e) {
+      console.log("API utama gagal, memakai fallback...");
+      const res = `https://api.betabotz.eu.org/api/maker/brat?text=${encodeURIComponent(
+        text.substring(0, 151)
+      )}&apikey=${lann}`;
 
+      const fetchResult = await fetch(res);
+
+      if (!fetchResult.ok) {
+        throw new Error("Fallback API gagal");
+      }
+
+      imageBuffer = await fetchResult.buffer();
+    }
     let stiker = await sticker5(
       imageBuffer,
       null,
-      global.packname,
-      global.author,
+      packname,
+      author,
       ["🎨"]
     );
-
     if (stiker) {
       await conn.sendFile(m.chat, stiker, "sticker.webp", "", m);
     } else {
-      throw "Gagal membuat stiker dari gambar yang diterima.";
+      throw new Error("Pembuatan stiker gagal");
     }
-  } catch (error) {
-    console.error("Error pada command brat:", error);
+  } catch (err) {
+    console.error("Error pada command brat:", err);
     m.reply("Terjadi kesalahan, silakan coba lagi nanti.");
-  };
+  }
+};
 
-  };    
 handler.command = handler.help = ["brat"];
 handler.tags = ["sticker"];
 handler.limit = true;
