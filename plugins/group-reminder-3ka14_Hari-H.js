@@ -1,153 +1,180 @@
-// const axios = require('axios');
-// const { setInterval } = require('timers');
+const axios = require('axios');
+const { setInterval } = require('timers');
 
-// const GROUP_JID = '120363332519403616@g.us';
-// // const GROUP_JID = '120363043100546404@g.us'; //buat uji coba
+let lastReminded = {};
+let cachedTugasList = [];
+let cachedTargetGroups = []; 
 
-// let lastReminded = {};
-// let cachedTugasList = []; 
+function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+}
 
-// function formatDate(dateStr) {
-//     const d = new Date(dateStr);
-//     const day = String(d.getDate()).padStart(2, '0');
-//     const month = String(d.getMonth() + 1).padStart(2, '0');
-//     const year = d.getFullYear();
-//     return `${day}/${month}/${year}`;
-// }
+function getHMinus(deadline) {
+    const today = new Date();
+    const dline = new Date(deadline);
+    today.setHours(0,0,0,0);
+    dline.setHours(0,0,0,0);
+    const diff = Math.floor((dline - today) / (1000 * 60 * 60 * 24));
+    return diff;
+}
 
-// function getHMinus(deadline) {
-//     const today = new Date();
-//     const dline = new Date(deadline);
-//     today.setHours(0,0,0,0);
-//     dline.setHours(0,0,0,0);
-//     const diff = Math.floor((dline - today) / (1000 * 60 * 60 * 24));
-//     return diff;
-// }
+function getUniqueJenis(tugasList) {
+    const jenisSet = new Set();
+    tugasList.forEach(t => {
+        if (t.jenis && Array.isArray(t.jenis)) {
+            t.jenis.forEach(j => jenisSet.add(j.toUpperCase()));
+        }
+    });
+    return Array.from(jenisSet);
+}
 
-// function groupByType(tugasList, type) {
-//     return tugasList.filter(t => t[type]);
-// }
+function groupByType(tugasList, type) {
+    return tugasList.filter(t => t.jenis && t.jenis.some(j => j.toLowerCase() === type.toLowerCase()));
+}
 
-// function buildMsg(list, typeLabel, hLabel) {
-//     if (!list.length) return '';
-//     const grouped = list.reduce((acc, t) => {
-//         const mk = (t.mataKuliah || t.matakuliah || 'Tanpa Nama').trim();
-//         if (!acc[mk]) acc[mk] = [];
-//         acc[mk].push(t);
-//         return acc;
-//     }, {});
+function buildMsg(list, typeLabel) {
+    if (!list.length) return '';
+    const grouped = list.reduce((acc, t) => {
+        const mk = (t.subject || 'Tanpa Nama').trim();
+        if (!acc[mk]) acc[mk] = [];
+        acc[mk].push(t);
+        return acc;
+    }, {});
 
-//     let result = `${typeLabel}\n\n`;
-//     for (const [mk, tugasMk] of Object.entries(grouped)) {
-//         result += `*${mk}*\n`;
-//         tugasMk.forEach(t => {
-//             const namaTugas = t.namaTugas || t.Namatugas || 'gak ada judul nya woy';
-//             const deadline = formatDate(t.deadline);
-//             result += `• ${namaTugas}\n  Deadline: ${deadline}\n`;
-//         });
-//         result += '\n';
-//     }
+    let result = `${typeLabel}\n\n`;
+    for (const [mk, tugasMk] of Object.entries(grouped)) {
+        result += `*${mk}*\n`;
+        tugasMk.forEach(t => {
+            const namaTugas = t.taskName ? `${t.taskName} - ${t.title}` : 'gak ada tugas nya woy';
+            const deadline = formatDate(t.deadline);
+            result += `• ${namaTugas}\n  Deadline: ${deadline}\n`;
+        });
+        result += '\n';
+    }
 
-//     return result + '\n';
-// }
+    return result + '\n';
+}
 
-// function buildVclassMsg(list, hLabel) {
-//     return buildMsg(list, '=== INFO VCLASS DEADLINE ===', hLabel);
-// }
-// function buildIlabMsg(list, hLabel) {
-//     return buildMsg(list, '--- INFO ILAB ---', hLabel);
-// }
-// function buildKelompokMsg(list, hLabel) {
-//     return buildMsg(list, '=== INFO TUGAS KELOMPOK ===', hLabel);
-// }
-// function buildPraktikumMsg(list, hLabel) {
-//     return buildMsg(list, '=== INFO PRAKTIKUM ===', hLabel);
-// }
-// function buildMandiriMsg(list, hLabel) {
-//     return buildMsg(list, '=== INFO TUGAS Mandiri ===', hLabel);
-// }
+function buildDynamicReminderMsg(tugasList) {
+    if (!tugasList.length) return '';
+    
+    let msg = `=== ⚠️ TUGAS DEADLINE HARI INI ⚠️ ===\n\n`;
+    const uniqueTypes = getUniqueJenis(tugasList);
+    
+    uniqueTypes.forEach(type => {
+        const filteredTugas = groupByType(tugasList, type);
+        if (filteredTugas.length) {
+            const typeLabel = `=== INFO ${type} ===`; 
+            msg += buildMsg(filteredTugas, typeLabel);
+        }
+    });
+    
+    return msg;
+}
 
-// async function getTugasMahasiswa() {
-//     try {
-//         const url = 'https://ka14.danafxc.my.id/tugas/mahasiswa';
-//         console.log('[REMINDER] Mengambil data tugas dari API...');
-//         const { data } = await axios.get(url);
-//         if (!Array.isArray(data) || !data.length) {
-//             console.log('[REMINDER] Gagal: Data tugas kosong atau tidak ditemukan.');
-//             return [];
-//         }
-//         console.log('[REMINDER] Berhasil mengambil data tugas.');
-//         return data;
-//     } catch (e) {
-//         console.error('[REMINDER] Gagal mengambil data tugas:', e.message || e);
-//         return [];
-//     }
-// }
+async function getTugasMahasiswa() {
+    try {
+        const url = `https://task.aniqu.biz.id/api/bot/tasks?token=${taskToken}`;
+        console.log('[REMINDER H-0] Mengambil data tugas dari API...');
+        const response = await axios.get(url);
+        
+        return response.data;
+    } catch (e) {
+        console.error('[REMINDER H-0] Gagal mengambil data tugas:', e.message || e);
+        return null;
+    }
+}
 
-// async function sendReminderToGroup(jid, text) {
-//     if (typeof global.conn !== 'undefined') {
-//         await global.conn.sendMessage(jid, { text });
-//     } else if (typeof conn !== 'undefined') {
-//         await conn.sendMessage(jid, { text });
-//     } else {
-//         console.error('No WhatsApp connection object found!');
-//     }
-// }
+// Fungsi pengiriman dengan HIDETAG
+async function sendReminderToGroup(jid, text) {
+    const botConn = global.conn || (typeof conn !== 'undefined' ? conn : null);
+    
+    if (!botConn) {
+        console.error('[REMINDER H-0] No WhatsApp connection object found!');
+        return;
+    }
 
-// async function updateTugasCache() {
-//     const tugasList = await getTugasMahasiswa();
-//     cachedTugasList = tugasList;
-//     if (!tugasList.length) {
-//         console.log('[REMINDER] Tidak ada data tugas yang diambil dari API (cache update).');
-//     } else {
-//         console.log(`[REMINDER] Cache tugas diperbarui. Jumlah tugas: ${tugasList.length}`);
-//     }
-// }
+    try {
+        // Ambil data metadata grup untuk mendapatkan list peserta
+        const groupMetadata = await botConn.groupMetadata(jid);
+        const participants = groupMetadata.participants.map(p => p.id);
 
-// async function tugasReminder() {
-//     const tugasList = cachedTugasList;
-//     if (!tugasList.length) {
-//         console.log('[REMINDER] Tidak ada data tugas pada cache untuk dikirim.');
-//         return;
-//     }
+        // Kirim pesan dengan mentions seluruh anggota (hidetag)
+        await botConn.sendMessage(jid, { 
+            text: text,
+            mentions: participants 
+        });
+        console.log(`[REMINDER H-0] Berhasil mengirim hidetag ke ${jid}`);
+    } catch (error) {
+        console.error(`[REMINDER H-0] Gagal mengirim pesan ke ${jid}:`, error);
+    }
+}
 
-//     const today = new Date();
-//     const todayStr = today.toISOString().slice(0,10);
+async function updateTugasCache() {
+    const res = await getTugasMahasiswa();
+    
+    if (!res || !Array.isArray(res.data) || !res.data.length) {
+        console.log('[REMINDER H-0] Gagal memperbarui cache: Data kosong atau format salah.');
+        return;
+    }
+    
+    cachedTugasList = res.data;
+    cachedTargetGroups = res.classInfo?.targetGroups || [];
+    
+    console.log(`[REMINDER H-0] Cache diperbarui. Jumlah tugas: ${cachedTugasList.length}, Jumlah target grup: ${cachedTargetGroups.length}`);
+}
 
-//     // Filter tugas H (hari ini)
-//     const hTugas = tugasList.filter(t => getHMinus(t.deadline) === 0);
+async function tugasReminder() {
+    const tugasList = cachedTugasList;
+    if (!tugasList.length) {
+        console.log('[REMINDER H-0] Tidak ada data tugas pada cache untuk dikirim.');
+        return;
+    }
 
-//     if (!hTugas.length) {
-//         console.log('[REMINDER] Tidak ada tugas dengan deadline hari ini.');
-//         return;
-//     }
+    const today = new Date();
+    const todayStr = today.toISOString().slice(0,10);
 
-//     if (lastReminded[todayStr]) {
-//         console.log('[REMINDER] Reminder sudah dikirim hari ini.');
-//         return;
-//     }
+    const hTugas = tugasList.filter(t => getHMinus(t.deadline) === 0);
 
-//     let msg = '=== ⚠️ TUGAS DEADLINE HARI INI ⚠️ ===\n\n';
-//     msg += buildVclassMsg(groupByType(hTugas, 'vclass'), 'H');
-//     msg += buildIlabMsg(groupByType(hTugas, 'ilab'), 'H');
-//     msg += buildKelompokMsg(groupByType(hTugas, 'kelompok'), 'H');
-//     msg += buildPraktikumMsg(groupByType(hTugas, 'praktikum'), 'H');
-//     msg += buildMandiriMsg(groupByType(hTugas, 'Mandiri'), 'H');
+    if (!hTugas.length) {
+        console.log('[REMINDER H-0] Tidak ada tugas dengan deadline hari ini.');
+        return;
+    }
 
-//     if (msg.trim()) {
-//         await sendReminderToGroup(GROUP_JID, msg.trim());
-//         lastReminded[todayStr] = true;
-//         console.log('[REMINDER] Tugas reminder sent for today:', todayStr);
-//     }
-// }
+    if (lastReminded[todayStr]) {
+        console.log('[REMINDER H-0] Reminder sudah dikirim hari ini.');
+        return;
+    }
 
-// setInterval(async () => {
-//     const now = new Date();
-//     await updateTugasCache(); 
-//     if (now.getHours() === 6 && now.getMinutes() === 0) {
-//         console.log('[REMINDER] Mengecek tugas pada jam 06:00...');
-//         await tugasReminder();
-//     } else {
-//         console.log(`[REMINDER] Interval aktif, sekarang jam ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`);
-//     }
-// }, 60 * 1000);
+    // Bangun pesan secara dinamis berdasarkan jenis yang ada di API
+    let msg = buildDynamicReminderMsg(hTugas);
+
+    if (msg.trim()) {
+        if (cachedTargetGroups.length > 0) {
+            for (const jid of cachedTargetGroups) {
+                await sendReminderToGroup(jid, msg.trim());
+            }
+            lastReminded[todayStr] = true;
+            console.log('[REMINDER H-0] Semua tugas reminder H-0 selesai dikirim untuk hari ini:', todayStr);
+        } else {
+            console.log('[REMINDER H-0] Gagal mengirim: Target grup tidak ditemukan di dalam respons API.');
+        }
+    }
+}
+
+setInterval(async () => {
+    const now = new Date();
+    await updateTugasCache(); 
+    
+    // Mengecek pada pukul 06:00
+    if (now.getHours() === 6 && now.getMinutes() === 0) {
+        console.log('[REMINDER H-0] Mengecek tugas pada jam 06:00...');
+        await tugasReminder();
+    } else {
+        console.log(`[REMINDER H-0] Interval aktif, sekarang jam ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`);
+    }
+}, 60 * 1000);

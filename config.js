@@ -51,15 +51,22 @@ global.btc = process.env.API_KEY_BTC;
 global.dana = process.env.API_KEY_DANA;
 //Daftar https://api.danafxc.my.id
 
+//INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
+// global.dana = "YOUR_APIKEY_HERE";
+global.taskToken = process.env.API_KEY_TOKEN;
+//Daftar https://api.danafxc.my.id
+
 global.APIs = {
   lann: "https://api.betabotz.eu.org",
   btc: "https://api.botcahx.eu.org",
   dana: "https://api.danafxc.my.id",
+  taskToken: "https://task.aniqu.biz.id/",
 };
 global.APIKeys = {
   "https://api.betabotz.eu.org": global.lann,
   "https://api.botcahx.eu.org": global.btc, //OPSIONAL
   "https://api.danafxc.my.id": global.dana, //OPSIONAL
+  "https://task.aniqu.biz.id/": global.taskToken, //OPSIONAL
 };
 
 let fs = require("fs");
