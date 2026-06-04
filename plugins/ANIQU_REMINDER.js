@@ -87,11 +87,11 @@ function buildDynamicReminderMsg(tugasList, titleHeader) {
 async function getTugasMahasiswa() {
     try {
         const url = `https://task.aniqu.biz.id/api/bot/tasks?token=${taskToken}`;
-        console.log('[REMINDER] Mengambil data tugas dari API...');
+        console.log('[ANIQU] Mengambil data tugas dari API...');
         const response = await axios.get(url);
         return response.data;
     } catch (e) {
-        console.error('[REMINDER] Gagal mengambil data tugas:', e.message || e);
+        console.error('[ANIQU] Gagal mengambil data tugas:', e.message || e);
         return null;
     }
 }
@@ -100,7 +100,7 @@ async function sendReminderToGroup(jid, text, useHidetag = false) {
     const botConn = global.conn || (typeof conn !== 'undefined' ? conn : null);
     
     if (!botConn) {
-        console.error('[REMINDER] No WhatsApp connection object found!');
+        console.error('[ANIQU] No WhatsApp connection object found!');
         return;
     }
 
@@ -113,9 +113,9 @@ async function sendReminderToGroup(jid, text, useHidetag = false) {
         }
 
         await botConn.sendMessage(jid, options);
-        console.log(`[REMINDER] Berhasil mengirim pesan ke ${jid} (Hidetag: ${useHidetag})`);
+        console.log(`[ANIQU] Berhasil mengirim pesan ke ${jid} (Hidetag: ${useHidetag})`);
     } catch (error) {
-        console.error(`[REMINDER] Gagal mengirim pesan ke ${jid}:`, error);
+        console.error(`[ANIQU] Gagal mengirim pesan ke ${jid}:`, error);
     }
 }
 
@@ -123,14 +123,14 @@ async function updateTugasCache() {
     const res = await getTugasMahasiswa();
     
     if (!res || !Array.isArray(res.data) || !res.data.length) {
-        console.log('[REMINDER] Gagal memperbarui cache: Data kosong atau format salah.');
+        console.log('[ANIQU] Gagal memperbarui cache: Data kosong atau format salah.');
         return;
     }
     
     cachedTugasList = res.data;
     cachedTargetGroups = res.classInfo?.targetGroups || [];
     
-    console.log(`[REMINDER] Cache diperbarui. Jumlah tugas: ${cachedTugasList.length}, Jumlah target grup: ${cachedTargetGroups.length}`);
+    console.log(`[ANIQU] Cache diperbarui. Jumlah tugas: ${cachedTugasList.length}, Jumlah target grup: ${cachedTargetGroups.length}`);
 }
 
 async function processReminder(type) {
@@ -167,7 +167,7 @@ async function processReminder(type) {
             await sendReminderToGroup(jid, msgToSent.trim(), isHidetag);
         }
         lastReminded[reminderKey] = true;
-        console.log(`[REMINDER] Semua tugas tipe ${type} selesai dikirim untuk tanggal: ${todayStr}`);
+        console.log(`[ANIQU] Semua tugas tipe ${type} selesai dikirim untuk tanggal: ${todayStr}`);
     }
 }
 
@@ -178,14 +178,14 @@ setInterval(async () => {
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
     if (currentHour === TIME_H_MINUS.hour && currentMinute === TIME_H_MINUS.minute) {
-        console.log(`[REMINDER] Waktunya mengecek tugas H-3 & H-1...`);
+        console.log(`[ANIQU] Waktunya mengecek tugas H-3 & H-1...`);
         await processReminder('H_MINUS');
     }
     else if (currentHour === TIME_H_DAY.hour && currentMinute === TIME_H_DAY.minute) {
-        console.log(`[REMINDER] Waktunya mengecek tugas Hari H...`);
+        console.log(`[ANIQU] Waktunya mengecek tugas Hari H...`);
         await processReminder('H_DAY');
     } else {
-        console.log(`[REMINDER] Interval aktif, sekarang jam ${currentHour}:${currentMinute.toString().padStart(2, '0')}`);
+        console.log(`[ANIQU] Interval aktif, sekarang jam ${currentHour}:${currentMinute.toString().padStart(2, '0')}`);
     }
 }, 60 * 1000); // Cek setiap 1 menit
 
