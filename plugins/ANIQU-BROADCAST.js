@@ -1,3 +1,7 @@
+// ANIQU BROADCAST WORKER, Aktifkan ini jika kammu ingin fitur broadcast terintegrasi dengan bot whatsapp
+// jangan lupa token kelas kamu di .env atau config.js
+
+/*
 const axios = require('axios');
 const BROADCAST_URL = `https://task.aniqu.biz.id/api/bot/broadcast/whatsapp-pull?token=${taskToken}`;
 
@@ -55,7 +59,7 @@ async function checkAndSendBroadcast() {
 
             console.log(`[ANIQU BROADCAST] Menemukan pesan baru! Proses pengiriman ke ${targetGroups.length} grup...`);
             
-            const finalMsg = `*=== 📢 BROADCAST INFORMASI ===*\n\n${msgText}`; // Tambahan header biar rapi
+            const finalMsg = `*=== INFORMASI KELAS ===*\n\n${msgText}`; // Tambahan header biar rapi
             
             for (const jid of targetGroups) {
                 await sendBroadcastHidetag(jid, finalMsg);
@@ -90,3 +94,5 @@ setTimeout(() => {
 }, 5000);
 
 console.log(`[ANIQU BROADCAST] Sistem pull broadcast aktif (Cek per ${BROADCAST_INTERVAL_MINUTES} menit)!`);
+
+*/

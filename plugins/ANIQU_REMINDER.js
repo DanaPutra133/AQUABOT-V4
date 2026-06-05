@@ -1,5 +1,5 @@
-//ANIQU REMINDER WORKER, Aktifkan ini jika kammu ingin fitur reminder terintegrasi dengan bot whatsapp
-// jagan lupa token kelas kamu
+// ANIQU REMINDER WORKER, Aktifkan ini jika kammu ingin fitur reminder terintegrasi dengan bot whatsapp
+// jangan lupa token kelas kamu di .env atau config.js
 
 /*
 const axios = require('axios');
