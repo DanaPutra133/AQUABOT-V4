@@ -12,9 +12,6 @@ const BROADCAST_URL = `http://localhost:3000/api/bot/broadcast/whatsapp-pull?tok
 const BROADCAST_INTERVAL = "*/3 * * * *";
 
 let sentBroadcasts = new Map();
-
-let sentBroadcasts = new Map();
-
 // ==========================================
 
 // Fungsi pengiriman khusus Broadcast (dengan Hidetag penuh)
@@ -22,7 +19,7 @@ async function sendBroadcastHidetag(jid, text) {
     const botConn = global.conn || (typeof conn !== 'undefined' ? conn : null);
     
     if (!botConn) {
-        console.error('[BROADCAST] Tidak ada koneksi WhatsApp aktif!');
+        console.error('[ANIQU BROADCAST] Tidak ada koneksi WhatsApp aktif!');
         return;
     }
 
@@ -34,9 +31,9 @@ async function sendBroadcastHidetag(jid, text) {
             text: text,
             mentions: participants 
         });
-        console.log(`[BROADCAST] Berhasil mengirim pesan massal ke grup: ${jid}`);
+        console.log(`[ANIQU BROADCAST] Berhasil mengirim pesan massal ke grup: ${jid}`);
     } catch (error) {
-        console.error(`[BROADCAST] Gagal mengirim pesan ke ${jid}:`, error.message);
+        console.error(`[ANIQU BROADCAST] Gagal mengirim pesan ke ${jid}:`, error.message);
     }
 }
 
@@ -63,7 +60,7 @@ async function checkAndSendBroadcast() {
                 }
             }
 
-            console.log(`[BROADCAST] Menemukan pesan baru! Proses pengiriman ke ${targetGroups.length} grup...`);
+            console.log(`[ANIQU BROADCAST] Menemukan pesan baru! Proses pengiriman ke ${targetGroups.length} grup...`);
             
             const finalMsg = `*=== 📢 BROADCAST INFORMASI ===*\n\n${msgText}`; // Tambahan header biar rapi
             
@@ -86,7 +83,7 @@ async function checkAndSendBroadcast() {
         }
 
     } catch (error) {
-        console.error('[BROADCAST] Gagal pull data API:', error.message);
+        console.error('[ANIQU BROADCAST] Gagal pull data API:', error.message);
     }
 }
 
@@ -94,4 +91,4 @@ cron.schedule(BROADCAST_INTERVAL, () => {
   checkAndSendBroadcast();
 });
 
-console.log('[BROADCAST] Sistem pull broadcast aktif (Cek per 1 menit)!');
+console.log('[ANIQU BROADCAST] Sistem pull broadcast aktif (Cek per 3 menit)!');
