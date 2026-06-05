@@ -1,15 +1,8 @@
 const axios = require('axios');
-const cron = require('node-cron');
-
-// ==========================================
-// KONFIGURASI BROADCAST
-// ==========================================
 const BROADCAST_URL = `https://task.aniqu.biz.id/api/bot/broadcast/whatsapp-pull?token=${taskToken}`;
 
-// Atur interval pengecekan di sini (Format Cron)
-// '*/3 * * * *' artinya eksekusi setiap 3 menit
-// '*/5 * * * *' artinya eksekusi setiap 5 menit
-const BROADCAST_INTERVAL = "*/3 * * * *";
+// Atur interval pengecekan di sini (dalam hitungan MENIT)
+const BROADCAST_INTERVAL_MINUTES = 3;
 
 let sentBroadcasts = new Map();
 // ==========================================
@@ -72,7 +65,7 @@ async function checkAndSendBroadcast() {
         }
 
         // ==========================================
-        // 6. Memory Cleanup (Pembersihan Histori)
+        // Memory Cleanup (Pembersihan Histori)
         // Agar RAM server tidak penuh, histori yang 
         // lebih dari 30 menit akan dihapus otomatis.
         // ==========================================
@@ -87,8 +80,13 @@ async function checkAndSendBroadcast() {
     }
 }
 
-cron.schedule(BROADCAST_INTERVAL, () => {
-  checkAndSendBroadcast();
-});
+setInterval(() => {
+    checkAndSendBroadcast();
+}, BROADCAST_INTERVAL_MINUTES * 60 * 1000);
 
-console.log('[ANIQU BROADCAST] Sistem pull broadcast aktif (Cek per 3 menit)!');
+// Opsional: Jalankan satu kali di awal saat bot baru menyala
+setTimeout(() => {
+    checkAndSendBroadcast();
+}, 5000);
+
+console.log(`[ANIQU BROADCAST] Sistem pull broadcast aktif (Cek per ${BROADCAST_INTERVAL_MINUTES} menit)!`);
