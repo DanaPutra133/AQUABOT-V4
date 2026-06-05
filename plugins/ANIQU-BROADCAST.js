@@ -4,7 +4,7 @@ const cron = require('node-cron');
 // ==========================================
 // KONFIGURASI BROADCAST
 // ==========================================
-const BROADCAST_URL = `http://localhost:3000/api/bot/broadcast/whatsapp-pull?token=${taskToken}`;
+const BROADCAST_URL = `https://task.aniqu.biz.id/api/bot/broadcast/whatsapp-pull?token=${taskToken}`;
 
 // Atur interval pengecekan di sini (Format Cron)
 // '*/3 * * * *' artinya eksekusi setiap 3 menit
