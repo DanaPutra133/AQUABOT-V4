@@ -19,7 +19,9 @@ function formatDate(dateStr) {
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes} WIB`;
 }
 
 function getHMinus(deadline) {
@@ -133,6 +135,43 @@ async function updateTugasCache() {
     console.log(`[ANIQU] Cache diperbarui. Jumlah tugas: ${cachedTugasList.length}, Jumlah target grup: ${cachedTargetGroups.length}`);
 }
 
+async function checkCustomSchedule() {
+    if (!cachedTugasList.length) return;
+    
+    const now = new Date();
+    
+    const customTasks = cachedTugasList.filter(t => {
+        if (!t.isCustomSchedule || !t.customScheduleDate) return false;
+        
+        const customDate = new Date(t.customScheduleDate);
+        return now.getFullYear() === customDate.getFullYear() &&
+               now.getMonth() === customDate.getMonth() &&
+               now.getDate() === customDate.getDate() &&
+               now.getHours() === customDate.getHours() &&
+               now.getMinutes() === customDate.getMinutes();
+    });
+
+    if (customTasks.length === 0) return;
+    let tasksToSend = [];
+    customTasks.forEach(t => {
+        const uniqueKey = `CUSTOM-${t.id || t.taskName}-${t.customScheduleDate}`;
+        if (!lastReminded[uniqueKey]) {
+            tasksToSend.push(t);
+            lastReminded[uniqueKey] = true;
+        }
+    });
+
+    if (tasksToSend.length > 0) {
+        let msgToSent = buildDynamicReminderMsg(tasksToSend, '=== ⏰ CUSTOM REMINDER TUGAS ⏰ ===');
+        if (msgToSent.trim() && cachedTargetGroups.length > 0) {
+            for (const jid of cachedTargetGroups) {
+                await sendReminderToGroup(jid, msgToSent.trim(), true); 
+            }
+            console.log(`[ANIQU] Custom reminder selesai dikirim.`);
+        }
+    }
+}
+
 async function processReminder(type) {
     if (!cachedTugasList.length) return;
 
@@ -174,6 +213,7 @@ async function processReminder(type) {
 setInterval(async () => {
     const now = new Date();
     await updateTugasCache(); 
+    await checkCustomSchedule();
     
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
