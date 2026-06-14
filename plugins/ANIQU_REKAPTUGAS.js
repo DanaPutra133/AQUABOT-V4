@@ -4,7 +4,7 @@ let handler = async (m, { conn, command, args }) => {
         
         let response = await fetch(API_URL);
         if (!response.ok) throw new Error(`Gagal mengambil data dari API (Status: ${response.status})`);
-        
+        if (!taskToken) throw new Error('Token API belum diset. Pastikan kamu sudah mengisi token kelas di .env atau config.js');
         let resJson = await response.json();
         let tasksList = resJson.data; 
         
