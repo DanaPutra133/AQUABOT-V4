@@ -51,10 +51,11 @@ global.btc = process.env.API_KEY_BTC;
 global.dana = process.env.API_KEY_DANA;
 //Daftar https://api.danafxc.my.id
 
-//INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
-// global.dana = "YOUR_APIKEY_HERE";
+//INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA
+// fitur reminder dan kelola tugas, cek di youtube https://www.youtube.com/playlist?list=PLGv_-znSuMIwhZPH2y06HWisHZbn7dXL3
+// global.taskToken = process.env.API_KEY_TOKEN;
 global.taskToken = process.env.API_KEY_TOKEN;
-//Daftar https://api.danafxc.my.id
+//Daftar daftar di https://task.aniqu.biz.id
 
 global.APIs = {
   lann: "https://api.betabotz.eu.org",

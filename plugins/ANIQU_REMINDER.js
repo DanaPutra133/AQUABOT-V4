@@ -1,6 +1,8 @@
 // ANIQU REMINDER WORKER, Aktifkan ini jika kammu ingin fitur reminder terintegrasi dengan bot whatsapp
 // jangan lupa token kelas kamu di .env atau config.js
 
+// Tutorial https://www.youtube.com/playlist?list=PLGv_-znSuMIwhZPH2y06HWisHZbn7dXL3
+
 /*
 const axios = require('axios');
 const { setInterval } = require('timers');

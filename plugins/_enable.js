@@ -346,6 +346,15 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.nsfw = isEnable;
       break;
+    case "anticall":
+      if (m.isGroup) {
+        if (!(isAdmin || isOwner)) {
+          global.dfail("admin", m, conn);
+          throw false;
+        }
+      }
+      global.anticall = isEnable;
+      break;
     case "autodl":
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
@@ -360,6 +369,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
         return m.reply(
           `
 List option:
+| anticall
 | nsfw
 | antilinkch
 | antitagsw

@@ -1,6 +1,8 @@
 // ANIQU BROADCAST WORKER, Aktifkan ini jika kammu ingin fitur broadcast terintegrasi dengan bot whatsapp
 // jangan lupa token kelas kamu di .env atau config.js
 
+// Tutorial https://www.youtube.com/playlist?list=PLGv_-znSuMIwhZPH2y06HWisHZbn7dXL3
+
 /*
 const axios = require('axios');
 const BROADCAST_URL = `https://task.aniqu.biz.id/api/bot/broadcast/whatsapp-pull?token=${taskToken}`;
