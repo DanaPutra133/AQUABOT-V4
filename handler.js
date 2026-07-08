@@ -867,6 +867,7 @@ module.exports = {
           if (!("notifsholat" in chat)) chat.notifsholat = false;
           if (!("autotranslate" in chat)) chat.autotranslate = false;
           if (!("antitagsw" in chat)) chat.antitagsw = false;
+          if (!("autowm" in chat)) chat.autowm = false;
           if (!("autoacc" in chat)) chat.autoacc = false;
           if (!("antiLinkCh" in chat)) chat.antiLinkCh = false;
         } else
@@ -922,6 +923,7 @@ module.exports = {
             rpg: false,
             nsfw: false,
             antitagsw: false,
+            autowm: false,
             antidelete: false,
           };
         let memgc = global.db.data.chats[m.chat]?.memgc?.[m.sender];
@@ -959,11 +961,8 @@ module.exports = {
       if (opts["nyimak"]) return;
       if (!m.fromMe && (opts["self"] || global.opts?.self)) {
         // When bot is in self mode, only allow owner's messages through
-        const ownersList = (global.owner || []).map(
-          (v) => String(v).replace(/[^0-9]/g, "") + "@s.whatsapp.net",
-        );
-        if (global.conn && global.conn.user && global.conn.user.jid)
-          ownersList.push(global.conn.user.jid);
+        const ownersList = (global.owner || []).map(v => String(v).replace(/[^0-9]/g, "") + "@s.whatsapp.net");
+        if (global.conn && global.conn.user && global.conn.user.jid) ownersList.push(global.conn.user.jid);
         if (!ownersList.includes(m.sender)) return;
       }
       if (opts["pconly"] && m.chat.endsWith("g.us")) return;
@@ -1374,14 +1373,12 @@ module.exports = {
 
             const isAdd = ["add", "invite", "invite_v4"].includes(action);
 
-            text = (
-              isAdd
-                ? chat.sWelcome || this.welcome || "Selamat datang @user 👋"
-                : chat.sBye || this.bye || "Selamat tinggal @user 👋"
-            )
-              .replace("@subject", groupMetadata.subject || "Group")
-              .replace("@desc", groupMetadata.desc?.toString() || "")
-              .replace("@user", "@" + jid.split("@")[0]);
+            text = (isAdd
+                        ? (chat.sWelcome || this.welcome || 'Selamat datang @user 👋')
+                        : (chat.sBye || this.bye || 'Selamat tinggal @user 👋'))
+                        .replace('@subject', groupMetadata.subject || 'Group')
+                        .replace('@desc', groupMetadata.desc?.toString() || '')
+                        .replace('@user', '@' + jid.split('@')[0])
 
             await this.sendMessage(id, {
               text,

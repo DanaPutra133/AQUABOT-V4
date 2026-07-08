@@ -24,6 +24,15 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
         chat.notifcuaca = isEnable;
       } else return global.dfail("group", m, conn);
       break;
+    case "nsfw":
+      if (m.isGroup) {
+        if (!(isAdmin || isOwner)) {
+          global.dfail("admin", m, conn);
+          throw false;
+        }
+      }
+      chat.nsfw = isEnable;
+      break;
     case "notifsholat":
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
@@ -237,15 +246,6 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.antiSticker = isEnable;
       break;
-    case "antistickerlottie":
-      if (m.isGroup) {
-        if (!(isAdmin || isOwner)) {
-          global.dfail("admin", m, conn);
-          throw false;
-        }
-      }
-      chat.antiStickerLottie = isEnable;
-      break;
     case "viewonce":
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
@@ -328,6 +328,15 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.antilinkch = isEnable;
       break;
+    case "anticall":
+      if (m.isGroup) {
+        if (!(isAdmin || isOwner)) {
+          global.dfail("admin", m, conn);
+          throw false;
+        }
+      }
+      global.anticall = isEnable;
+      break;
     case "antitagsw":
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
@@ -337,23 +346,14 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.antitagsw = isEnable;
       break;
-    case "nsfw":
+    case "autowm":
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
           global.dfail("admin", m, conn);
           throw false;
         }
       }
-      chat.nsfw = isEnable;
-      break;
-    case "anticall":
-      if (m.isGroup) {
-        if (!(isAdmin || isOwner)) {
-          global.dfail("admin", m, conn);
-          throw false;
-        }
-      }
-      global.anticall = isEnable;
+      chat.autowm = isEnable;
       break;
     case "autodl":
       if (m.isGroup) {
@@ -369,8 +369,8 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
         return m.reply(
           `
 List option:
+| autowm
 | anticall
-| nsfw
 | antilinkch
 | antitagsw
 | autodl
@@ -391,7 +391,6 @@ List option:
 | autosticker
 | autolevelup
 | antisticker
-| antiStickerLottie
 | autoacc
 | detect
 | viewonce
@@ -404,6 +403,7 @@ List option:
 | gconly
 | swonly
 | autodatabase
+| nsfw
 Contoh:
 ${usedPrefix}enable welcome
 ${usedPrefix}disable welcome
