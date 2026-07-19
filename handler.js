@@ -206,32 +206,11 @@ module.exports = {
           if (!isNumber(user.kerjatiga)) user.kerjatiga = 0;
           if (!isNumber(user.kerjaempat)) user.kerjaempat = 0;
           if (!isNumber(user.kerjalima)) user.kerjalima = 0;
-          if (!isNumber(user.kerjaenam)) user.kerjaenam = 0;
-          if (!isNumber(user.kerjatujuh)) user.kerjatujuh = 0;
-          if (!isNumber(user.kerjadelapan)) user.kerjadelapan = 0;
-          if (!isNumber(user.kerjasembilan)) user.kerjasembilan = 0;
-          if (!isNumber(user.kerjasepuluh)) user.kerjasepuluh = 0;
           if (!isNumber(user.kerjasebelas)) user.kerjasebelas = 0;
-          if (!isNumber(user.kerjaduabelas)) user.kerjaduabelas = 0;
-          if (!isNumber(user.kerjatigabelas)) user.kerjatigabelas = 0;
-          if (!isNumber(user.kerjaempatbelas)) user.kerjaempatbelas = 0;
-          if (!isNumber(user.kerjalimabelas)) user.kerjalimabelas = 0;
 
           if (!isNumber(user.pekerjaansatu)) user.pekerjaansatu = 0;
           if (!isNumber(user.pekerjaandua)) user.pekerjaandua = 0;
           if (!isNumber(user.pekerjaantiga)) user.pekerjaantiga = 0;
-          if (!isNumber(user.pekerjaanempat)) user.pekerjaanempat = 0;
-          if (!isNumber(user.pekerjaanlima)) user.pekerjaanlima = 0;
-          if (!isNumber(user.pekerjaanenam)) user.pekerjaanenam = 0;
-          if (!isNumber(user.pekerjaantujuh)) user.pekerjaantujuh = 0;
-          if (!isNumber(user.pekerjaandelapan)) user.pekerjaandelapan = 0;
-          if (!isNumber(user.pekerjaansembilan)) user.pekerjaansembilan = 0;
-          if (!isNumber(user.pekerjaansepuluh)) user.pekerjaansepuluh = 0;
-          if (!isNumber(user.pekerjaansebelas)) user.pekerjaansebelas = 0;
-          if (!isNumber(user.pekerjaanduabelas)) user.pekerjaanduabelas = 0;
-          if (!isNumber(user.pekerjaantigabelas)) user.pekerjaantigabelas = 0;
-          if (!isNumber(user.pekerjaanempatbelas)) user.pekerjaanempatbelas = 0;
-          if (!isNumber(user.pekerjaanlimabelas)) user.pekerjaanlimabelas = 0;
 
           if (!isNumber(user.kucing)) user.kucing = 0;
           if (!isNumber(user.kucinglastclaim)) user.kucinglastclaim = 0;
@@ -961,8 +940,11 @@ module.exports = {
       if (opts["nyimak"]) return;
       if (!m.fromMe && (opts["self"] || global.opts?.self)) {
         // When bot is in self mode, only allow owner's messages through
-        const ownersList = (global.owner || []).map(v => String(v).replace(/[^0-9]/g, "") + "@s.whatsapp.net");
-        if (global.conn && global.conn.user && global.conn.user.jid) ownersList.push(global.conn.user.jid);
+        const ownersList = (global.owner || []).map(
+          (v) => String(v).replace(/[^0-9]/g, "") + "@s.whatsapp.net",
+        );
+        if (global.conn && global.conn.user && global.conn.user.jid)
+          ownersList.push(global.conn.user.jid);
         if (!ownersList.includes(m.sender)) return;
       }
       if (opts["pconly"] && m.chat.endsWith("g.us")) return;
@@ -1373,12 +1355,14 @@ module.exports = {
 
             const isAdd = ["add", "invite", "invite_v4"].includes(action);
 
-            text = (isAdd
-                        ? (chat.sWelcome || this.welcome || 'Selamat datang @user 👋')
-                        : (chat.sBye || this.bye || 'Selamat tinggal @user 👋'))
-                        .replace('@subject', groupMetadata.subject || 'Group')
-                        .replace('@desc', groupMetadata.desc?.toString() || '')
-                        .replace('@user', '@' + jid.split('@')[0])
+            text = (
+              isAdd
+                ? chat.sWelcome || this.welcome || "Selamat datang @user 👋"
+                : chat.sBye || this.bye || "Selamat tinggal @user 👋"
+            )
+              .replace("@subject", groupMetadata.subject || "Group")
+              .replace("@desc", groupMetadata.desc?.toString() || "")
+              .replace("@user", "@" + jid.split("@")[0]);
 
             await this.sendMessage(id, {
               text,
