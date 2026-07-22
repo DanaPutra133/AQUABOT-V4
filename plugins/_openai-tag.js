@@ -50,18 +50,8 @@ handler.before = async (m, { conn }) => {
                         const image = response.data;
                         await conn.sendFile(m.chat, image, 'aiimg.jpg', null, m);
                     } catch (error) {
-                        console.error('API pertama gagal:', error);
-                        try {
-                            const response = await axios.get(`https://api.botcahx.eu.org/api/search/openai-image?apikey=${global.btc}&text=${encodeURIComponent(imagePrompt)}`, {
-                                responseType: 'arraybuffer'
-                            });
-                            
-                            const image = response.data;
-                            await conn.sendFile(m.chat, image, 'aiimg.jpg', null, m);
-                        } catch (error) {
-                            console.error('API kedua gagal:', error);
-                            await m.reply('Terjadi kesalahan saat membuat gambar. Mohon coba lagi.');
-                        }
+                        console.error(error)
+                        await m.reply('Terjadi kesalahan saat membuat gambar. Mohon coba lagi.');
                     }
                     return true;
                 }
@@ -106,8 +96,6 @@ handler.before = async (m, { conn }) => {
                                             url: audioUrl.result.mp3
                                         },
                                         mimetype: 'audio/mpeg',
-                                        contextInfo: {
-                                            externalAdReply: {
                                                 title: convert.title,
                                                 body: "",
                                                 thumbnailUrl: convert.image,
@@ -115,8 +103,6 @@ handler.before = async (m, { conn }) => {
                                                 mediaType: 1,
                                                 showAdAttribution: false,
                                                 renderLargerThumbnail: true
-                                            }
-                                        }
                                     }, {
                                         quoted: m
                                     });
@@ -178,8 +164,6 @@ handler.before = async (m, { conn }) => {
                                             url: videoUrl.result.mp4
                                         },
                                         mimetype: 'video/mp4',
-                                        contextInfo: {
-                                            externalAdReply: {
                                                 title: convert.title,
                                                 body: "",
                                                 thumbnailUrl: convert.image,
@@ -187,9 +171,7 @@ handler.before = async (m, { conn }) => {
                                                 mediaType: 1,
                                                 showAdAttribution: false,
                                                 renderLargerThumbnail: true
-                                            }
-                                        }
-                                    }, {
+                                      }, {
                                         quoted: m
                                     });
                                 }
@@ -269,41 +251,11 @@ handler.before = async (m, { conn }) => {
                             res.result
                         ];
                     } else {
-                        throw new Error("Kesalahan dalam mengambil data");
+                        m.reply("Kesalahan dalam mengambil data silahkan @mention /reset untuk mencoba percakapan baru.");
                     }
                 } catch (e) {
-                    console.error('API pertama gagal:', e);
-                    try {
-                        const chatFallback = async function(message) {
-                            return new Promise(async (resolve, reject) => {
-                                try {
-                                    const params = {
-                                        message: message,
-                                        apikey: global.btc
-                                    };
-                                    const { data } = await axios.post('https://api.botcahx.eu.org/api/search/openai-custom', params);
-                                    resolve(data);
-                                } catch (error) {
-                                    reject(error);
-                                }
-                            });
-                        };
-                        
-                        let res = await chatFallback(messages);
-                        if (res && res.result) {
-                            await m.reply(res.result);
-                            conn.selfai[m.sender].sessionChat = [
-                                ...conn.selfai[m.sender].sessionChat,
-                                filter,
-                                res.result
-                            ];
-                        } else {
-                            m.reply("Kesalahan dalam mengambil data silahkan @mention /reset untuk mencoba percakapan baru.");
-                        }
-                    } catch (e) {
-                        console.error('API kedua gagal:', e);
-                        m.reply("Terjadi kesalahan dalam memproses permintaan.");
-                    }
+                    console.error(e);
+                    m.reply("Terjadi kesalahan dalam memproses permintaan.");
                 }
                 return true;
             }

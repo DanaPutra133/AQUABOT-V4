@@ -306,233 +306,189 @@ async function downloadyt(link, m) {
 
 // DOWNLOADER INSTAGRAM
 async function downloadInstagram(link, m) {
-    try {
-        if (global.db.data.users[m.sender].limit <= 0) {
-            return conn.reply(m.chat, 'limit kamu habis!', m)
-        }
+	try {
+		if (global.db.data.users[m.sender].limit <= 0) {
+			return conn.reply(m.chat, 'limit kamu habis!', m)
+		}
 
-        let message
-        let isV2 = false
+		let message
+		let isV2 = false
 
-        try {
-            const res = await fetch(
-                `https://api.betabotz.eu.org/api/download/igdowloader?url=${encodeURIComponent(link)}&apikey=${lann}`
-            )
+		try {
+			const res = await fetch(
+				`https://api.betabotz.eu.org/api/download/igdowloader?url=${encodeURIComponent(link)}&apikey=${lann}`
+			)
 
-            const text = await res.text()
+			const text = await res.text()
 
-            try {
-                message = JSON.parse(text)
-            } catch {
-                throw new Error('API V1 bukan JSON')
-            }
+			try {
+				message = JSON.parse(text)
+			} catch {
+				throw new Error('API V1 bukan JSON')
+			}
 
-            if (
-                !message.message ||
-                !Array.isArray(message.message) ||
-                message.message.length === 0 ||
-                !message.message[0]._url
-            ) {
-                throw new Error('Media tidak valid dari API V1')
-            }
-        } catch (e) {
-            console.log('Fallback ke API V2:', e.message)
-            isV2 = true
-            const res2 = await fetch(
-                `https://api.betabotz.eu.org/api/download/igdowloader-v2?url=${encodeURIComponent(link)}&apikey=${lann}`
-            )
-            const text2 = await res2.text()
-            try {
-                message = JSON.parse(text2)
-            } catch {
-                if (global.btc) {
-                    const resBot = await fetch(
-                        `https://api.botcahx.eu.org/api/dowloader/igdowloader?url=${encodeURIComponent(link)}&apikey=${global.btc}`
-                    )
-                    const botText = await resBot.text()
-                    let botMessage
-                    try {
-                        botMessage = JSON.parse(botText)
-                    } catch {
-                        throw new Error('API V2 bukan JSON')
-                    }
-                    if (!botMessage || !Array.isArray(botMessage.result) || botMessage.result.length === 0) {
-                        throw new Error('Fallback botcahx gagal mengambil media')
-                    }
-                    const urls = botMessage.result
-                        .filter((item) => item && item.url)
-                        .map((item) => item.url)
-                    if (urls.length === 0) {
-                        throw new Error('Fallback botcahx tidak mengembalikan URL')
-                    }
-                    for (const url of urls.slice(0, 3)) {
-                        await conn.sendFile(m.chat, url, null, '*Instagram Downloader*', m)
-                        await _sleep(3000)
-                    }
-                    return
-                }
-                throw new Error('API V2 bukan JSON')
-            }
-        }
+			if (
+				!message.message ||
+				!Array.isArray(message.message) ||
+				message.message.length === 0 ||
+				!message.message[0]._url
+			) {
+				throw new Error('Media tidak valid dari API V1')
+			}
 
-        global.db.data.users[m.sender].limit -= 1
+		} catch (e) {
+			console.log('Fallback ke API V2:', e.message)
 
-        if (!isV2) {
-            const urls = []
-            const seen = new Set()
-            for (const media of message.message) {
-                if (!media || !media._url) continue
-                if (seen.has(media._url)) continue
-                seen.add(media._url)
-                urls.push(media._url)
-            }
-            if (urls.length === 0) {
-                throw 'Media tidak ditemukan!'
-            }
-            for (const url of urls) {
-                await conn.sendFile(
-                    m.chat,
-                    url,
-                    null,
-                    '*Instagram Downloader*',
-                    m
-                )
-                await _sleep(3000)
-            }
-            return
-        }
+			isV2 = true
 
-        if (
-            !message.result ||
-            !message.result.data ||
-            !message.result.data.xdt_shortcode_media
-        ) {
-            if (global.btc) {
-                const resBot = await fetch(
-                    `https://api.botcahx.eu.org/api/dowloader/igdowloader?url=${encodeURIComponent(link)}&apikey=${global.btc}`
-                )
-                const botText = await resBot.text()
-                let botMessage
-                try {
-                    botMessage = JSON.parse(botText)
-                } catch {
-                    throw 'Gagal mengambil media Instagram! (v2)'
-                }
-                if (!botMessage || !Array.isArray(botMessage.result) || botMessage.result.length === 0) {
-                    throw 'Gagal mengambil media Instagram! (v2)'
-                }
-                const urls = botMessage.result
-                    .filter((item) => item && item.url)
-                    .map((item) => item.url)
-                if (urls.length === 0) {
-                    throw 'Gagal mengambil media Instagram! (v2)'
-                }
-                for (const url of urls.slice(0, 3)) {
-                    await conn.sendFile(m.chat, url, null, '*Instagram Downloader*', m)
-                    await _sleep(3000)
-                }
-                return
-            }
-            throw 'Gagal mengambil media Instagram! (v2)'
-        }
+			const res2 = await fetch(
+				`https://api.betabotz.eu.org/api/download/igdowloader-v2?url=${encodeURIComponent(link)}&apikey=${lann}`
+			)
 
-        const media = message.result.data.xdt_shortcode_media
-        let caption = ''
-        if (
-            media.edge_media_to_caption &&
-            media.edge_media_to_caption.edges &&
-            media.edge_media_to_caption.edges.length > 0
-        ) {
-            caption = media.edge_media_to_caption.edges[0].node.text
-        }
+			const text2 = await res2.text()
 
-        const sendCaption = (index) =>
-            index === 0
-                ? caption
-                    ? `*Instagram Downloader*
+			try {
+				message = JSON.parse(text2)
+			} catch {
+				throw new Error('API V2 bukan JSON')
+			}
+		}
 
-${caption}`
-                    : '*Instagram Downloader*'
-                : ''
+		global.db.data.users[m.sender].limit -= 1
+		if (!isV2) {
+			const urls = []
+			const seen = new Set()
+			for (const media of message.message) {
+				if (!media || !media._url) continue
+				if (seen.has(media._url)) continue
+				seen.add(media._url)
+				urls.push(media._url)
+			}
 
-        const items = []
-        const seen = new Set()
+			if (urls.length === 0) {
+				throw 'Media tidak ditemukan!'
+			}
 
-        if (
-            media.edge_sidecar_to_children &&
-            media.edge_sidecar_to_children.edges &&
-            media.edge_sidecar_to_children.edges.length > 0
-        ) {
-            for (const edge of media.edge_sidecar_to_children.edges) {
-                const node = edge.node
-                if (!node) continue
+			for (const url of urls) {
+				await conn.sendFile(
+					m.chat,
+					url,
+					null,
+					'*Instagram Downloader*',
+					m
+				)
+				await _sleep(3000)
+			}
 
-                let url = null
-                if (node.is_video && node.video_url) url = node.video_url
-                else
-                    url =
-                        node.display_url ||
-                        node.thumbnail_src ||
-                        (node.display_resources &&
-                            node.display_resources[0] &&
-                            node.display_resources[0].src)
+			return
+		}
 
-                if (!url || seen.has(url)) continue
-                seen.add(url)
-                items.push({ url, isVideo: !!node.is_video })
-            }
-        }
+		if (
+			!message.result ||
+			!message.result.data ||
+			!message.result.data.xdt_shortcode_media
+		) {
+			throw 'Gagal mengambil media Instagram! (v2)'
+		}
 
-        if (items.length === 0) {
-            if (typeof media.has_audio !== 'undefined' && media.has_audio === true && media.video_url) {
-                items.push({ url: media.video_url, isVideo: true })
-            } else {
-                const img =
-                    media.display_url ||
-                    media.thumbnail_src ||
-                    (media.display_resources &&
-                        media.display_resources[0] &&
-                        media.display_resources[0].src)
-                if (!img) throw 'Media tidak ditemukan!'
-                items.push({ url: img, isVideo: false })
-            }
-        }
+		const media = message.result.data.xdt_shortcode_media
 
-        for (let i = 0; i < items.length; i++) {
-            const item = items[i]
-            if (item.isVideo) {
-                await conn.sendMessage(
-                    m.chat,
-                    {
-                        video: { url: item.url },
-                        caption: sendCaption(i)
-                    },
-                    { quoted: m }
-                )
-            } else {
-                await conn.sendMessage(
-                    m.chat,
-                    {
-                        image: { url: item.url },
-                        caption: sendCaption(i)
-                    },
-                    { quoted: m }
-                )
-            }
-            await _sleep(3000)
-        }
-    } catch (err) {
-        console.error(err)
+		let caption = ''
 
-        m.reply(
-            typeof err === 'string'
-                ? err
-                : err.message || 'Terjadi kesalahan'
-        )
-    }
+		if (
+			media.edge_media_to_caption &&
+			media.edge_media_to_caption.edges &&
+			media.edge_media_to_caption.edges.length > 0
+		) {
+			caption = media.edge_media_to_caption.edges[0].node.text
+		}
+
+		const sendCaption = (index) =>
+			index === 0
+				? caption
+					? `*Instagram Downloader*\n\n${caption}`
+					: '*Instagram Downloader*'
+				: ''
+
+		const items = []
+		const seen = new Set()
+
+		if (
+			media.edge_sidecar_to_children &&
+			media.edge_sidecar_to_children.edges &&
+			media.edge_sidecar_to_children.edges.length > 0
+		) {
+			for (const edge of media.edge_sidecar_to_children.edges) {
+				const node = edge.node
+				if (!node) continue
+
+				let url = null
+				if (node.is_video && node.video_url) url = node.video_url
+				else
+					url =
+						node.display_url ||
+						node.thumbnail_src ||
+						(node.display_resources &&
+							node.display_resources[0] &&
+							node.display_resources[0].src)
+
+				if (!url || seen.has(url)) continue
+				seen.add(url)
+				items.push({ url, isVideo: !!node.is_video })
+			}
+		}
+
+		if (items.length === 0) {
+			if (typeof media.has_audio !== 'undefined' && media.has_audio === true && media.video_url) {
+				items.push({ url: media.video_url, isVideo: true })
+			} else {
+				const img =
+					media.display_url ||
+					media.thumbnail_src ||
+					(media.display_resources &&
+						media.display_resources[0] &&
+						media.display_resources[0].src)
+				if (!img) throw 'Media tidak ditemukan!'
+				items.push({ url: img, isVideo: false })
+			}
+		}
+
+		for (let i = 0; i < items.length; i++) {
+			const item = items[i]
+			if (item.isVideo) {
+				await conn.sendMessage(
+					m.chat,
+					{
+						video: { url: item.url },
+						caption: sendCaption(i)
+					},
+					{ quoted: m }
+				)
+			} else {
+				await conn.sendMessage(
+					m.chat,
+					{
+						image: { url: item.url },
+						caption: sendCaption(i)
+					},
+					{ quoted: m }
+				)
+			}
+			await _sleep(3000)
+		}
+
+	} catch (err) {
+		console.error(err)
+
+		m.reply(
+			typeof err === 'string'
+				? err
+				: err.message || 'Terjadi kesalahan'
+		)
+	}
 }
 
-// DOWNLOADER FACEBOOK// DOWNLOADER FACEBOOK 
+// DOWNLOADER FACEBOOK 
 async function downloadFacebook(link, m) {
 	try {
 		if (global.db.data.users[m.sender].limit > 0) {
@@ -569,18 +525,13 @@ async function _spotify(link, m) {
 				type
 			} = jsons.result.data.artist
 			await conn.sendMessage(m.chat, {
-				audio: { url: url }, mimetype: 'audio/mpeg', contextInfo: {
-					externalAdReply: {
-						title: title,
-						body: "",
-						thumbnailUrl: thumbnail,
+					audio: { url: url },
+					mimetype: 'audio/mpeg',
 						sourceUrl: url,
 						mediaType: 1,
 						showAdAttribution: false,
 						renderLargerThumbnail: true
-					}
-				}
-			}, { quoted: m })
+			}, { quoted: m });
 		}
 		else {
 			conn.reply(m.chat,
