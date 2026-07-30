@@ -1,5 +1,10 @@
-require("dotenv").config();
+const __filename = import.meta.filename;
+import dotenv from "dotenv";
+dotenv.config();
+// Timezone
+process.env.TZ = 'Asia/Jakarta';
 
+// Pengaturan Bot disini Semua
 global.owner = ["6281289694906"]; // wajib di isi tidak boleh kosong
 global.mods = ["6281289694906"]; // wajib di isi tidak boleh kosong
 global.prems = ["6281289694906"]; // wajib di isi tidak boleh kosong
@@ -10,21 +15,21 @@ global.gc = "https://chat.whatsapp.com/I5RpePh2b5u37OyFjzCNTr"; // wajib di isi 
 global.instagram = "https://www.instagram.com/dana_putra13/"; // wajib di isi tidak boleh kosong
 global.wm = "© Aquabot"; // isi nama bot atau nama kalian
 global.wait = "_*Tunggu sedang di proses...*_"; // ini pesan simulasi loading
-global.eror = "_*Server Error*_"; // ini pesan saat terjadi kesalahan
+global.eror = "_*Server Error*_\n\nMohon jangan di spam ya. Silakan laporkan masalah ini ke admin menggunakan perintah *.lapor*"; // ini pesan saat terjadi kesalahan
 global.stiker_wait = "*⫹⫺ Stiker sedang dibuat...*"; // ini pesan simulasi saat loading pembuatan sticker
 global.qris = "https://cdn.filn.pp.ua/uploads/betabotzapi/41616.jpg";
-global.thumb = "https://telegra.ph/file/3a34bfa58714bdef500d9.jpg";
+global.thumb = "https://telegra.ph/file/3a34bfa58714bdef500d9.jpg"; // thumb untuk menu
 global.packname = "Made With"; // watermark stikcker packname
 global.author = "Bot WhatsApp"; // watermark stikcker author
 global.maxwarn = "3"; // Peringatan maksimum Warn
+global.lapor = false  // set true agar bot mengirim return json error ke grub lapor, jika false tidak ada
 global.groupLapor = "120363216901617825@g.us"; // grub dimana bot mengirim laporan error dari user
 global.idchannel = ["123123412341234@newsletter"]; // channel untuk pengumuman bot max 3
 global.autobio = false; // Set true/false untuk mengaktifkan atau mematikan autobio (default: false)
 global.antiporn = false; // Set true/false untuk Auto delete pesan porno (bot harus admin) (default: false)
 global.spam = false; // Set true/false untuk anti spam (default: false)
 global.gcspam = false; // Set true/false untuk menutup grup ketika spam (default: false)
-
-
+// APIKEY INI WAJIB UNTUK DI ISI! //
 // Prefix dari bot
 global.prefix = './#'
 
@@ -69,13 +74,12 @@ global.APIKeys = {
   "https://api.danafxc.my.id": global.dana, //OPSIONAL
   "https://task.aniqu.biz.id/": global.taskToken, //OPSIONAL
 };
-
-let fs = require("fs");
-let chalk = require("chalk");
-let file = require.resolve(__filename);
-fs.watchFile(file, () => {
+import fs from 'fs';
+import chalk from 'chalk';
+import { pathToFileURL } from 'url';
+let file = import.meta.filename;
+fs.watchFile(file, async () => {
   fs.unwatchFile(file);
-  console.log(chalk.redBright("Update 'config.js'"));
-  delete require.cache[file];
-  require(file);
+  console.log(chalk.redBright("Update 'config.js, harap bot di restart!'"));
+  await import(pathToFileURL(file).href + '?update=' + Date.now());
 });

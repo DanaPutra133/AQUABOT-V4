@@ -1,14 +1,14 @@
 
-## Harap Dipahami Sebelum Instal
+## Harap Dipahami Sebelum Install
 
 ### Pembaruan:
 
 * Menggunakan **baileys versi terbaru** (original, bukan mod)
 * Support **pairing code only** sesuai ketentuan
-* Wajib menggunakan **panel dengan Node.js 22+** (sesuai ketentuan baileys terbaru)
+* Wajib menggunakan **panel dengan   Node.js 22+** (sesuai ketentuan baileys terbaru)
 * Fitur 90% implementasi dari **website API**
 * Penambahan output URL `express.js` agar bisa dijalankan di Render, dsb.
-* Informasi API: [WhatsApp](https://whatsapp.com/channel/0029VaApYsQ5Ui2c2rKbpP0S)
+* Informasi API: [WhatsApp](https://whatsapp.com/channel/0029VbCQLA43AzNYDInpyO2v)
 * Informasi Bot: [WhatsApp](https://whatsapp.com/channel/0029VaiIG3UJpe8n3Y2MZ51z)
 
 ---
@@ -40,72 +40,35 @@
 ---
 
 ## Website API
-
-* **BOTCAHX (Opsional):** [`Register`](https://api.botcahx.eu.org)
-* **AQUA (Opsional):** [`Register`](https://api.danafxc.my.id)
 * **Lann (Wajib):** [`Register`](https://api.betabotz.eu.org)
 
-### Konfigurasi ApiKey Betabotz, Botcahx dan AQUA
+### ðŸ”§ Konfigurasi ApiKey
 
 1. Setelah mendapatkan ApiKey, masukkan ke `config.js`:
 
    ```js
-   global.btc = 'API_KEY_BOTCAHX';
    global.lann = 'API_KEY_LANN';
-   global.lann = 'API_KEY_LANN';
-   global.dana = 'API_KEY_AQUA';
    ```
+
 2. atau kamu bisa memasukan nya ke `.env` dari `.env.example`, setelah itu hapus komentar gunakan yang menggunakan .env di `config.js`:
 
    ```js
    API_KEY_BETABOTZ=
    API_KEY_BETABOTZ_AKSESKEY=
-   API_KEY_BTC=
-   API_KEY_DANA=
    ```
+
 3. Jalankan bot dan ketik `.getip`
-4. Buka [`Profile API`](https://api.betabotz.eu.org), whitelist IP bot di:
+4. Buka [`Profile API`](https://api.betabotz.eu.org/profile), whitelist IP bot di:
    `Settings -> Management IP`, lalu tempelkan IP dari hasil `.getip`.
 
 ---
-
-## Konfigurasi Owner & LID
-
-### Menjalankan Bot & Mendapatkan LID
-
-1. Clone repositori:
-   ```bash
-   git clone https://github.com/ERLANRAHMAT/BETABOTZ-MD2
-   ```
-2. Masuk direktori:
-   ```bash
-   cd BETABOTZ-MD2
-   ```
-3. Instal dependensi:
-   ```bash
-   npm install
-   ```
-4. Jalankan bot:
-   ```bash
-   npm start
-   ```
-
-5. Dapatkan LID:
-   * Buat grup WA, lalu ketik `.getlid`
-   * Salin `LID Target` dari bot
-
-### Mengisi `config.js` dengan LID
-
-Contoh:
-```js
-global.owner = ['6285842647866', '26777']
-global.mods  = ['6285842647866', '26777']
-global.prems = ['6285842647866', '26777']
-```
-
-**Video Panduan:**
-[Tutorial Fix LID BETABOTZ-MD2](https://youtube.com/playlist?list=PLuQT2lE0wOYQNhk2E8JAerojcZj8ckMYs&si=kehl9mWEVmctVms0)
-
+**Informasi Pembaruan:**  
+----  
+- ✅ **Update  Lid resolver **  Penanganan lid jadi terbaru
+- ✅ **Update  Lid resolver**  Penanganan lid jadi terbaru
+- ✅ **Menggunakan Baileys Latest**  [Baileys](https://github.com/WhiskeySockets/Baileys)
+- ✅ **Delete QR Code** Jadi Alternatif Nya Memakai Pairing Code
+- ✅ **Wajib Menggunakan Node.js 22+**
 ---
 
 ---
@@ -124,7 +87,7 @@ Jika kamu mengalami masalah di atas, silakan ikuti langkah perbaikan yang telah 
 
 Bot ini wajib dijalankan di **Node.js v22+**  
 > Butuh hosting siap pakai? Hubungi:
-* **Admin Lann:** [`Buy`](https://wa.me/62895628117900)
+* **Admin Lann:** [`Buy`](https://wa.me/62895423183527)
 
 ---
 
@@ -174,6 +137,7 @@ cd BETABOTZ-MD2
 npm install
 npm start
 ```
+---
 
 ## Website ANIQU-task
 
@@ -186,6 +150,3 @@ Sebuah sistem untuk mengelola dan pengingat yang di kirim melalui discord dan wh
 ## Kontributor
 
 Lihat semua kontributor di: [`All Contri`](https://contributor.betabotz.eu.org)
-- [@Danaputra](https://github.com/DanaPutra133)
-- [@BetaBotz](https://github.com/ERLANRAHMAT)
-- Dan semua yang berkontribusi!
