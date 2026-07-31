@@ -1,6 +1,9 @@
-// const { MessageType } = require("@adiwajshing/baileys")
-
+// import { loadBaileys } from '../baileys-loader.mjs';
+// let baileys
 // async function handler(m, { command }) {
+//     try {
+//         if (!baileys) baileys = await loadBaileys();
+//   const { MessageType } = baileys;
 //     command = command.toLowerCase()
 //     this.anonymous = this.anonymous ? this.anonymous : {}
 //     switch (command) {
@@ -41,6 +44,11 @@
 //             break
 //         }
 //     }
+//     } catch (e) {
+//       console.log(e);
+//       throw e;
+//     }
+  
 // }
 // handler.help = ['start', 'leave', 'next']
 // handler.tags = 'anonymous'
@@ -48,4 +56,6 @@
 // handler.command = ['start', 'leave', 'next']
 // handler.private = true
 
-// module.exports = handler
+// export default handler
+
+// fitur dimatikan, rawan banned

@@ -21,4 +21,6 @@
 //     return !0
 // }
 
-// module.exports = handler
+// export default handler
+
+// fitur dimatikan, rawan banned

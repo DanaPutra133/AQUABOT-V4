@@ -1,11 +1,10 @@
-const axios = require('axios');
-const { setInterval } = require('timers');
+import axios from 'axios';
+import { setInterval } from 'timers';
 
-let lastGempaData = null;
+let lastGempaData = null; 
 
 async function getGempaInfo() {
     try {
-        // Assuming 'lann' is your API key variable
         const url = `https://api.danafxc.my.id/api/proxy/features/gempa?apikey=${dana}`; // Changed URL to match the new JSON source
         const response = await axios.get(url);
         const res = response.data.data; // Access the 'data' object directly
@@ -55,11 +54,9 @@ async function getGempaInfo() {
 }
 
 async function sendGempaReminderToGroups(gempaInfo) {
-    // This part assumes 'global.db.data.chats' and 'conn' are defined in your environment
-    // Adjust as per your bot's framework for sending messages to multiple chats
     for (const chatId of Object.keys(global.db.data.chats)) {
         const chat = global.db.data.chats[chatId];
-        if (chat.notifgempa) {
+         if (chat.notifgempa) {
             const reminderMessage = `🚨 *PENGINGAT GEMPA BUMI* 🚨\n\n` +
                                     `📅 Tanggal: ${gempaInfo.tanggal}\n` +
                                     `🕒 Jam: ${gempaInfo.jam}\n` +
@@ -77,7 +74,6 @@ async function sendGempaReminderToGroups(gempaInfo) {
 }
 
 async function sendReminderToGroup(chatId, text, imageUrl) {
-    // Assuming 'conn.sendMessage' supports sending images
     await conn.sendMessage(chatId, { image: { url: imageUrl }, caption: text });
 }
 
@@ -85,7 +81,7 @@ async function sendReminderToGroup(chatId, text, imageUrl) {
 function startGempaReminder() {
     setInterval(() => {
         getGempaInfo();
-    }, 60 * 1000); // Checks every 1 minute
+    }, 60 * 60 * 1000); 
 }
 
 startGempaReminder();
