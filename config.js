@@ -35,31 +35,31 @@ global.prefix = './#'
 
 
 // APIKEY INI WAJIB DI ISI! //
-// global.lann = "";
-global.lann = process.env.API_KEY_BETABOTZ;
+global.lann = "YOUR_APIKEY_HERE";
+// global.lann = process.env.API_KEY_BETABOTZ;
 // aktifkan akses .env di atas jika kamu ingin menaruh key api di .env
 // Daftar terlebih dahulu https://api.betabotz.eu.org
 
 // AKSESKEY INI DI ISI JIKA DIPERLUKAN (e.g suno ai (ai music ) & fitur prem lainnya//
-// global.aksesKey = "";
-global.aksesKey = process.env.API_KEY_BETABOTZ_AKSESKEY;
+global.aksesKey = "YOUR_AKSESKEY_HERE";
+// global.aksesKey = process.env.API_KEY_BETABOTZ_AKSESKEY;
 // aktifkan akses .env di atas jika kamu ingin menaruh key api di .env
 // Daftar terlebih dahulu https://api.betabotz.eu.org
 
 //INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
-// global.btc = "YOUR_APIKEY_HERE";
-global.btc = process.env.API_KEY_BTC;
+global.btc = "YOUR_APIKEY_HERE";
+// global.btc = process.env.API_KEY_BTC;
 //Daftar https://api.botcahx.eu.org
 
 //INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//
-// global.dana = "YOUR_APIKEY_HERE";
-global.dana = process.env.API_KEY_DANA;
+global.dana = "YOUR_APIKEY_HERE";
+// global.dana = process.env.API_KEY_DANA;
 //Daftar https://api.danafxc.my.id
 
 //INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA
 // fitur reminder dan kelola tugas, cek di youtube https://www.youtube.com/playlist?list=PLGv_-znSuMIwhZPH2y06HWisHZbn7dXL3
+global.taskToken = "YOUR_TOKEN_HERE";
 // global.taskToken = process.env.API_KEY_TOKEN;
-global.taskToken = process.env.API_KEY_TOKEN;
 //Daftar daftar di https://task.aniqu.biz.id
 
 global.APIs = {
