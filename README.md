@@ -10,7 +10,7 @@
 * Dapat menggunakan **Bun 1.3.1**
 * Fitur 90% implementasi dari **website API**
 * Penambahan output URL `express.js` agar bisa dijalankan di Render, dsb.
-* Informasi API: [WhatsApp](https://whatsapp.com/channel/0029VbCQLA43AzNYDInpyO2v)
+* Informasi API: [WhatsApp](https://whatsapp.com/channel/0029VaApYsQ5Ui2c2rKbpP0S)
 * Informasi Bot: [WhatsApp](https://whatsapp.com/channel/0029VaiIG3UJpe8n3Y2MZ51z)
 
 ---
@@ -42,6 +42,8 @@
 ---
 
 ## Website API
+* **BOTCAHX (Opsional):** [`Register`](https://api.botcahx.eu.org)
+* **AQUA (Wajib):** [`Register`](https://api.danafxc.my.id)
 * **Lann (Wajib):** [`Register`](https://api.betabotz.eu.org)
 
 ### ðŸ”§ Konfigurasi ApiKey
@@ -49,7 +51,9 @@
 1. Setelah mendapatkan ApiKey, masukkan ke `config.js`:
 
    ```js
+   global.btc = 'API_KEY_BOTCAHX';
    global.lann = 'API_KEY_LANN';
+   global.dana = 'API_KEY_AQUA';
    ```
 
 2. atau kamu bisa memasukan nya ke `.env` dari `.env.example`, setelah itu hapus komentar gunakan yang menggunakan .env di `config.js`:
@@ -57,6 +61,8 @@
    ```js
    API_KEY_BETABOTZ=
    API_KEY_BETABOTZ_AKSESKEY=
+   API_KEY_BTC=
+   API_KEY_DANA=
    ```
 
 3. Jalankan bot dan ketik `.getip`
@@ -152,3 +158,6 @@ Sebuah sistem untuk mengelola dan pengingat yang di kirim melalui discord dan wh
 ## Kontributor
 
 Lihat semua kontributor di: [`All Contri`](https://contributor.betabotz.eu.org)
+- [@Danaputra](https://github.com/DanaPutra133)
+- [@BetaBotz](https://github.com/ERLANRAHMAT)
+- Dan semua yang berkontribusi!
