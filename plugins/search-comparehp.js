@@ -25,7 +25,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         const p1Name = data.phone1.title;
         const p2Name = data.phone2.title;
 
-        let replyText = `*KOMPARASI SMARTPHONE*\n\n`;
+        let replyText = `📱 *KOMPARASI SMARTPHONE* 📱\n\n`;
         replyText += `1️⃣ *${p1Name}*\n`;
         replyText += `      🆚\n`;
         replyText += `2️⃣ *${p2Name}*\n\n`;
@@ -43,7 +43,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
                 }
 
                 hasValidRows = true;
-                sectionContent += `*├ ${row.label}*\n`;
+                sectionContent += `*├ 🏷️ ${row.label}*\n`;
                 sectionContent += `*│ 1️⃣* ${row.value1 || '-'}\n`;
                 sectionContent += `*│ 2️⃣* ${row.value2 || '-'}\n`;
             });
