@@ -36,10 +36,10 @@
     },
     "repository": {
         "type": "git",
-         "url": "git+https://github.com/DanaPutra133/AQUABOT-V4"
+        "url": "git+https://github.com/DanaPutra133/AQUABOT-V4"
     },
     "bugs": {
-       "url": "https://github.com/DanaPutra133/AQUABOT-V4/issues"
+        "url": "https://github.com/DanaPutra133/AQUABOT-V4/issues"
     },
     "license": "MIT",
     "engines": {
