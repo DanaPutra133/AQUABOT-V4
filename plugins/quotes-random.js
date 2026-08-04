@@ -1,7 +1,7 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 let handler = async (m, { conn, command }) => {
-    let anu = `─────〔 *${command}* 〕─────\n`;
+let anu = `─────〔 *${command}* 〕─────\n`;
 
     if (command === 'bucin') {
         const res = await (await fetch(`https://api.betabotz.eu.org/api/random/katabucin?apikey=${lann}`)).json();
@@ -62,4 +62,4 @@ handler.admin = false;
 handler.botAdmin = false;
 handler.fail = null;
 
-module.exports = handler;
+export default handler;

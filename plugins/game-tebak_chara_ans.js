@@ -1,4 +1,4 @@
-const similarity = require('similarity')
+import similarity from 'similarity';
 const threshold = 0.72
 
 let handler = m => m
@@ -14,7 +14,7 @@ handler.before = async function (m) {
     let teksUser = (m.text || '').toLowerCase().trim()
     if (!teksUser) return !0
     if (teksUser === jawaban) {
-        global.db.data.users[m.sender].exp += this.tebakchara[id][2]
+        global.db.data.users[m.sender].money += this.tebakchara[id][2]
         m.reply(`*Benar!*\n+${this.tebakchara[id][2]} Kredit sosial`)
         clearTimeout(this.tebakchara[id][3])
         delete this.tebakchara[id]
@@ -29,4 +29,4 @@ handler.before = async function (m) {
 }
 
 handler.exp = 0
-module.exports = handler
+export default handler

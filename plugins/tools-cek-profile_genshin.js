@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
     if (!text) throw `Masukkan UID Genshin Impact yang ingin Anda cari.\n\n*Contoh:*\n${usedPrefix + command} 843829161`;
@@ -8,14 +8,14 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     }
 
     try {
-        m.reply(`- 🔍 Sedang mencari data untuk UID *${text}*...`);
+        await m.reply(`- 🔍 Sedang mencari data untuk UID *${text}*...`);
 
         const apiUrl = `https://api.danafxc.my.id/api/proxy/search/genshin?uid=${text}&apikey=${dana}`;
         const response = await axios.get(apiUrl);
         const result = response.data;
 
         if (!result || !result.status || !result.data || !result.data.playerInfo) {
-            throw new Error(result.message || `Data untuk UID "${text}" tidak ditemukan.`);
+            throw result.message || `Data untuk UID "${text}" tidak ditemukan.`;
         }
 
         const player = result.data.playerInfo;
@@ -31,15 +31,13 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 - 🏆 *Achievement:* ${player.finishAchievementNum || '0'}
 - 🌀 *Spiral Abyss:* Floor ${player.towerFloorIndex || '0'} - Chamber ${player.towerLevelIndex || '0'}
 `;
-        m.reply(replyText.trim());
+        await m.reply(replyText.trim());
 
-    } catch (error) {
-        console.error('Error pada fitur Genshin:', error);
-        let errorMessage = `Gagal mengambil data profil. Pastikan UID benar dan publik.`;
-        if (error.response && error.response.data && error.response.data.message) {
-            errorMessage += `\n*Pesan API:* ${error.response.data.message}`;
+    } catch (e) {
+        if (e !== false) {
+            console.log(e);
+            throw e;
         }
-        m.reply(errorMessage);
     }
 };
 
@@ -48,4 +46,4 @@ handler.tags = ['tools', 'game'];
 handler.command = /^(genshin|gi)$/i;
 handler.limit = true;
 
-module.exports = handler;
+export default handler;

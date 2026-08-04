@@ -1,4 +1,4 @@
-var axios = require('axios');
+import axios from 'axios';
 var handler = async (m, { conn }) => {
   try {
     var response = await axios.get(`https://api.danafxc.my.id/api/proxy/features/gempa?apikey=${dana}`);
@@ -16,11 +16,11 @@ var handler = async (m, { conn }) => {
     conn.sendFile(m.chat, `https://data.bmkg.go.id/DataMKG/TEWS/${dataGempa.Shakemap}`, 'map.jpg', caption, m); // Construct the image URL
   } catch (e) {
     console.log(e);
-    conn.reply(m.chat, 'Terjadi kesalahan saat mengambil data gempa. Mohon coba lagi nanti.', m);
+    throw e;
   }
 };
 handler.command = handler.help = ['infogempa', 'gempa'];
 handler.tags = ['info'];
 handler.premium = false;
 handler.limit = true;
-module.exports = handler;
+export default handler;

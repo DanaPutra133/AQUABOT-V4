@@ -8,15 +8,15 @@ let handler = async (m, { conn }) => {
             image: { url: apiUrl }, 
             caption: `Berikut adalah wallpaper random untuk Anda!`,
         }, { quoted: m });
-    } catch (error) {
-        console.error(error);
-        throw `Terjadi kesalahan: ${error.message || error}`;
-    }
+    }  catch (e) {
+    console.log(e);
+    throw e;
+  }
 };
 
 handler.tags = ['image', 'internet'];
 handler.help = ['wallpaper']; 
-handler.command = /^(wallpaper2)$/i; 
+handler.command = /^(wallpaper)$/i; 
 handler.limit = true;
 
-module.exports = handler;
+export default handler;

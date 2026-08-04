@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
     if (!text) {
@@ -6,29 +6,24 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     }
 
     try {
-        // 1. Parsing input pengguna
         const [resi, courier] = text.split('|');
         
         if (!resi || !courier) {
             throw `Format salah. Gunakan pemisah '|'.\n\n*Contoh:*\n${usedPrefix + command} JX5675021651|jnt`;
         }
         
-        m.reply(`🕵️‍♂️ Sedang melacak resi *${resi.trim()}*...`);
-
-        // 2. Memanggil API Anda
+        await m.reply(`🕵️‍♂️ Sedang melacak resi *${resi.trim()}*...`);
         const apiUrl = `https://api.danafxc.my.id/api/proxy/search/cekresi?resi=${encodeURIComponent(resi.trim())}&courier=${encodeURIComponent(courier.trim())}&apikey=${danas}`;
         
         const response = await axios.get(apiUrl);
         const result = response.data;
-
-        // 3. Validasi dan format hasil
+        
         if (!result.status || !result.data) {
-            throw new Error(result.message || 'Gagal melacak resi. Pastikan nomor resi dan kode kurir benar.');
+            throw result.message || 'Gagal melacak resi. Pastikan nomor resi dan kode kurir benar.';
         }
 
         const data = result.data;
         
-        // Membuat header ringkasan
         let replyText = `
 🚚 *Hasil Lacak Resi* 📦
 
@@ -37,7 +32,6 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 ◦  *Status:* ${data.status}
 `;
 
-        // Menambahkan riwayat perjalanan jika ada
         if (data.history && data.history.length > 0) {
             replyText += `\n📜 *Riwayat Perjalanan Paket:*\n`;
             data.history.forEach(item => {
@@ -47,9 +41,11 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
         await m.reply(replyText.trim());
 
-    } catch (error) {
-        console.error('Error pada fitur cekresi:', error);
-        m.reply(error.message || 'Terjadi kesalahan saat melacak resi.');
+    } catch (e) {
+        if (e !== false) {
+            console.log(e);
+            throw e;
+        }
     }
 };
 
@@ -58,4 +54,4 @@ handler.tags = ['tools'];
 handler.command = /^(cekresi|resi)$/i;
 handler.limit = true;
 
-module.exports = handler;
+export default handler;

@@ -1,6 +1,5 @@
-const fs = require('fs')
-const sharp = require('sharp') 
-
+import fs from 'fs';
+import sharp from 'sharp';
 let handler = async (m, { conn, command, usedPrefix }) => {
   let q = m.quoted ? m.quoted : m
   let mime = (q.msg || q).mimetype || ''
@@ -29,7 +28,8 @@ let handler = async (m, { conn, command, usedPrefix }) => {
   }
 }
 
-handler.help = ["s"];
-handler.tags = ["tools"];
-handler.command = /^s$/i;
-module.exports = handler;
+handler.help = ['sticker']
+handler.tags = ['sticker']
+handler.command = /^(stiker|s|sticker)$/i
+handler.limit = true
+export default handler

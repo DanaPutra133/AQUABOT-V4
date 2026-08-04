@@ -1,7 +1,6 @@
-const axios = require('axios');
-const FormData = require('form-data');
+import axios from 'axios';
+import FormData from 'form-data';
 
-// Menggunakan struktur array asli Anda untuk membuat list yang terstruktur
 const filtersWithOptions = [
     { name: '--- Filter Dasar ---', value: '', disabled: true },
     { name: 'Grayscale', value: 'grayscale' },
@@ -29,7 +28,6 @@ const filtersWithOptions = [
     { name: 'Juno', value: 'juno' },
 ];
 
-// Array filter yang valid untuk pengecekan (tanpa separator)
 const validFilters = filtersWithOptions.filter(f => !f.disabled);
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
@@ -41,11 +39,10 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     }
 
     if (!text) {
-        // --- PESAN BANTUAN YANG DISEMPURNAKAN ---
         let listMessage = `*Pilih filter yang ingin Anda gunakan:*\n`;
         filtersWithOptions.forEach(f => {
             if (f.disabled) {
-                listMessage += `\n*${f.name}*\n`; // Judul Kategori
+                listMessage += `\n*${f.name}*\n`;
             } else {
                 listMessage += `• *${f.name}* (\`${f.value}\`)\n`;
                 if (f.needs === 'value') listMessage += `  ↳ _Butuh nilai: ${f.range || ''}_\n`;
@@ -69,12 +66,12 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     }
 
     try {
-        m.reply(`⏳ Menerapkan filter *${selectedFilter.name}*...`);
+        await m.reply(`⏳ Menerapkan filter *${selectedFilter.name}*...`);
         const imgBuffer = await q.download();
         const form = new FormData();
         form.append('image', imgBuffer, { filename: 'filter_input.png', contentType: mime });
 
-        const params = { apikey: global.dana, filter: selectedFilter.value };
+        const params = { apikey: dana, filter: selectedFilter.value };
         if (selectedFilter.needs === 'value' && filterValueOrDirection) params.value = filterValueOrDirection;
         if (selectedFilter.needs === 'direction' && filterValueOrDirection) params.direction = filterValueOrDirection;
         if (selectedFilter.needs && !filterValueOrDirection) {
@@ -89,11 +86,11 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
             responseType: 'arraybuffer'
         });
 
-        conn.sendFile(m.chat, response.data, 'filtered_image.png', `Gambar dengan filter *${selectedFilter.name}*`, m);
+        await conn.sendFile(m.chat, response.data, 'filtered_image.png', `Gambar dengan filter *${selectedFilter.name}*`, m);
 
-    } catch (error) {
-        console.error('Error pada fitur filter:', error.response ? error.response.data.toString() : error.message);
-        m.reply(`Gagal menerapkan filter. Penyebab: ${error.message}`);
+    } catch (e) {
+            console.log(e);
+            throw e;
     }
 };
 
@@ -101,4 +98,4 @@ handler.help = ['filter <nama_filter> [value/direction]'];
 handler.tags = ['tools', 'image'];
 handler.command = /^(filter|efek|imgfilter)$/i;
 
-module.exports = handler;
+export default handler;

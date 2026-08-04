@@ -1,4 +1,4 @@
-const { loadBaileys } = require('../baileys-loader.mjs')
+import { loadBaileys } from '../baileys-loader.mjs';
 let baileys
 
 let wm = global.wm;
@@ -21,7 +21,7 @@ let handler = async (m, {
 				let paus = Math.floor(Math.random() * 2);
 				let kepiting = Math.floor(Math.random() * 27);
 
-				let imageUrl = 'https://api.betabotz.eu.org/api/tools/get-upload?id=f/arit56zv.jpg';
+				let imageUrl = 'https://avatars.mds.yandex.net/get-mpic/4728959/2a000001942d0b8f934edab13cb92f28ba1b/orig';
 				let totalCatch = nila + bawal + ikan + lele + udang + paus + kepiting;
 
 				let mcng = `•  *Hasil Mancing:*
@@ -72,7 +72,7 @@ handler.help = ['mancing'];
 handler.tags = ['rpg'];
 handler.command = /^(mancing|memancing)$/i;
 handler.rpg = true
-module.exports = handler;
+export default handler;
 
 function formatTime(ms) {
 	let seconds = Math.floor(ms / 1000);
