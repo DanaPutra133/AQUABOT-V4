@@ -1,44 +1,26 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
-// --- Handler Utama ---
 let handler = async (m, { text, usedPrefix, command }) => {
-    // 1. Ganti 'APIKEY_ANDA' dengan API key kamu yang sebenarnya
-    const apikey = 'APIKEY_ANDA'; 
-    
-    if (!text) {
-        throw `Masukkan nama kota yang ingin dicari.\n\n*Contoh Penggunaan:*\n${usedPrefix + command} Jakarta`;
-    }
-
+    if (!text) throw `Penggunaan:\n${usedPrefix + command} <teks>\n\nContoh:\n${usedPrefix + command} Jakarta`;
     try {
-        m.reply('⏳ Sedang mencari informasi cuaca...');
-        const res = await fetch(`https://api.danafxc.my.id/api/proxy/features/cuaca?kota=${encodeURIComponent(text)}&apikey=${dana}`);
-                if (!res.ok) throw new Error(`Lokasi "${text}" tidak ditemukan atau terjadi kesalahan server.`);
-
-        const json = await res.json();
-        if (!json.status) throw new Error(json.message || 'Gagal mendapatkan data cuaca.');
-        const data = json.data;
-        const suhu = data.suhu.replace(/Â/g, '');
-        const terasaSeperti = data.terasa_seperti.replace(/Â/g, '');
-        const replyText = `
-🌦️ *Cuaca untuk Wilayah ${data.kota}* 🌦️
-
-📍 *Lokasi:* ${data.kota}, ${data.negara}
-🌡️ *Suhu:* ${suhu}
-🥵 *Terasa seperti:* ${terasaSeperti}
-💧 *Kelembapan:* ${data.kelembapan}
-🌬️ *Angin:* ${data.angin}
-📜 *Kondisi:* ${data.kondisi}
-        `.trim(); 
-
-        m.reply(replyText);
-
-    } catch (error) {
-        console.error(error); 
+      let res = await fetch(
+        `https://api.betabotz.eu.org/api/tools/cuaca?query=${encodeURIComponent(text)}&apikey=${lann}`,
+      );
+      if (!res.ok) throw "Lokasi tidak ditemukan";
+      let json = await res.json();
+      if (!json.status || json.code !== 200) throw eror;
+      let result = json.result;
+      m.reply(
+        `Lokasi: ${result.location}\nNegara: ${result.country}\nCuaca: ${result.weather}\nSuhu saat ini: ${result.currentTemp}\nSuhu tertinggi: ${result.maxTemp}\nSuhu terendah: ${result.minTemp}\nKelembapan: ${result.humidity}\nAngin: ${result.windSpeed}`,
+      );
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
 };
 
-handler.help = ['cuaca <kota>'];
+handler.help = ['cuaca'];
 handler.tags = ['internet'];
 handler.command = /^(cuaca|weather)$/i;
 
-module.exports = handler;
+export default handler;

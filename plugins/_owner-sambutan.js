@@ -55,7 +55,7 @@
 //   } 
 // }
 
-// module.exports = handler
+// export default handler
 
 // //base code by adrian
 // //edit by dana

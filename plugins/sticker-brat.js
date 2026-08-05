@@ -1,12 +1,9 @@
-let { sticker5 } = require("../lib/sticker");
-let fs = require("fs");
-let fetch = require("node-fetch");
-const axios = require("axios");
+import { sticker5 } from '../lib/sticker.js';
+import fs from 'fs';
+import fetch from 'node-fetch';
+import axios from 'axios';
 
 let handler = async (m, { conn, args, text, usedPrefix, command }) => {
-  const packname = global.packname;
-  const author = global.author;
-
   text = text
     ? text
     : m.quoted && m.quoted.text
@@ -19,14 +16,11 @@ let handler = async (m, { conn, args, text, usedPrefix, command }) => {
 
   if (!text) throw `Example : ${usedPrefix + command} Lagi Ruwet`;
 
-  var error = fs.readFileSync(`./media/sticker/emror.webp`);
-
   try {
     let imageBuffer;
+    
     try {
-      const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/brat?apikey=${dana}&text=${encodeURIComponent(
-        text.substring(0, 151)
-      )}`;
+      const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/brat?apikey=${dana}&text=${encodeURIComponent(text.substring(0, 151))}`;
 
       const response = await axios.post(apiUrl, null, {
         responseType: "arraybuffer",
@@ -35,18 +29,17 @@ let handler = async (m, { conn, args, text, usedPrefix, command }) => {
       imageBuffer = response.data;
     } catch (e) {
       console.log("API utama gagal, memakai fallback...");
-      const res = `https://api.betabotz.eu.org/api/maker/brat?text=${encodeURIComponent(
-        text.substring(0, 151)
-      )}&apikey=${lann}`;
+      const res = `https://api.betabotz.eu.org/api/maker/brat?text=${encodeURIComponent(text.substring(0, 151))}&apikey=${lann}`;
 
       const fetchResult = await fetch(res);
 
       if (!fetchResult.ok) {
-        throw new Error("Fallback API gagal");
+        throw "Fallback API gagal";
       }
 
       imageBuffer = await fetchResult.buffer();
     }
+    
     let stiker = await sticker5(
       imageBuffer,
       null,
@@ -54,14 +47,15 @@ let handler = async (m, { conn, args, text, usedPrefix, command }) => {
       author,
       ["🎨"]
     );
+    
     if (stiker) {
       await conn.sendFile(m.chat, stiker, "sticker.webp", "", m);
     } else {
-      throw new Error("Pembuatan stiker gagal");
+      throw "Pembuatan stiker gagal";
     }
-  } catch (err) {
-    console.error("Error pada command brat:", err);
-    m.reply("Terjadi kesalahan, silakan coba lagi nanti.");
+  } catch (e) {
+      console.log(e);
+      throw e;
   }
 };
 
@@ -70,4 +64,4 @@ handler.tags = ["sticker"];
 handler.limit = true;
 handler.group = false;
 
-module.exports = handler;
+export default handler;

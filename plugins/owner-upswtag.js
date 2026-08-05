@@ -1,12 +1,10 @@
-const crypto = require("crypto");
-const { loadBaileys } = require('../baileys-loader.mjs')
-let baileys
+import crypto from 'crypto';
+
 
 const handler = async (
   m,
   { conn, text, command, prefix, isOwner, isSewa, isBotAdmin },
 ) => {
-  if (!baileys) baileys = await loadBaileys();
   const { generateWAMessageContent, generateWAMessageFromContent } = baileys;
 
   async function groupStatus(jid, content) {
@@ -134,4 +132,4 @@ Kirim/Reply foto/video/audio dengan atau tanpa caption`);
 handler.command = ["upswgc", "swgc"];
 handler.admin = true;
 handler.group = true;
-module.exports = handler;
+export default handler;

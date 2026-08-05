@@ -1,52 +1,57 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-    // Ganti dengan API key kamu
+function getPrayerTimes(jsonData) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
 
-    if (!text) throw `Masukkan nama kota yang ingin dicari.\n\n*Contoh:*\n${usedPrefix + command} Jakarta`;
+    const todayString = `${day}-${month}-${year}`;
 
+    for (const item of jsonData.result.data) {
+        if (item.date.gregorian.date === todayString) {
+            return item;
+        }
+    }
+    return null;
+}
+
+let handler = async (m, { text, usedPrefix, command }) => {
     try {
-        await m.reply('⏳ Mencari jadwal sholat...');
+        if (!text) throw `Gunakan contoh: ${usedPrefix}${command} semarang`;
 
-        const res = await fetch(`https://api.danafxc.my.id/api/proxy/islamic/sholat?kota=${encodeURIComponent(text)}&tanggal=now&apikey=${dana}`);
+        const res = await (await fetch(`https://api.betabotz.eu.org/api/tools/jadwalshalat?kota=${text}&apikey=${global.lann}`)).json();
         
-        if (!res.ok) throw new Error(`Tidak dapat menemukan jadwal untuk kota "${text}".`);
+        if (!res.status || res.result.code !== 200) {
+            throw 'Error: API response tidak valid';
+        }
+
+        const prayerTimes = getPrayerTimes(res);
         
-        const json = await res.json();
-        
-        if (!json.status) throw new Error(json.message || 'Respons API tidak valid.');
-
-        const data = json.data;
-        const timings = data.timings;
-        const readableDate = data.date.readable;
-        const hijriDate = `${data.date.hijri.day}-${data.date.hijri.month.en}-${data.date.hijri.year}`;
-
-        // Format pesan balasan yang rapi
-        const replyText = `
-🕌 *Jadwal Sholat untuk ${text.charAt(0).toUpperCase() + text.slice(1)}*
-
-📅 *Tanggal:* ${readableDate}
-☪️ *Hijriah:* ${hijriDate}
-
-- *Imsak:* ${timings.Imsak}
-- *Subuh (Fajr):* ${timings.Fajr}
-- *Terbit (Sunrise):* ${timings.Sunrise}
-- *Dzuhur:* ${timings.Dhuhr}
-- *Ashar:* ${timings.Asr}
-- *Maghrib:* ${timings.Maghrib}
-- *Isya:* ${timings.Isha}
-        `.trim();
-
-        await m.reply(replyText);
-
-    } catch (error) {
-        console.error(error);
-        await m.reply(`Terjadi kesalahan: ${error.message}\nPastikan nama kota yang Anda masukkan benar.`);
+        if (prayerTimes) {
+            let timings = prayerTimes.timings;
+            let jadwalSholat = Object.entries(timings)
+                .map(([name, time]) => `*${name}:* ${time}`)
+                .join('\n');
+            
+            let message = `
+Jadwal Sholat untuk *${text}*
+${jadwalSholat}
+`.trim();
+            
+            m.reply(message);
+        } else {
+            throw 'Error: Tidak ada data untuk tanggal hari ini';
+        }
+    } catch (e) {
+        console.log(e);
+        throw e;
     }
 };
 
-handler.help = ['jadwalsholat <kota>'];
-handler.tags = ['islamic'];
-handler.command = /^(jadwalsholat|sholat)$/i;
+handler.help = ['salat <daerah>'];
+handler.tags = ['islam'];
+handler.command = /^(jadwal)?s(a|o|ha|ho)lat$/i;
+handler.limit = true;
 
-module.exports = handler;
+export default handler;

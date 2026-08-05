@@ -1,6 +1,6 @@
-const axios = require('axios');
-const FormData = require('form-data');
-const { promisify } = require('util');
+import axios from 'axios';
+import FormData from 'form-data';
+import { promisify } from 'util';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
     if (!m.quoted) {
@@ -35,10 +35,10 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
                 filename: 'background.jpg',
             });
         }
+        
         const params = { apikey: dana };
         const blurValue = text ? parseInt(text.trim()) : null;
 
-        // 2. Validasi dan tambahkan parameter blur jika ada
         if (blurValue !== null) {
             if (isNaN(blurValue)) {
                 throw `Nilai blur harus berupa angka. Contoh: *${usedPrefix + command} 20*`;
@@ -49,7 +49,6 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         const queryString = new URLSearchParams(params).toString();
         const apiUrl = `https://api.danafxc.my.id/api/proxy/tools/codesnap?${queryString}`;
         
-
         const getLength = promisify(form.getLength).bind(form);
         const contentLength = await getLength();
 
@@ -61,11 +60,11 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
             responseType: 'arraybuffer'
         });
 
-        conn.sendFile(m.chat, response.data, 'codesnap.png', 'Ini codesnap Anda!', m);
+        await conn.sendFile(m.chat, response.data, 'codesnap.png', 'Ini codesnap Anda!', m);
 
-    } catch (error) {
-        console.error('Error pada fitur codesnap:', error.response ? JSON.stringify(error.response.data) : error.message);
-        m.reply(`Gagal membuat codesnap. Penyebab: ${error.message}`);
+    } catch (e) {
+            console.log(e);
+            throw e;
     }
 };
 
@@ -73,4 +72,4 @@ handler.help = ['codesnap <reply> [nilai_blur]'];
 handler.tags = ['tools', 'maker'];
 handler.command = /^(codesnap|cs)$/i;
 
-module.exports = handler;
+export default handler;

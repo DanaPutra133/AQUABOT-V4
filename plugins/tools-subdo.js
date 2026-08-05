@@ -1,43 +1,45 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 let handler = async (m, { text, usedPrefix, command }) => {
   if (command === 'checksub') {
-    if (!text) throw `*Contoh:* ${usedPrefix}checksub mydomain,ns10.us.kg`;
+    if (!text) throw `*Contoh:* ${usedPrefix}checksub mydomain,idnet.my.id`;
     
     const [subdomain, domain] = text.split(',');
     if (!subdomain || !domain) {
-      throw `*Contoh:* ${usedPrefix}checksub mydomain,ns10.us.kg`;
+      throw `*Contoh:* ${usedPrefix}checksub mydomain,idnet.my.id`;
     }
     
     try {
       m.reply(wait);
       const checkData = await whois(subdomain, domain);
-      
+
       if (checkData?.result?.exists) {
         const record = checkData.result.record;
         let capt = `乂 *INFORMASI SUBDOMAIN*\n\n`;
         capt += `◦  Nama: ${record.name}\n`;
         capt += `◦  Tipe: ${record.type}\n`;
         capt += `◦  Content: ${record.content}\n`;
-        capt += `◦  Proxied: ${record.proxied ? 'Ya' : 'Tidak'}\n`;
+        capt += `◦  Proxied: ${record.proxied ? "Ya" : "Tidak"}\n`;
         capt += `◦  TTL: ${record.ttl}\n`;
         capt += `◦  Dibuat Pada: ${new Date(record.created_on).toLocaleString()}\n`;
         return m.reply(capt);
       } else {
-        return m.reply(`*Subdomain ${subdomain}.${domain} tersedia dan dapat digunakan!*`);
+        return m.reply(
+          `*Subdomain ${subdomain}.${domain} tersedia dan dapat digunakan!*`,
+        );
       }
-    } catch (error) {
-      console.error(error);
-      return m.reply('*Terjadi kesalahan!');
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
   }
 
   if (command === 'createsub' || command === 'createdomain' || command === 'createsubdomain') {
-    if (!text) throw `*Contoh:* ${usedPrefix}createsub mydomain,ns10.us.kg,CNAME,linkcname,true\n\n\n*Domain Available*\n\n- ns10.us.kg\n- cz1.us.kg`;
+    if (!text) throw `*Contoh:* ${usedPrefix}createsub mydomain,idnet.my.id,CNAME,linkcname,true\n\n\n*Domain Available*\n\n- idnet.my.id`;
     
     const [subdomain, domain, type, content, proxied] = text.split(',');
     if (!subdomain || !domain || !type || !content || proxied === undefined) {
-      throw `*Contoh:* ${usedPrefix}createsub mydomain,ns10.us.kg,CNAME,linkcname,true\n\n\n*Domain Available*\n\n- ns10.us.kg\n- cz1.us.kg`;
+      throw `*Contoh:* ${usedPrefix}createsub mydomain,idnet.my.id,CNAME,linkcname,true\n\n\n*Domain Available*\n\n- idnet.my.id`;
     }
     
     const isProxied = proxied.toLowerCase() === 'true';
@@ -73,9 +75,9 @@ let handler = async (m, { text, usedPrefix, command }) => {
         const errmsg_ = response?.result?.errors?.[0]?.message || 'Terjadi kesalahan yang tidak diketahui.';
         m.reply(`*Gagal membuat subdomain!*\n\n*Error:* ${errmsg_}`);
       }
-    } catch (error) {
-      console.error(error);
-      m.reply('*Terjadi kesalahan!*');
+    } catch (e) {
+        console.log(e);
+        throw e;
     }
   }
 };
@@ -86,7 +88,7 @@ handler.tags = ['tools'];
 handler.premium = false;
 handler.limit = true;
 
-module.exports = handler;
+export default handler;
 
 async function whois(subdomain, domain) {
   const url = `https://api.betabotz.eu.org/api/tools/whois-subdo?subdomain=${encodeURIComponent(subdomain)}&domain=${encodeURIComponent(domain)}&apikey=${lann}`;
