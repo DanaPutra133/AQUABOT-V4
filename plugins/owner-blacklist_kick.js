@@ -74,7 +74,7 @@ const handler = async (m, { conn, text, command }) => {
 
         await conn.reply(
           m.chat,
-          `Sukses menambahkan *${targetNumber}* ke *Blacklist Global*.\n\nMemulai pemindaian grup secara...`,
+          `Sukses menambahkan *${targetNumber}* ke *Blacklist Global*.\n\nMemulai pemindaian grup untuk mengeluarkan ${targetNumber}...`,
           m,
         );
 
@@ -83,7 +83,7 @@ const handler = async (m, { conn, text, command }) => {
         let totalKicked = 0;
 
         for (let groupId of groupIds) {
-          await delay(5000); // jeda 5 detik
+          await delay(3000); // jeda 3 detik
 
           try {
             const groupMetadata = await conn
@@ -130,7 +130,7 @@ const handler = async (m, { conn, text, command }) => {
                 text: `🚨 *Blacklist Bot*\nPengguna dengan ID @${actualJid.split("@")[0]} telah masuk ke dalam daftar Blacklist Global dan otomatis dikeluarkan dari grup ini.`,
                 mentions: [actualJid],
               });
-              await delay(3500);
+              await delay(1500);
             }
           } catch (err) {
             console.error(
@@ -227,6 +227,6 @@ handler.command = ["blacklist", "unblacklist"];
 handler.owner = true;
 handler.group = true;
 
-module.exports = handler;
+export default handler;
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

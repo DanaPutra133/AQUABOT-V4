@@ -1,9 +1,9 @@
-const fetch = require("node-fetch");
+import fetch from 'node-fetch';
 let handler = async (m, { conn }) => {
   const q = [
     //tambahin sendiri saya ga pernah nontooon
-    "japanese",
-    "boobs",
+    'japanese',
+    'boobs'
   ];
   const pick = q[Math.floor(Math.random() * q.length)];
   try {
@@ -27,17 +27,18 @@ let handler = async (m, { conn }) => {
       )
     ).json();
     conn.sendFile(m.chat, getDl.result.url, null, capt, m);
-  } catch (error) {
-    throw `🚩 *Data Tidak Ditemukan*`;
+  } catch (e) {
+    console.log(e);
+    throw e;
   }
-};
-handler.help = handler.command = ["randombokep"];
-handler.tags = ["internet"];
+}
+handler.help = handler.command = ['randombokep'];
+handler.tags = ['internet'];
 handler.premium = true;
 handler.nsfw = true;
 handler.limit = 500;
-handler.nsfw = true;
-module.exports = handler;
+
+export default handler;
 
 function getRandomResult(data) {
   const results = data.result;

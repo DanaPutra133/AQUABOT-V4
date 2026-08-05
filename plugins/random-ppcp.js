@@ -1,15 +1,19 @@
-let fetch = require('node-fetch')
+import fetch from 'node-fetch';
 let handler = async (m, { conn, command }) => {
+  try {
   let res = await fetch(`https://api.betabotz.eu.org/api/wallpaper/couplepp?apikey=${lann}`)
   if (res.status != 200) throw await res.text()
   let json = await res.json()
   if (!json.status) throw json
 conn.sendFile(m.chat, json.result.female,  'pp.jpg', 'PP Cewenya', m)
 conn.sendFile(m.chat, json.result.male,'pria.jpg',  'PP Cowonya', m)
-
+} catch (e) {
+        console.log(e);
+        throw e;
+    }
 }
 handler.help = ['ppcp']
 handler.tags = ['internet']
 handler.command = /^ppcp$/i
 
-module.exports = handler
+export default handler

@@ -1,113 +1,61 @@
-// let fs = require('fs')
-// let handler = async (m, { conn }) => {
-// let teks = 'donasi'
-// let dana = global.dana
-// let pulsa = global.pulsa
-// let gopay = global.gopay
-// let numberowner = global.numberowner
-// let anu = `Hai 👋
-// Kalian bisa mendukung saya agar bot ini tetap up to date dengan:
-// ┌〔 Donasi • Emoney 〕
-// ├ Dana : 081289694906
-// ├ gopay : 081289694906
-// └────
-// Berapapun donasi kalian akan sangat berarti 👍
+import os from 'os';
+import fetch from 'node-fetch';
 
-// Terimakasih =D
+let handler = async (m, { conn }) => {
+  try {
+    let response = await fetch('https://freeipapi.com/api/json');
+    let json = await response.json();
+    let caption = `乂  *S E R V E R*\n\n`;
+    caption += `┌  ◦  OS: ${os.type()} (${os.arch()} / ${os.release()})\n`;
+    caption += `│  ◦  RAM: ${formatSize(os.totalmem() - os.freemem())} / ${formatSize(os.totalmem())}\n`;
+    json.timeZones = [json.timeZones[0]];
+    let currencies = json.currencies || ['N/A'];
+    let currency = currencies[0] || 'N/A';
 
-// Contact person Owner:
-// wa.me/${numberowner} (Owner)
+    for (let key in json) {
+      if (key === 'currencies') {
+        caption += `│  ◦  Currency: ${currency}\n`;
+      } else {
+        caption += `│  ◦  ${ucword(key)}: ${json[key]}\n`;
+      }
+    }
+    caption += `│  ◦  Uptime: ${toTime(os.uptime() * 1000)}\n`;
+    caption += `└  ◦  Processor: ${os.cpus()[0].model}\n\n`;
+    conn.sendMessage(m.chat, { image: { url: 'https://telegra.ph/file/cf4f28ed3b9ebdfb30adc.png' }, caption: caption, mentions: [m.sender] }, { quoted: m });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    deleteMessage();
+  }
+};
 
-// *Kirim bukti ke .owner nanti dapat hadiahxp + limit :)*`
-//   m.reply(anu)
-// }
-// handler.help = handler.command = ['donasi','donate','sewa','sewabot','belibot']
-// handler.tags = ['main']
+handler.command = handler.help = ['server'];
+handler.tags = ['info'];
+handler.owner = true;
 
-// handler.group = false
+export default handler;
 
-// module.exports = handler
-
-
-// let fs = require('fs')
-// let handler = async (m, { conn }) => {
-
-// let qris = global.qris
-// let anu = 
-// {qris}
-
-// `Hai 👋
-// Kalian bisa mendukung saya agar bot ini tetap up to date dengan:
-// ┌〔 Donasi • Emoney 〕
-// ├ Dana : 081289694906
-// ├ gopay : 081289694906
-// └────
-// Berapapun donasi kalian akan sangat berarti 👍
-
-// Terimakasih =D
-
-// Contact person Owner:
-// wa.me/${numberowner} (Owner)
-
-// *Kirim bukti ke .owner nanti dapat hadiahxp + limit :)*`
-//    conn.sendFile(m.chat, qris, anu, m)
-// }
-// handler.help = ['donasi', 'donate']
-// handler.tags = ['xp', 'info']
-// handler.command = /^(donasi|donate)$/i
-// handler.group = true
-
-// module.exports = handler
-
-let fetch = require('node-fetch')
-let numberowner = global.numberowner
-
-let handler = async (m, { conn, command }) => {
-    let buffer = await fetch(`https://uploader.danafxc.my.id/images/da172e75-95ef-470b-92e1-e9c8b106734b.jpeg`).then(res => res.buffer())
-    conn.sendFile(m.chat, buffer, 'hasil.jpg', `*kamu bisa chat owner untuk konfirmasi/ bertanya seputar bot di nomor berikut: ${numberowner}.*
-        
-🌟 PRICE LIST BOT WHATSAPP 🌟
-📲 Layanan profesional dengan update gratis, service 24/7, dan maintenance gratis
-
-NOMOR DARI KAMU:
-BENEFIT
-✅ Custom nama bot
-✅ Full custom 
-
-💡 1. Paket 1 Bulan
-💰 Harga:
-	⁠Source Code dari saya: Rp5.000
-✨ Fitur:
-✅ Update Gratis
-✅ Service 24/7
-✅ Maintenance Gratis
-✅ Custom fitur
-✅ Store fitur  
-
-💡 2. Paket 3 Bulan (+ Garansi 1 Bulan)
-💰 Harga:
-	⁠Source Code dari saya: Rp14.000
-✨ Fitur:
-✅ Update Gratis
-✅ Service 24/7
-✅ Maintenance Gratis
-✅ Custom fitur 
-✅ Store fitur 
-
-💡 3. Paket 6 Bulan (+ Garansi 3 Bulan)
-💰 Harga:
-	⁠Source Code dari Saya: Rp50.000
-✨ Fitur:
-✅ Update Gratis
-✅ Service 24/7
-✅ Maintenance Gratis
-✅ Custom fitur 
-✅ Store fitur 
-✅ Custom apikey API 
-
-🛠 Siap melayani kebutuhan bot WhatsApp Anda!`, m)
+function deleteMessage() {
+  //chaunima😁
 }
 
-handler.help = handler.command = ['sewa','sewabot','belibot']
-handler.tags = ['main']
-module.exports = handler
+function formatSize(bytes) {
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes === 0) return '0 Bytes';
+  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10);
+  return (Math.round(bytes / Math.pow(1024, i) * 100) / 100) + ' ' + sizes[i];
+}
+
+function ucword(str) {
+  return str.replace(/\b\w/g, function(l) {
+    return l.toUpperCase();
+  });
+}
+
+function toTime(milliseconds) {
+  const seconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  return `${days} days, ${hours % 24} hours, ${minutes % 60} minutes, ${seconds % 60} seconds`;
+}

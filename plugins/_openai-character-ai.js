@@ -1,5 +1,4 @@
- const fetch = require('node-fetch')
-
+import fetch from 'node-fetch';
 let handler = async (m, { text, usedPrefix, command }) => {
   if (!text) throw(`Input Text Dan Karakter!\nExample: ${usedPrefix + command} hai Kirito|Kirito`)    
   try {
@@ -8,9 +7,9 @@ let handler = async (m, { text, usedPrefix, command }) => {
     let res = await fetch(`https://api.betabotz.eu.org/api/search/c-ai?prompt=${prompt}?&char=${logic}&apikey=${lann}`)
     let json = await res.json()
     m.reply(json.message)
-  } catch (error) {
-    console.error(error)
-    m.reply('Terjadi kesalahan saat menjalankan perintah.')
+  } catch (e) {
+    console.log(e);
+    throw e;
   }
 }
 
@@ -21,4 +20,4 @@ handler.limit = false
 handler.group = false
 handler.private = false
 
-module.exports = handler
+export default handler

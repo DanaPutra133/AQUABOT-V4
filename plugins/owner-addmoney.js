@@ -1,9 +1,8 @@
+import * as baileys from '@whiskeysockets/baileys';
 
-const { loadBaileys } = require('../baileys-loader.mjs')
-let baileys
+
 
 let handler = async (m, { conn, text }) => {
-  if (!baileys) baileys = await loadBaileys();
   const { MessageType } = baileys;
   if (!text) {
     throw 'Masukkan jumlah money yang ingin ditambahkan pada pengguna. Contoh: .addmoney @user 10';
@@ -48,4 +47,4 @@ handler.tags = ['xp'];
 handler.command = /^addmoney$/i;
 handler.owner = true;
 
-module.exports = handler;
+export default handler;

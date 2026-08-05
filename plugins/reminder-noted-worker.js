@@ -1,6 +1,7 @@
-const axios = require("axios");
+/*
+import axios from 'axios';
 
-const API_URL = "https://api.danafxc.my.id";
+const API_URL = "https://api.betabotz.eu.org";
 
 let lastReminded = {};
 
@@ -13,26 +14,14 @@ function getLocalDateString(daysToAdd = 0) {
   return `${year}-${month}-${day}`;
 }
 
-async function sendReminderToGroup(jid, text, hidetag = false) {
+async function sendReminderToGroup(jid, text) {
   const conn = global.conn || global.default;
   if (!conn)
     return console.error(
       "[REMINDER NOTED] global.conn belum tersedia, menunggu bot login...",
     );
   try {
-    if (hidetag) {
-      // Fetch participants
-      let participants = [];
-      try {
-        const metadata = await conn.groupMetadata(jid);
-        participants = metadata.participants.map((p) => p.id || p.jid || p.participant || p);
-      } catch (e) {
-        console.error(`[REMINDER NOTED] Gagal ambil participants untuk hidetag: ${jid}`, e.message);
-      }
-      await conn.sendMessage(jid, { text, mentions: participants }, {});
-    } else {
-      await conn.sendMessage(jid, { text });
-    }
+    await conn.sendMessage(jid, { text });
   } catch (e) {
     console.error(
       `[REMINDER NOTED] Gagal mengirim pesan ke ${jid}:`,
@@ -41,8 +30,8 @@ async function sendReminderToGroup(jid, text, hidetag = false) {
   }
 }
 
-async function checkAndSendReminder(targetDates, title, hidetag = false) {
-  const apikey = global.dana;
+async function checkAndSendReminder(targetDates, title) {
+  const apikey = global.lann;
   const conn = global.conn || global.default;
   if (!conn) return;
 
@@ -74,8 +63,9 @@ async function checkAndSendReminder(targetDates, title, hidetag = false) {
 
   for (const jidgrub of groups) {
     try {
-      const url = `${API_URL}/api/proxy/features/reminder/get/noted?jidgrub=${jidgrub}&apikey=${apikey}`;
-      const { data: json } = await axios.get(url);
+      const url = `${API_URL}/api/tools/reminder/get/noted?jidgrub=${jidgrub}&apikey=${apikey}`;
+      const { data: json1 } = await axios.get(url);
+      const json = json1.result;
 
       if (
         json.status === "sukses" &&
@@ -97,18 +87,17 @@ async function checkAndSendReminder(targetDates, title, hidetag = false) {
             msg += `⏰ *Jam:* ${v.jam}\n\n`;
           });
 
-          await sendReminderToGroup(jidgrub, msg.trim(), hidetag);
+          await sendReminderToGroup(jidgrub, msg.trim());
           console.log(
             `[REMINDER NOTED] Berhasil mengirim reminder ke grup: ${jidgrub}`,
           );
         }
       }
     } catch (e) {
-         //  console.log("ERROR REMINDER:", e.message); // biar gak spam di matiin, debug nyalain aja
+      //  console.log("ERROR REMINDER:", e.message); // biar gak spam di matiin, debug nyalain aja
     }
   }
 }
-
 
 console.log(
   "[REMINDER NOTED] Worker interval berhasil dimuat dan bersiap jalan...",
@@ -123,27 +112,29 @@ setInterval(async () => {
   const todayStr = getLocalDateString(0);
 
   // GANTI INI KALAU MAU UABH JAM REMINDER UNTUK HARI H
-  if (hours === 7 && minutes === 0) {
-    const triggerKey = `${todayStr}-07`;
+  //CONTOH  else if (hours 4 ===  && minutes === 3) ini jam 4:03
+  if (hours ===  && minutes === ) {
+    const triggerKey = `${todayStr}-`;
 
     if (!lastReminded[triggerKey]) {
       console.log(
-        "[REMINDER NOTED] Mengecek reminder Hari H pada jam 07:00...",
+        "[REMINDER NOTED] Mengecek reminder Hari H pada jam :00...",
       );
       const targetHariH = getLocalDateString(0); // HARI H
 
-      await checkAndSendReminder([targetHariH], "HARI INI", true); // hidetag hanya untuk jam 7 pagi hari H
+      await checkAndSendReminder([targetHariH], "HARI INI");
       lastReminded[triggerKey] = true;
     }
   }
 
-  // GANTI INI KALAU MAU UABH JAM REMINDER UNTUK HARI H-2 & H-3
-  else if (hours === 19 && minutes === 0) {
-    const triggerKey = `${todayStr}-19`;
+  // GANTI INI KALAU MAU UBAH JAM REMINDER UNTUK HARI H-2 & H-3
+  //CONTOH  else if (hours 4 ===  && minutes === 3) ini jam 4:03
+  else if (hours ===  && minutes === ) {
+    const triggerKey = `${todayStr}-`;
 
     if (!lastReminded[triggerKey]) {
       console.log(
-        "[REMINDER NOTED] Mengecek reminder H-1 & H-3 pada jam 19:00...",
+        "[REMINDER NOTED] Mengecek reminder H-1 & H-3 pada jam :00...",
       );
       const targetHMinus1 = getLocalDateString(1); // H-1
       const targetHMinus3 = getLocalDateString(3); // H-3
@@ -157,4 +148,8 @@ setInterval(async () => {
   } else if (hours === 0 && minutes === 0) {
     lastReminded = {};
   }
-}, 60 * 1000); 
+}, 60 * 1000);
+
+*/
+
+// DIMATIKAN JIKA INGIN DI GUNAKAN HAPUS TANDA KOMENTAR

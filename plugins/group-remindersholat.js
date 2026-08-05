@@ -1,18 +1,11 @@
-let axios = require('axios');
-let moment = require('moment-timezone'); 
+import axios from 'axios';
+import moment from 'moment-timezone';
 
-
-async function sendReminderToGroup(chatId, text) {
-    if (conn) { // Pastikan conn ada sebelum digunakan
-        await conn.sendMessage(chatId, { text });
-    } else {
-        console.error("[❗] Variabel 'conn' tidak terdefinisi. Tidak bisa mengirim pesan pengingat.");
-    }
-}
+const timeZone = 'Asia/Jakarta';
 
 async function getPrayerTimesAndSetReminders() {
     try {
-        let city = 'jakarta';
+     let city = 'jakarta';
         
         
         let url = `https://api.danafxc.my.id/api/proxy/islamic/sholat?kota=${city}&tanggal=now&apikey=${dana}`;
@@ -41,28 +34,34 @@ async function getPrayerTimesAndSetReminders() {
         }
 
     } catch (error) {
-        console.error(`[❗] Terjadi kesalahan saat mengambil data jadwal sholat.`, error.message);
+        console.error(`[JADWAL SHOLAT] Terjadi kesalahan saat mengambil data.`);
     }
 }
 
-// ⛔ TIDAK ADA PERUBAHAN LOGIKA PADA FUNGSI DI BAWAH INI ⛔
+function getPrayerTimes(jsonData) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    const todayString = `${day}-${month}-${year}`;
+
+    for (const item of jsonData.result.data) {
+        if (item.date.gregorian.date === todayString) {
+            return item;
+        }
+    }
+    return null;
+}
 
 function setPrayerTimers(jadwal) {
-    let now = moment().tz('Asia/Jakarta');
+    let now = new Date();
 
     function calculateTimeDifference(prayerTime) {
-        let cleanTime = prayerTime.replace(' (WIB)', '').trim();
+        let cleanTime = prayerTime.replace(' (WIB)', '');
         let [hours, minutes] = cleanTime.split(':').map(Number);
-        
-        let prayerDate = now.clone().hour(hours).minute(minutes).second(0).millisecond(0);
-        
-        // Jika waktu sholat sudah lewat untuk hari ini, atur untuk besok
-        if (prayerDate.isBefore(now)) {
-           // prayerDate.add(1, 'days'); // Uncomment jika ingin pengingat berjalan untuk hari berikutnya jika sudah terlewat
-           return -1; // Mengembalikan nilai negatif jika sudah terlewat
-        }
-        
-        return prayerDate.diff(now);
+        let prayerDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+        return prayerDate.getTime() - now.getTime();
     }
 
     let prayerTimes = [
@@ -85,31 +84,27 @@ function setPrayerTimers(jadwal) {
 }
 
 async function sendPrayerReminderToGroups(prayerName, prayerTime) {
-    // Pastikan global.db.data.chats ada dan terstruktur dengan benar
-    if (!global.db || !global.db.data || !global.db.data.chats) {
-        console.error("[❗] Database (global.db.data.chats) tidak ditemukan. Pengingat tidak dapat dikirim.");
-        return;
-    }
-
     for (const chatId of Object.keys(global.db.data.chats)) {
         const chat = global.db.data.chats[chatId];
         if (chat.notifsholat) {
-            const reminderMessage = `⏰ *PENGINGAT SHOLAT*\n\n🚨 Waktu Sholat *${prayerName}* telah tiba!\nJam: *${prayerTime}*\n\nJangan lupa untuk melaksanakan sholat.`;
+            const reminderMessage = `⏰ *PENGINGAT SHOLAT*\n\n🚨 Waktu Sholat ${prayerName} telah tiba!\nJam: ${prayerTime}\nJangan lupa untuk melaksanakan sholat.`;
             await sendReminderToGroup(chatId, reminderMessage); 
         }
     }
 }
 
+async function sendReminderToGroup(chatId, text) {
+    await conn.sendMessage(chatId, { text }); 
+}
+
 function startDailyPrayerReminder() {
-    console.log("⏰ Pengingat Sholat Harian diaktifkan.");
     getPrayerTimesAndSetReminders();
 
-    // Mengatur interval untuk mengambil jadwal baru setiap 6 jam
     setInterval(() => {
-        let now = moment().tz('Asia/Jakarta');
-        console.log(`[🔄] Memperbarui jadwal sholat untuk hari ini (${now.format('DD-MM-YYYY')})`);
+        let now = new Date();
+        console.log(`[JADWAL SHOLAT] Mengambil jadwal sholat untuk hari ini (${now.toLocaleDateString()})`);
         getPrayerTimesAndSetReminders();
-    }, 6 * 60 * 60 * 1000); // setiap 6 jam sekali
+    }, 6 * 60 * 60 * 1000); // setiap 6 jam seklai get data dari api
 }
 
 startDailyPrayerReminder();

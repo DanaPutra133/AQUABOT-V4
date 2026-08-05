@@ -1,8 +1,7 @@
-const { loadBaileys } = require('../baileys-loader.mjs')
-let baileys
+import * as baileys from '@whiskeysockets/baileys';
+
 
 let handler = async (m, { conn, text, usedPrefix }) => {
-  if (!baileys) baileys = await loadBaileys();
   const { MessageType } = baileys;
   function no(number){
     return number.replace(/\s/g, '').replace(/([@+-])/g, '');
@@ -25,6 +24,6 @@ handler.command = /^(unprem|delprem)$/i;
 handler.owner = true;
 handler.fail = null;
 
-module.exports = handler;
+export default handler;
 
 // hapis skibidi

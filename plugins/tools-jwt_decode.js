@@ -1,6 +1,6 @@
-const axios = require('axios');
-const FormData = require('form-data');
-const { promisify } = require('util');
+import axios from 'axios';
+import FormData from 'form-data';
+import { promisify } from 'util';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
     let token = text || (m.quoted ? m.quoted.text : '');
@@ -26,7 +26,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
         const result = response.data;
         if (result && result.status && result.header && result.payload) {
-                        const { header, payload } = result;
+            const { header, payload } = result;
             let replyText = `*🔓 Decoded JWT Token*\n\n`;
             
             replyText += `*Header:*\n`;
@@ -40,9 +40,9 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
             throw new Error(`Gagal men-decode token. Respons API tidak valid: ${JSON.stringify(result)}`);
         }
 
-    } catch (error) {
-        console.error('Error pada fitur jwt-decode:', error.response ? JSON.stringify(error.response.data) : error.message);
-        m.reply(`Gagal men-decode token. Pastikan token yang Anda masukkan valid.`);
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
 };
 
@@ -50,4 +50,4 @@ handler.help = ['jwtdecode <token>'];
 handler.tags = ['tools'];
 handler.command = /^(jwt|jwtdecode)$/i;
 
-module.exports = handler;
+export default handler;

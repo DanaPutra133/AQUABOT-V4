@@ -25,7 +25,7 @@ Selama ${clockString(new Date - afkTime)}
   return true
 }
 
-module.exports = handler
+export default handler
 
 function clockString(ms) {
   let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000)

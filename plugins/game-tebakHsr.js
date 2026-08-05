@@ -1,6 +1,7 @@
-  let timeout = 100000
-  let poin = 10000
-  let fetch = require("node-fetch");
+  import fetch from "node-fetch";
+
+  let timeout = 100000;
+  let poin = 10000;
   let handler = async (m, { conn, usedPrefix }) => {
     conn.tebakhsr = conn.tebakhsr ? conn.tebakhsr : {}
     let id = m.chat
@@ -41,4 +42,4 @@
   handler.limit = false
   handler.group = true
 
-  module.exports = handler
+  export default handler;

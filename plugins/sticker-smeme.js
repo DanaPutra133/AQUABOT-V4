@@ -1,6 +1,6 @@
-const axios = require('axios');
-const FormData = require('form-data');
-const { promisify } = require('util');
+import axios from 'axios';
+import FormData from 'form-data';
+import { promisify } from 'util';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
     let q = m.quoted ? m.quoted : m;
@@ -15,11 +15,11 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     }
 
     try {
-        m.reply('Sedang membuat stiker meme...');
+        await m.reply('Sedang membuat stiker meme...');
 
         let img = await q.download();
         let [top, middle, bottom] = text.split('|');
-        const params = { apikey: global.dana }; 
+        const params = { apikey: dana }; 
         if (top) params.top = top;
         if (middle) params.middle = middle;
         if (bottom) params.bottom = bottom;
@@ -44,11 +44,14 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
             maxContentLength: Infinity,
             maxBodyLength: Infinity,
         });
-        conn.sendImageAsSticker(m.chat, response.data, m, { packname: global.packname, author: global.author });
+        
+        await conn.sendImageAsSticker(m.chat, response.data, m, { packname: packname, author: author });
 
-    } catch (error) {
-        console.error('Error saat membuat sticker meme:', error.response ? error.response.data.toString() : error.message);
-        m.reply(`Gagal membuat stiker. Penyebab: ${error.message}`);
+    } catch (e) {
+        if (e !== false) {
+            console.log(e);
+            throw e;
+        }
     }
 };
 
@@ -56,4 +59,4 @@ handler.help = ['stickermeme <atas>|<tengah>|<bawah>'];
 handler.tags = ['sticker'];
 handler.command = /^(s(tic?ker)?me(me)?)$/i;
 
-module.exports = handler;
+export default handler;

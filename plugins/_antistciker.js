@@ -4,7 +4,7 @@ async function before(m, { isAdmin, isBotAdmin }) {
     if (!chat || !chat.antiSticker) return;
     const isNormalSticker = m.mtype === "stickerMessage";
     const isLottieSticker = m.message?.lottieStickerMessage || m.msg?.lottieStickerMessage || m.mtype === "lottieStickerMessage";
-    if ((isLottieSticker) && m.isGroup) {
+    if ((isNormalSticker || isLottieSticker) && m.isGroup) {
         // jika kamu mau stiker normal nya gak di delete kamu bisa ganti if di atas ke sini
         // if ((isLottieSticker) && m.isGroup) {
         if (isAdmin || !isBotAdmin) {
@@ -16,4 +16,4 @@ async function before(m, { isAdmin, isBotAdmin }) {
     return;
 }
 
-module.exports = { before };
+export default { before };
