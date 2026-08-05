@@ -1,3 +1,4 @@
+import * as baileys from '@whiskeysockets/baileys';
 
 export default {
     async all(m, chatUpdate) {
