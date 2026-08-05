@@ -1,8 +1,7 @@
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn, command }) => {
-let anu = `─────〔 *${command}* 〕─────\n`;
-
+    try {
     if (command === 'bucin') {
         const res = await (await fetch(`https://api.betabotz.eu.org/api/random/katabucin?apikey=${lann}`)).json();
         anu += res.bucin;
@@ -47,6 +46,10 @@ let anu = `─────〔 *${command}* 〕─────\n`;
         anu += res.result;
     }
     m.reply(anu);
+    } catch (e) {
+        console.log(e);
+        throw e;
+    }
 };
 
 handler.help = ['bucin', 'katailham', 'katadilan', 'fiersa', 'fakta', 'nyindir', 'ngawur', 'jawa', 'quotes','sunda','batak', 'aceh', 'cina', 'minangkabau'];
