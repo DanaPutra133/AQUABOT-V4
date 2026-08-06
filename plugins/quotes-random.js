@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 
 let handler = async (m, { conn, command }) => {
     try {
+    let anu = `─────〔 *${command}* 〕─────\n`;
     if (command === 'bucin') {
         const res = await (await fetch(`https://api.betabotz.eu.org/api/random/katabucin?apikey=${lann}`)).json();
         anu += res.bucin;
