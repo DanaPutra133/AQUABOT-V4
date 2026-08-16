@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 let handler = async (m, { conn }) => {
     try {
-        let img = 'https://i.ibb.co/305yt26/bf84f20635dedd5dde31e7e5b6983ae9.jpg';
+        let img = 'https://cdn.filn.pp.ua/uploads/betabotzapi/d793c.jpg';
         let res = await fetch(`https://api.betabotz.eu.org/api/random/truth?apikey=${lann}`);
         let truth = await res.json();
 
