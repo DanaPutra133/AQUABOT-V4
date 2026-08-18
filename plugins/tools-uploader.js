@@ -1,6 +1,7 @@
 import axios from 'axios';
 import FormData from 'form-data';
-import { fromBuffer } from 'file-type';
+import pkg from 'file-type';
+const { fromBuffer } = pkg;
 import { promisify } from 'util';
 
 let handler = async (m, { conn, usedPrefix, command }) => {
@@ -28,7 +29,7 @@ let handler = async (m, { conn, usedPrefix, command }) => {
     const contentLength = await getLength();
 
     const response = await axios.post(
-      `https://api.danafxc.my.id/api/proxy/features/upload?apikey=${dana}`,
+      `https://api.danafxc.my.id/api/proxy/features/upload?apikey=${lann}`,
       form,
       {
         headers: {
