@@ -28,7 +28,7 @@ let handler = async (m, { conn, usedPrefix, command }) => {
     const contentLength = await getLength();
 
     const response = await axios.post(
-      `https://api.danafxc.my.id/api/proxy/features/upload?apikey=${lann}`,
+      `https://api.danafxc.my.id/api/proxy/features/upload?apikey=${dana}`,
       form,
       {
         headers: {
