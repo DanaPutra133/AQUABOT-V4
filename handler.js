@@ -1448,9 +1448,9 @@ export default {
             }
             break           
         case 'promote':
-            text = (chat.sPromote || this.spromote || conn.spromote || '@user ```is now Admin```')
+            text = (chat.sPromote || this.spromote || conn.spromote )
         case 'demote':
-            if (!text) text = (chat.sDemote || this.sdemote || conn.sdemote || '@user ```is no longer Admin```')
+            if (!text) text = (chat.sDemote || this.sdemote || conn.sdemote )
             let jid = participants[0]
             if (typeof jid === 'object') {
                 jid = jid.phoneNumber || jid.id || jid.jid || jid
