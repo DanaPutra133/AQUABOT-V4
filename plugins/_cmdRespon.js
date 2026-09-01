@@ -4,7 +4,7 @@ export default {
     async all(m, chatUpdate) {
       if (!baileys) baileys = await loadBaileys();
       const { proto, generateWAMessage, areJidsSameUser } = baileys;
-        if (m.isBaileys) return
+        if (m.isZapo ) return
         if (!m.message) return
         if (!m.msg.fileSha256) return
         if (!(m.msg.fileSha256.toString('hex') in global.db.data.sticker)) return

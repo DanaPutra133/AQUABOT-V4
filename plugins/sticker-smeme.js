@@ -1,62 +1,36 @@
-import axios from 'axios';
-import FormData from 'form-data';
-import { promisify } from 'util';
+import uploadImage from '../lib/uploadImage.js';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
-    let q = m.quoted ? m.quoted : m;
-    let mime = (q.msg || q).mimetype || '';
-
-    if (!/image\/(jpe?g|png)/.test(mime)) {
-        throw `Balas gambar untuk dijadikan sticker meme!\n\n*Contoh Penggunaan:*\n${usedPrefix + command} teks atas|teks tengah|teks bawah`;
-    }
-
-    if (!text) {
-        throw `Tambahkan teks untuk meme!\n\n*Panduan Penggunaan Command:*\n*${usedPrefix + command} <atas>|<tengah>|<bawah>*\n\n*Contoh untuk mengisi bagian tertentu:*\n*- Bawah saja:* \`||teks bawah\`\n*- Atas & Bawah:* \`teks atas||teks bawah\`\n*- Tengah saja:* \`|teks tengah|\`\n\nBalas gambar yang ingin dijadikan stiker sambil mengetik perintah di atas.`;
-    }
-
     try {
-        await m.reply('Sedang membuat stiker meme...');
-
-        let img = await q.download();
-        let [top, middle, bottom] = text.split('|');
-        const params = { apikey: dana }; 
-        if (top) params.top = top;
-        if (middle) params.middle = middle;
-        if (bottom) params.bottom = bottom;
-
-        const queryString = new URLSearchParams(params).toString();
-        const apiUrl = `https://api.danafxc.my.id/api/proxy/maker/smeme?${queryString}`;
-
-        const form = new FormData();
-        form.append('image', img, {
-            filename: 'stickermeme.png',
-            contentType: mime
-        });
-
-        const getLength = promisify(form.getLength).bind(form);
-        const contentLength = await getLength();
-        const response = await axios.post(apiUrl, form, {
-            headers: {
-                ...form.getHeaders(),
-                'Content-Length': contentLength,
-            },
-            responseType: 'arraybuffer',
-            maxContentLength: Infinity,
-            maxBodyLength: Infinity,
-        });
+        let q = m.quoted ? m.quoted : m;
+        let mime = (q.msg || q).mimetype || "";
         
-        await conn.sendImageAsSticker(m.chat, response.data, m, { packname: packname, author: author });
+        if (!mime) throw `Balas gambar dengan perintah\n\n${usedPrefix + command} <teks atas>|<teks bawah>`;
+        if (!/image\/(jpe?g|png)/.test(mime)) throw `_*Mime ${mime} tidak didukung!*_`;
+
+        let [atas, bawah] = text.split('|');
+        atas = (atas || '').trim() || '_';
+        bawah = (bawah || '').trim() || '_';
+
+        let img = await q.download?.();
+        if (!img) throw 'Gagal mengunduh gambar. Pastikan kamu membalas gambar.';
+        let url = await uploadImage(img, "true");
+                let meme = `https://api.memegen.link/images/custom/${encodeURIComponent(atas)}/${encodeURIComponent(bawah)}.png?background=${url}`;
+        
+        await conn.sendImageAsSticker(m.chat, meme, m, {
+            packname: global.packname || "",
+            author: global.author || "",
+        });
 
     } catch (e) {
-        if (e !== false) {
             console.log(e);
             throw e;
-        }
     }
-};
+}
 
-handler.help = ['stickermeme <atas>|<tengah>|<bawah>'];
+handler.help = ['stickermeme <teks>|<teks>'];
 handler.tags = ['sticker'];
 handler.command = /^(s(tic?ker)?me(me)?)$/i;
+handler.limit = false;
 
 export default handler;

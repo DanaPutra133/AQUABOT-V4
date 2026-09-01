@@ -1,17 +1,28 @@
 
-## Harap Dipahami Sebelum Install
+## Harap Dipahami Sebelum Install - UNTESTED
 
 ### Pembaruan:
 
-* Menggunakan **baileys versi terbaru** (original, bukan mod)
+* Menggunakan **ZAPO versi terbaru** (original, bukan mod)
+* **Server HTTP Native** Menghapus dependensi `express` untuk performa server yang lebih ringan
 * Menggunakan **ESM** (sebelum ny Cjs)
-* Support **pairing code only** sesuai ketentuan
-* Wajib menggunakan **panel dengan Node.js 22+** (sesuai ketentuan baileys terbaru)
+* ***Sesi lokal SQLite** Kredensial disimpan di `sessions/state.sqlite` (pakai `@zapo-js/store-sqlite` + `better-sqlite3`)
+* ***Database SQLite** Database bot (`users`, `chats`, `stats`, dll) kini tersimpan di `database/database.sqlite` (WAL, atomic) menggantikan `database.json`; auto-migrasi dari JSON lama saat boot pertama
+* **Koneksi Dual Mode** Mendukung Pairing Code secara default, dan QR Code bisa diakses dengan argumen `--qr`
+* Wajib menggunakan **panel dengan Node.js 22+**
 * Dapat menggunakan **Bun 1.3.1**
 * Fitur 90% implementasi dari **website API**
 * Penambahan output URL `express.js` agar bisa dijalankan di Render, dsb.
-* Informasi API: [WhatsApp](https://whatsapp.com/channel/0029VaApYsQ5Ui2c2rKbpP0S)
+* Informasi API: [WhatsApp](https://whatsapp.com/channel/0029VbCQLA43AzNYDInpyO2v)
 * Informasi Bot: [WhatsApp](https://whatsapp.com/channel/0029VaiIG3UJpe8n3Y2MZ51z)
+
+---
+## ✨ Link Seputar Bot
+
+| Ikon | Link                               | Deskripsi Singkat                                                                                                |
+| :--: | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+|  ▶️  | **https://www.youtube.com/playlist?list=PLuQT2lE0wOYTMf1X4OqlVFeavLsLKa-0t** | **Video tutorial** |
+|  ▶️  | **https://www.youtube.com/playlist?list=PLfTmZufvRy8Y** | **Penjelasan Update** |
 
 ---
 
@@ -22,6 +33,7 @@
 * Kamu **wajib mengisi ApiKey** agar bot berfungsi dengan baik.
 * **Tidak disarankan menginstal** di Termux atau panel tanpa `express`, `ffmpeg`, `imagemagick`, dan `webp`.
 * Bot ini menggunakan 80% fitur dari [`RestApi`](https://api.betabotz.eu.org) sebagai media downloader dan fitur lainnya.
+* Untuk **PANEL** minimum CPU 75 untuk dapat pairing.
 
 ---
 
@@ -42,8 +54,6 @@
 ---
 
 ## Website API
-* **BOTCAHX (Opsional):** [`Register`](https://api.botcahx.eu.org)
-* **AQUA (Wajib):** [`Register`](https://api.danafxc.my.id)
 * **Lann (Wajib):** [`Register`](https://api.betabotz.eu.org)
 
 ### ðŸ”§ Konfigurasi ApiKey
@@ -51,9 +61,7 @@
 1. Setelah mendapatkan ApiKey, masukkan ke `config.js`:
 
    ```js
-   global.btc = 'API_KEY_BOTCAHX';
    global.lann = 'API_KEY_LANN';
-   global.dana = 'API_KEY_AQUA';
    ```
 
 2. atau kamu bisa memasukan nya ke `.env` dari `.env.example`, setelah itu hapus komentar gunakan yang menggunakan .env di `config.js`:
@@ -61,8 +69,6 @@
    ```js
    API_KEY_BETABOTZ=
    API_KEY_BETABOTZ_AKSESKEY=
-   API_KEY_BTC=
-   API_KEY_DANA=
    ```
 
 3. Jalankan bot dan ketik `.getip`
@@ -72,10 +78,9 @@
 ---
 **Informasi Pembaruan:**  
 ----  
-- ✅ **Update  Lid resolver **  Penanganan lid jadi terbaru
 - ✅ **Update  Lid resolver**  Penanganan lid jadi terbaru
-- ✅ **Menggunakan Baileys Latest**  [Baileys](https://github.com/WhiskeySockets/Baileys)
-- ✅ **Delete QR Code** Jadi Alternatif Nya Memakai Pairing Code
+- ✅ **Update  ESM**  Menggunakan ESM 
+- ✅ **Menggunakan Zapo Latest**  
 - ✅ **Wajib Menggunakan Node.js 22+**
 ---
 
@@ -141,10 +146,56 @@ https://github.com/clhuang/heroku-buildpack-webp-binaries.git
 ### Jalankan (Pairing Code):
 ```bash
 git clone https://github.com/ERLANRAHMAT/BETABOTZ-MD2
+git checkout zapo-esm
 cd BETABOTZ-MD2
 npm install
 npm start
 ```
+---
+
+## Command Baru ketika Startup
+### Jalankan (Pairing Code):
+```bash
+npm start
+```
+- Running node index.js --autocleartmp
+
+```bash
+npm run pairing
+```
+- Running khusus langsung pairing dengan kode
+
+```bash
+npm run pairingqr
+```
+- Running khusus langsung pairing dengan Qr
+
+---
+
+## Daftar Argumen
+
+```bash
+node index.js [--options]
+```
+
+| Argumen | Fungsi |
+|---------|--------|
+| `--qr` | Mengaktifkan mode autentikasi QR Code (secara default menggunakan Pairing Code) |
+| `--self` | Hanya Owner & Bot |
+| `--pconly` | Hanya merespon chat pribadi |
+| `--gconly` | Hanya merespon chat grup |
+| `--swonly` | Hanya merespon status |
+| `--restrict` | Aktifkan plugin terbatas (risiko kena banned) |
+| `--img` | Tampilkan gambar di terminal |
+| `--autoread` | Tandai semua pesan masuk sebagai sudah dibaca |
+| `--nyimak` | Mode silent — hanya log, tidak membalas |
+| `--test` | Mode pengembangan |
+| `--prefix <prefix>` | Set prefix (setiap karakter jadi prefix terpisah) |
+| `--db <mongodb url>` | Pakai MongoDB (contoh: `--db mongodb://user:pass@host:27017/bot`) |
+| `--db json` | Pakai database JSON file (`database.json`) — default sebelumnya |
+| `--db sqlite` | Pakai SQLite (`database/database.sqlite`, WAL) — **default** |
+| `--db <https://...>` | Pakai cloud adapter |
+
 ---
 
 ## Website ANIQU-task
@@ -158,6 +209,3 @@ Sebuah sistem untuk mengelola dan pengingat yang di kirim melalui discord dan wh
 ## Kontributor
 
 Lihat semua kontributor di: [`All Contri`](https://contributor.betabotz.eu.org)
-- [@Danaputra](https://github.com/DanaPutra133)
-- [@BetaBotz](https://github.com/ERLANRAHMAT)
-- Dan semua yang berkontribusi!

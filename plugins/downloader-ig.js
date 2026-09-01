@@ -3,7 +3,11 @@ import fetch from 'node-fetch';
 let handler = async (m, { conn, args, usedPrefix, command }) => {
     try {
         if (!args[0]) throw `*Contoh:* ${usedPrefix}${command} https://www.instagram.com/reel/DKPtUL_S9Nh/?igsh=MTE1dTVkb2E4NTFmcw==`
-        if (!args[0].match(/https?:\/\/(www\.|m\.)?(instagram\.com|ig\.me)/gi)) throw "❌ URL Instagram Tidak Ditemukan!";
+
+
+        if (!args[0].match(/instagram/gi)) {
+            throw `URL Instagram Tidak Valid!`
+        }
         await m.reply(wait)
         let res, api, isV2 = false;
         try {

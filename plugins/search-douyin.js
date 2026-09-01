@@ -2,56 +2,51 @@ import axios from 'axios';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
     if (!text) {
-        throw `*❌ Masukkan URL!*\n\n*Contoh:*\n${usedPrefix + command} https://vt.tiktok.com/ZSVh18yL4/`;
+        throw `Masukkan kata kunci pencarian untuk Douyin.\n\n*Contoh:*\n${usedPrefix + command} perfect world`;
     }
 
     try {
-        let capt, urlApi;
-        if (/^(tiktok|tt|ttdl|ttnowm|tiktokdl|tiktoknowm)$/i.test(command)) {
-            if (!text.match(/https?:\/\/(www\.|vt\.|vm\.|m\.)?tiktok\.com/gi)) throw "❌ URL TikTok Tidak Ditemukan!";
-            capt = `乂 *T I K T O K*`;
-            urlApi = `https://api.betabotz.eu.org/api/download/tiktok?url=${encodeURIComponent(text.trim())}&apikey=${lann}`;
-        } else if (/^(douyin|douyindl)$/i.test(command)) {
-            if (!text.match(/https?:\/\/(www\.|v\.)?douyin\.com/gi)) throw "❌ URL Douyin Tidak Ditemukan!";
-            capt = `乂 *D O U Y I N*`;
-            urlApi = `https://api.betabotz.eu.org/api/download/douyin?url=${encodeURIComponent(text.trim())}&apikey=${lann}`;
+        await m.reply(`⏳ Sedang mencari video Douyin untuk pencarian *${text}*...`);
+
+        const apiUrl = `https://api.betabotz.eu.org/api/search/douyin?apikey=${lann}&query=${encodeURIComponent(text)}`;
+        const response = await axios.get(apiUrl);
+        const resData = response.data;
+
+        if (!resData || !resData.status || !resData.result || !resData.result.success) {
+            throw 'Gagal mendapatkan hasil pencarian. Coba lagi nanti.';
         }
 
-        await m.reply('⏳ _Sedang memproses video, tunggu sebentar..._');  
+        const videos = resData.result.videos;
         
-        const response = await axios.get(urlApi);
-        const res = response.data.result;
-        var { video, title, title_audio, audio } = res;
+        if (!videos || videos.length === 0) {
+            throw `Tidak ada video ditemukan untuk pencarian "${text}".`;
+        }
 
-        capt += `\n\n◦ *Title* : ${title}\n◦ *Audio Title* : ${title_audio}\n`;
-        capt += `\n_${global.wm}_`;
-        if (Array.isArray(video)) {
-            for (let v of video) {
-                await conn.sendFile(m.chat, v, null, capt, m);
-            }
-        } else {
-            await conn.sendFile(m.chat, video, null, capt, m);
-        }
-        if (audio && audio.length > 0) {
-            await conn.sendMessage(m.chat, { audio: { url: audio[0] }, mimetype: 'audio/mpeg' }, { quoted: m });
-        }
-        
+        let replyText = `🎥 *DOUYIN SEARCH RESULT* 🎥\n\n`;
+        replyText += `🔎 *Pencarian:* ${resData.result.query}\n`;
+        replyText += `📈 *Total Ditemukan:* ${resData.result.total} video\n`;
+        replyText += `━─━─━─━─━─━─━─━─━─━─━\n\n`;
+
+        videos.forEach(v => {
+            replyText += `*${v.rank}. ${v.author}*\n`;
+            replyText += `📝 *Deskripsi:* ${v.desc || 'Tidak ada deskripsi'}\n`;
+            replyText += `👍 *Suka:* ${v.stats.likes} | 💬 *Komen:* ${v.stats.comments} | 🔗 *Share:* ${v.stats.shares}\n`;
+            replyText += `🌐 *Link:* ${v.url}\n\n`;
+        });
+
+        await m.reply(replyText.trim());
+
     } catch (e) {
-        console.error(e);
-        throw e;
+        if (e !== false) {
+            console.log(e);
+            throw e;
+        }
     }
 };
 
-handler.help = ['tiktok', 'douyin'].map(v => v + ' <url>');
-handler.command = /^(tiktok|tt|ttdl|ttnowm|tiktokdl|tiktoknowm|douyin|douyindl)$/i;
-handler.tags = ['downloader'];
+handler.help = ['douyinsearch <query>'];
+handler.tags = ['search', 'internet'];
+handler.command = /^(douyinsearch|caridouyin|searchdouyin|douyins)$/i;
 handler.limit = true;
-handler.group = false;
-handler.premium = false;
-handler.owner = false;
-handler.admin = false;
-handler.botAdmin = false;
-handler.fail = null;
-handler.private = false;
 
 export default handler;

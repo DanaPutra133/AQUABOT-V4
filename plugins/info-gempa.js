@@ -1,19 +1,12 @@
 import axios from 'axios';
 var handler = async (m, { conn }) => {
   try {
-    var response = await axios.get(`https://api.danafxc.my.id/api/proxy/features/gempa?apikey=${dana}`);
-    var dataGempa = response.data.data; 
-    var caption = `*Informasi Gempa Terkini*\n\n` +
-                  `*Tanggal:* ${dataGempa.Tanggal}\n` +
-                  `*Jam:* ${dataGempa.Jam}\n` +
-                  `*Lintang:* ${dataGempa.Lintang}\n` +
-                  `*Bujur:* ${dataGempa.Bujur}\n` +
-                  `*Magnitude:* ${dataGempa.Magnitude}\n` +
-                  `*Kedalaman:* ${dataGempa.Kedalaman}\n` +
-                  `*Wilayah:* ${dataGempa.Wilayah}\n` +
-                  `*Potensi:* ${dataGempa.Potensi}\n` +
-                  `*Dirasakan:* ${dataGempa.Dirasakan}`;
-    conn.sendFile(m.chat, `https://data.bmkg.go.id/DataMKG/TEWS/${dataGempa.Shakemap}`, 'map.jpg', caption, m); // Construct the image URL
+    var response = await axios.get(
+      `https://api.betabotz.eu.org/api/search/gempa?apikey=${lann}`,
+    );
+    var dataGempa = response.data.result.result;
+    var caption = `Waktu : ${dataGempa.waktu}\nLintang : ${dataGempa.Lintang}\nBujur : ${dataGempa.Bujur}\nMagnitude : ${dataGempa.Magnitudo}\nKedalaman : ${dataGempa.Kedalaman}\nWilayah : ${dataGempa.Wilayah}`;
+    conn.sendFile(m.chat, dataGempa.image, "map.png", caption, m);
   } catch (e) {
     console.log(e);
     throw e;
