@@ -23,17 +23,25 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         const res = response.data.result;
         var { video, title, title_audio, audio } = res;
 
-        capt += `\n\n◦ *Title* : ${title}\n◦ *Audio Title* : ${title_audio}\n`;
+        capt += `◦ *Title* : ${title}\n`;
         capt += `\n_${global.wm}_`;
-        if (Array.isArray(video)) {
-            for (let v of video) {
-                await conn.sendFile(m.chat, v, null, capt, m);
-            }
+
+        if (video.length > 1) {
+          for (let v of video) {
+            await conn.sendFile(m.chat, v, null, capt, m);
+          }
         } else {
-            await conn.sendFile(m.chat, video, null, capt, m);
+          await conn.sendFile(m.chat, video[0], null, capt, m);
         }
-        if (audio && audio.length > 0) {
-            await conn.sendMessage(m.chat, { audio: { url: audio[0] }, mimetype: 'audio/mpeg' }, { quoted: m });
+
+        if (!audio[0]) {
+          await conn.reply(m.chat, "_Audio tidak tersedia!_", m);
+        } else {
+          conn.sendMessage(
+            m.chat,
+            { audio: { url: audio[0] }, mimetype: "audio/mpeg" },
+            { quoted: m },
+          );
         }
         
     } catch (e) {
