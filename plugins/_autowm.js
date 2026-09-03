@@ -2,8 +2,9 @@ import WebP from 'node-webpmux';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import fetch from 'node-fetch';
-import uploadImage from '../lib/uploadImage.js'; 
+import uploadFile from '../lib/uploadFile.js';
+import axios from 'axios';
+import { stickerToMp4 } from '../lib/sticker-convert.js?v=6';
 
 const { Image } = WebP;
 const __filename = fileURLToPath(import.meta.url);
@@ -16,7 +17,7 @@ handler.all = async function(m) {
     let user = global.db.data.users[m.sender];
     
     if (!chat || !chat.autowm) return; 
-    if (chat.isBanned || user.banned || m.isZapo ) return;
+    if (chat.isBanned || user.banned || m.isZapo) return;
 
     let q = m;
     let mime = (q.msg || q).mimetype || '';
@@ -45,20 +46,45 @@ handler.all = async function(m) {
             if (packnameExif === global.packname && authorExif === global.author) {
                 return;
             }
+
             let isAnimated = q.isAnimated || (q.msg && q.msg.isAnimated) || false;
 
-            if (isAnimated) {
-                let mediaUrl = await uploadImage(stickerBuffer, "true");
-                if (!mediaUrl) return;
-                let res = await fetch(`https://api.betabotz.eu.org/api/tools/webp2mp4?url=${mediaUrl}&apikey=${global.lann}`);
-                let json = await res.json();
-                
-                if (json.result) {
-                    await this.sendVideoAsSticker(m.chat, json.result, m, {
-                        packname: global.packname,
-                        author: global.author
+            if (isAnimated || /video|webp/g.test(mime)) {
+                let videoBuffer = null;
+
+                try {
+                    let mediaUrl = await uploadFile(stickerBuffer);
+                    let apiUrl = `https://api.danafxc.my.id/api/proxy/tools/convertwebp2mp4?apikey=${dana}&url=${encodeURIComponent(mediaUrl)}`;
+
+                    let response = await axios.get(apiUrl, {
+                        responseType: 'arraybuffer',
+                        timeout: 15000,
                     });
+                    
+                    if (response && response.data) {
+                        videoBuffer = Buffer.from(response.data);
+                    }
+                } catch (apiErr) {
+                    console.warn('⚠️ API Danafxc gagal/timeout untuk autowm, beralih ke konversi lokal...', apiErr?.message || apiErr);
                 }
+
+                if (!videoBuffer || !videoBuffer.length) {
+                    try {
+                        videoBuffer = await stickerToMp4(stickerBuffer);
+                    } catch (localErr) {
+                        console.error('Konversi lokal stickerToMp4 gagal:', localErr);
+                    }
+                }
+
+                if (!videoBuffer || !videoBuffer.length) {
+                    return;
+                }
+
+                await this.sendVideoAsSticker(m.chat, videoBuffer, m, {
+                    packname: global.packname,
+                    author: global.author,
+                });
+
             } else {
                 let tmpPath = path.join(__dirname, `../tmp/autowm_${Date.now()}.webp`);
                 
