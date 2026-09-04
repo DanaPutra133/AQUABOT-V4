@@ -203,7 +203,7 @@ renderBoard();
   );
 };
 
-handler.help = ["tictactoe", "tttbot"];
+handler.help = ["tictactoebot", "tttbot"];
 handler.tags = ["game"];
 handler.command = /^(tictactoe|tttbot)$/i;
 
