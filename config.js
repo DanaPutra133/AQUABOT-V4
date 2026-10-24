@@ -63,13 +63,15 @@ global.APIs = {
   lann: "https://api.betabotz.eu.org",
   btc: "https://api.botcahx.eu.org",
   dana: "https://api.danafxc.my.id",
-taskToken: "https://task.aniqu.biz.id/", //OPSIONAL
+taskToken: "https://task.aniqu.biz.id/",
 };
 
 //Tidak boleh diganti atau di ubah
 global.APIKeys = {
   "https://api.betabotz.eu.org": global.lann,
-  "https://task.aniqu.biz.id/": global.taskToken, //OPSIONAL
+  "https://api.danafxc.my.id": global.dana,
+  "https://api.botcahx.eu.org" : global.btc,
+  "https://task.aniqu.biz.id/": global.taskToken,
 };
 
 import fs from 'fs';
