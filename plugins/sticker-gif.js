@@ -34,9 +34,15 @@ let handler = async (m, { conn, usedPrefix, command }) => {
                 let apikey = global.lann || '';
                 
                 if (command === 'togif' || command === 'tomp4') {
-                    let res = await fetch(`https://api.betabotz.eu.org/api/tools/webp2mp4?url=${mediaUrl}&apikey=${apikey}`);
-                    json = await res.json();
-                    filename = command === 'tomp4' ? 'video.mp4' : 'animation.gif';
+                    let res = await fetch(`https://api.danafxc.my.id/api/proxy/tools/convertwebp2mp4?url=${encodeURIComponent(mediaUrl)}&apikey=${dana}`);
+                    if (res.ok) {
+                        const arrayBuffer = await res.arrayBuffer();
+                        finalBuffer = Buffer.from(arrayBuffer);
+                        filename = command === 'tomp4' ? 'video.mp4' : 'animation.gif';
+                        success = true;
+                    } else {
+                        console.warn(`[Convert API Error] Server merespon status: ${res.status}`);
+                    }
                 } else if (command === 'toimg') {
                     let res = await fetch(`https://api.betabotz.eu.org/api/tools/webp2png?url=${mediaUrl}&apikey=${apikey}`);
                     json = await res.json();
