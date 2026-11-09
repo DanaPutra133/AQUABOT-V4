@@ -1,6 +1,6 @@
 {
     "name": "AQUABOT-V4",
-    "version": "2.4xx.1xx-esm",
+    "version": "V5.12.20-esm",
     "description": "Lightweight WhatsApp Bot",
     "depecrated": false,
     "type": "module",
