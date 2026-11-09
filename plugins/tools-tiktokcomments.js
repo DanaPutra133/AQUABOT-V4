@@ -24,9 +24,14 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
             timeout: setTimeout(() => {
                 if (global.tiktokCommentSession[id]) {
                     delete global.tiktokCommentSession[id];
-                    conn.sendMessage(m.chat, { text: '⏰ *Waktu habis (1 menit).* Sesi dibatalkan otomatis.' }, { quoted: m });
+                    conn.sendMessage(m.chat, { text: '⏰ *Waktu habis (5 menit).* Sesi dibatalkan otomatis.' }, { quoted: m });
                 }
-            }, 60000)
+            }, 300000) // 5 Menit (300.000 ms)
+/*
+Patokan Waktu Milliseconds (ms):
+5 Menit = 5 * 60 * 1000 = 300000
+10 Menit = 10 * 60 * 1000 = 600000
+*/
         };
 
         return m.reply(
@@ -51,14 +56,20 @@ handler.before = async function (m, { conn }) {
     session.timeout = setTimeout(() => {
         if (global.tiktokCommentSession[id]) {
             delete global.tiktokCommentSession[id];
-            conn.sendMessage(m.chat, { text: '⏰ *Waktu habis (1 menit).* Sesi dibatalkan otomatis.' }, { quoted: m });
+            conn.sendMessage(m.chat, { text: '⏰ *Waktu habis (5 menit).* Sesi dibatalkan otomatis.' }, { quoted: m });
         }
-    }, 60000);
+    }, 300000); // 5 Menit (300.000 ms)
+    /*
+Patokan Waktu Milliseconds (ms):
+5 Menit = 5 * 60 * 1000 = 300000
+10 Menit = 10 * 60 * 1000 = 600000
+*/
 
     let q = m.quoted ? m.quoted : m;
     let mime = (q.msg || q).mimetype || '';
 
     try {
+        // --- STEP 1: Background Image ---
         if (session.step === 1) {
             if (!/image\/(png|jpe?g)/.test(mime)) {
                 return m.reply('⚠️ *Gambar tidak ditemukan!* Harap kirim atau reply sebuah gambar untuk dijadikan **Background Video**.');
@@ -80,6 +91,7 @@ handler.before = async function (m, { conn }) {
             );
         }
 
+        // --- STEP 2: Avatar 1 ---
         if (session.step === 2) {
             if (!/image\/(png|jpe?g)/.test(mime)) {
                 return m.reply('⚠️ *Gambar tidak ditemukan!* Harap kirim atau reply sebuah gambar untuk **Avatar User 1**.');
@@ -101,6 +113,7 @@ handler.before = async function (m, { conn }) {
             );
         }
 
+        // --- STEP 3: Avatar 2 ---
         if (session.step === 3) {
             if (!/image\/(png|jpe?g)/.test(mime)) {
                 return m.reply('⚠️ *Gambar tidak ditemukan!* Harap kirim atau reply sebuah gambar untuk **Avatar User 2**.');
@@ -122,6 +135,7 @@ handler.before = async function (m, { conn }) {
             );
         }
 
+        // --- STEP 4: Avatar Me ---
         if (session.step === 4) {
             if (!/image\/(png|jpe?g)/.test(mime)) {
                 return m.reply('⚠️ *Gambar tidak ditemukan!* Harap kirim atau reply sebuah gambar untuk **Avatar Saya**.');
@@ -147,6 +161,7 @@ handler.before = async function (m, { conn }) {
             );
         }
 
+        // --- STEP 5: Input Text Komentar 1 ---
         if (session.step === 5) {
             if (!m.text) return m.reply('⚠️ Harap masukkan teks rincian Komentar Utama!');
             let splits = m.text.split('|').map(v => v.trim());
@@ -175,6 +190,7 @@ handler.before = async function (m, { conn }) {
             );
         }
 
+        // --- STEP 6: Input Text Komentar 2 & Generate Canvas ---
         if (session.step === 6) {
             if (!m.text) return m.reply('⚠️ Harap masukkan teks rincian Balasan Komentar!');
             let splits = m.text.split('|').map(v => v.trim());
