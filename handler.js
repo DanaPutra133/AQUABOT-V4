@@ -890,8 +890,11 @@ export default {
           if (!("antiLinkCh" in chat)) chat.antiLinkCh = false;
           if (!("adminonly" in chat)) chat.adminonly = false;
           if (!("antispam" in chat)) chat.antispam = false;
+          if (!("limitUsed" in chat)) chat.limitUsed = true;
+          
         } else
           global.db.data.chats[m.chat] = {
+            limitUsed: true,
             antiLinkCh: false,
             autoacc: false,
             autotranslate: false,
@@ -1325,20 +1328,24 @@ export default {
                           console.error(e);
                         }
                       }
-                      if (global.limitUsed === undefined) global.limitUsed = true;
-                      if (global.limitUsed === true) {
-                         if (m.limit && global.db.data.users[m.sender]) {
-                             let user = global.db.data.users[m.sender];
-                             if (user.limit >= m.limit) {
-                                 user.limit -= m.limit;
-                                 m.reply(+m.limit + " Limit terpakai");
-                             }
-                         }
-                      } else {
-                        return;
+
+                      let botJid = this.user?.jid || this.user?.id;
+                      let botSettings = global.db.data?.settings?.[botJid] || {};
+                      
+                      if (botSettings.limitUsed === undefined) botSettings.limitUsed = true;
+                      global.limitUsed = botSettings.limitUsed;
+
+                      if (global.limitUsed) {
+                        if (m.limit && global.db.data.users?.[m.sender]) {
+                          let user = global.db.data.users[m.sender];
+                          if (user.limit >= m.limit) {
+                            user.limit -= m.limit;
+                            m.reply(+m.limit + " Limit terpakai");
+                          }
+                        }
                       }
                     }
-                    break
+                    break;
                 }
             }
         } catch (e) {
@@ -1399,7 +1406,7 @@ export default {
         case 'leave':
         case 'invite':
         case 'invite_v4':
-            if (chat.welcome) {
+           if (chat.welcome) {
                 let groupMetadata = await this.groupMetadata(id).catch(() => null)
                 if (!groupMetadata) break
 
@@ -1447,7 +1454,7 @@ export default {
                     }
                 }
             }
-            break            
+            break        
         case 'promote':
             text = (chat.sPromote || this.spromote || conn.spromote || '@user ```is now Admin```')
         case 'demote':
