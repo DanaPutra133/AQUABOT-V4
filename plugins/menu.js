@@ -1,125 +1,103 @@
-process.env.TZ = 'Asia/Jakarta'
+process.env.TZ = 'Asia/Jakarta';
 import fs from 'fs';
 import path from 'path';
-import fetch from 'node-fetch';
+import os from 'os';
 import moment from 'moment-timezone';
 import levelling from '../lib/levelling.js';
-import { fileURLToPath } from 'url'; 
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let arrayMenu = [
-  'all', 
-  'ai', 
-  'main', 
-  'downloader', 
-  'database', 
-  'rpg',
-  'rpgG', 
-  'sticker', 
-  'advanced', 
-  'xp', 
-  'fun', 
-  'game', 
-  'github', 
-  'group', 
-  'image', 
-  'nsfw', 
-  'info', 
-  'internet', 
-  'islam', 
-  'kerang', 
-  'maker', 
-  'news', 
-  'owner', 
-  'voice', 
-  'quotes', 
-  'store', 
-  'stalk', 
-  'shortlink', 
-  'tools', 
-  'anonymous',
-  ''
-  ];
+    'ai', 'main', 'downloader', 'database', 'rpg', 'rpgG', 
+    'sticker', 'advanced', 'xp', 'fun', 'game', 'github', 
+    'group', 'image', 'nsfw', 'info', 'internet', 'islam', 
+    'kerang', 'maker', 'news', 'owner', 'voice', 'quotes', 
+    'store', 'stalk', 'shortlink', 'tools', 'anonymous', ''
+];
 
 const allTags = {
-    'all': 'SEMUA MENU',
-    'ai': 'MENU AI',
-    'main': 'MENU UTAMA',
-    'downloader': 'MENU DOWNLOADER',
-    'database': 'MENU DATABASE',
-    'rpg': 'MENU RPG',
-    'rpgG': 'MENU RPG GUILD',
-    'sticker': 'MENU CONVERT',
-    'advanced': 'ADVANCED',
-    'xp': 'MENU EXP',
-    'fun': 'MENU FUN',
-    'game': 'MENU GAME',
-    'github': 'MENU GITHUB',
-    'group': 'MENU GROUP',
-    'image': 'MENU IMAGE',
-    'nsfw': 'MENU NSFW',
-    'info': 'MENU INFO',
-    'internet': 'INTERNET',
-    'islam': 'MENU ISLAMI',
-    'kerang': 'MENU KERANG',
-    'maker': 'MENU MAKER',
-    'news': 'MENU NEWS',
-    'owner': 'MENU OWNER',
-    'voice': 'PENGUBAH SUARA',
-    'quotes': 'MENU QUOTES',
-    'store': 'MENU STORE',
-    'stalk': 'MENU STALK',
-    'shortlink': 'SHORT LINK',
-    'tools': 'MENU TOOLS',
-    'anonymous': 'ANONYMOUS CHAT',
-    '': 'NO CATEGORY'
-}
+    'ai': '🤖 ARTIFICIAL INTELLIGENCE',
+    'main': '📌 MAIN MENU',
+    'downloader': '📥 DOWNLOADER',
+    'database': '💾 DATABASE & STORAGE',
+    'rpg': '⚔️ RPG FANTASY GAME',
+    'rpgG': '🛡️ RPG GUILD SYSTEM',
+    'sticker': '🎨 STICKER & CONVERT',
+    'advanced': '⚡ ADVANCED SYSTEM',
+    'xp': '🎯 EXP & LEVELING',
+    'fun': '🎭 FUN & ENTERTAINMENT',
+    'game': '🎮 INTERACTIVE GAMES',
+    'github': '🐙 GITHUB TOOLS',
+    'group': '👥 GROUP MANAGEMENT',
+    'image': '🖼️ IMAGE PROCESSING',
+    'nsfw': '🔞 ADULT CONTENT (18+)',
+    'info': 'ℹ️ SYSTEM INFORMATION',
+    'internet': '🌐 INTERNET & SEARCH',
+    'islam': '🕌 ISLAMIC CENTER',
+    'kerang': '🐚 KERANG AJAIB',
+    'maker': '🛠️ GENERATOR & MAKER',
+    'news': '📰 PORTAL NEWS',
+    'owner': '👑 VIP OWNER MENU',
+    'voice': '🎙️ VOICE CHANGER',
+    'quotes': '💬 QUOTES & MOTIVATION',
+    'store': '🛒 DIGITAL STORE',
+    'stalk': '🔍 STALKER & TRACKER',
+    'shortlink': '🔗 URL SHORTENER',
+    'tools': '🧰 UTILITY TOOLS',
+    'anonymous': '🕵️ ANONYMOUS CHAT',
+    '': '📁 OTHERS'
+};
 
 const defaultMenu = {
     before: `
-Hi %name
-I am an automated system (WhatsApp Bot) that can help to do something, search and get data / information only through WhatsApp.
+═══⟪ *KIRYUU BOT DASHBOARD* ⟫═══
 
-◦ *Library:* Baileys
-◦ *Function:* Assistant
+  ╭─┈✨ *USER PROFILE* ✨
+  │ 👤 *User:* %name
+  │ 💎 *Status:* %premium
+  │ 🎫 *Limit:* %limit
+  │ 📊 *Level:* %level (%exp / %maxexp)
+  │ 🛡️ *Role:* %role
+  ╰───────────────
 
-┌  ◦ Uptime : %uptime
-│  ◦ Tanggal : %date
-│  ◦ Waktu : %time
-└  ◦ Prefix Used : *[ %p ]*
+  ╭─┈⚙️ *SYSTEM MONITOR* ⚙️
+  │ 🚀 *Runtime:* %uptime
+  │ 💾 *RAM Usage:* %ram
+  │ 📅 *Date:* %date
+  │ ⏰ *Time:* %time WIB
+  │ ⚡ *Prefix:* [ %p ]
+  ╰───────────────
 `.trimStart(),
-    header: '┌  ◦ *%category*',
-    body: '│  ◦ %cmd %islimit %isPremium',
-    footer: '└  ',
-    after: `*Note:* Ketik .menu <category> untuk melihat menu spesifik\nContoh: .menu tools`
-}
+    header: '╭───📝 *%category* ───',
+    body: '│ ➔ %cmd %islimit %isPremium',
+    footer: '╰───────────────────\n',
+    after: `*💡 Quick Tips:* 
+• Ketik *%pmenu <kategori>* untuk menu spesifik.
+• Ketik *%pallmenu* untuk menampilkan seluruh perintah.
 
-let handler = async (m, { conn, usedPrefix: _p, args = [], command }) => {
+*KIRYUU BOT v2.0 • AUTOMATED SYSTEM*`
+};
+
+let handler = async (m, { conn, usedPrefix: _p, args = [] }) => {
     try {
-        let pkg = JSON.parse(await fs.promises.readFile(path.join(__dirname, '../package.json')).catch(_ => '{}'))
-        let { exp, limit, level, role } = global.db.data.users[m.sender]
-        let { min, xp, max } = levelling.xpRange(level, global.multiplier)
-        let name = `@${m.sender.split`@`[0]}`
-        let teks = args[0] || ''
+        let user = global.db.data.users[m.sender] || {};
+        let { exp = 0, limit = 0, level = 0, role = 'Novice', premium = false } = user;
+        let { max } = levelling.xpRange(level, global.multiplier);
         
-        let d = new Date(new Date + 3600000)
-        let locale = 'id'
-        let date = d.toLocaleDateString(locale, {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        })
+        let name = `@${m.sender.split`@`[0]}`;
+        let teks = (args[0] || '').toLowerCase();
         
-        let time = d.toLocaleTimeString(locale, {
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric'
-        })
+        let d = moment().tz('Asia/Jakarta');
+        let date = d.format('DD MMMM YYYY');
+        let time = d.format('HH:mm:ss');
 
-        let _uptime = process.uptime() * 1000
-        let uptime = clockString(_uptime)
+        let _uptime = process.uptime() * 1000;
+        let uptime = clockString(_uptime);
+
+        // Memory Usage Calculation
+        let ram = `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB / ${(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)} GB`;
         
         let help = Object.values(global.plugins).filter(plugin => !plugin.disabled).map(plugin => {
             return {
@@ -129,17 +107,19 @@ let handler = async (m, { conn, usedPrefix: _p, args = [], command }) => {
                 limit: plugin.limit,
                 premium: plugin.premium,
                 enabled: !plugin.disabled,
-            }
-        })
+            };
+        });
 
+        // Tampilan Utama (Menu Kategori VIP)
         if (!teks) {
-            let menuList = `${defaultMenu.before}\n\n┌  ◦ *DAFTAR MENU*\n`
+            let menuList = `${defaultMenu.before}\n╭───📂 *CATEGORY NAVIGATION* ───\n`;
+            menuList += `│ ➔ ${_p}allmenu *(All Commands)*\n`;
             for (let tag of arrayMenu) {
                 if (tag && allTags[tag]) {
-                    menuList += `│  ◦ ${_p}menu ${tag}\n`
+                    menuList += `│ ➔ ${_p}menu ${tag}\n`;
                 }
             }
-            menuList += `└  \n\n${defaultMenu.after}`
+            menuList += `╰───────────────────\n\n${defaultMenu.after}`;
 
             let replace = {
                 '%': '%',
@@ -147,73 +127,68 @@ let handler = async (m, { conn, usedPrefix: _p, args = [], command }) => {
                 uptime,
                 name, 
                 date,
-                time
-            }
+                time,
+                ram,
+                limit: limit < 0 ? 'Unlimited ♾️' : limit,
+                level,
+                exp,
+                maxexp: max,
+                role,
+                premium: premium ? 'VIP Premium ★' : 'Free User'
+            };
 
             let text = menuList.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join`|`})`, 'g'), 
-                (_, name) => '' + replace[name])
-            let musicPath = path.join(__dirname, "music.mp3");
+                (_, name) => '' + replace[name]);
+                
             await conn.sendMessage(
                 m.chat,
                 {
-                    image: {
-                        url: global.thumb || "https://telegra.ph/file/3a34bfa58714bdef500d9.jpg",
-                    },
+                    image: { url: "https://uploader.danafxc.my.id/images/681f2b1d-e0fe-435e-9b9e-fa1cdbfa23a0.jpg" },
                     caption: text,
                     mentions: [m.sender],
                 },
-                { quoted: m },
+                { quoted: m }
             );
-            await conn.sendMessage(
-                m.chat,
-                {
-                    audio: { url: musicPath },
-                    mimetype: "audio/mpeg",
-                },
-                { quoted: m },
-            );
-            return
+
+            let musicPath = path.join(__dirname, "music.mp3");
+            if (fs.existsSync(musicPath)) {
+                await conn.sendMessage(
+                    m.chat,
+                    {
+                        audio: { url: musicPath },
+                        mimetype: "audio/mpeg",
+                        ptt: false
+                    },
+                    { quoted: m }
+                );
+            }
+            return;
+        }
+
+        if (teks === 'all') {
+            return conn.plugin.allmenu ? conn.plugin.allmenu.call(this, m, { conn, usedPrefix: _p, args, command: 'allmenu' }) : m.reply(`Gunakan perintah *${_p}allmenu* untuk melihat seluruh fitur.`);
         }
 
         if (!allTags[teks]) {
-            return m.reply(`Menu "${teks}" tidak tersedia.\nSilakan ketik ${_p}menu untuk melihat daftar menu.`)
+            return m.reply(`⚠️ *Kategori "${teks}" tidak ditemukan.*\nKetik *${_p}menu* untuk melihat daftar kategori.`);
         }
 
-        let menuCategory = defaultMenu.before + '\n\n'
+        // Tampilan Menu Per Kategori
+        let menuCategory = defaultMenu.before + '\n';
+        let categoryCommands = help.filter(menu => menu.tags && menu.tags.includes(teks) && menu.help);
         
-        if (teks === 'all') {
-            for (let tag of arrayMenu) {
-                if (tag !== 'all' && allTags[tag]) {
-                    menuCategory += defaultMenu.header.replace(/%category/g, allTags[tag]) + '\n'
-                    
-                    let categoryCommands = help.filter(menu => menu.tags && menu.tags.includes(tag) && menu.help)
-                    for (let menu of categoryCommands) {
-                        for (let help of menu.help) {
-                            menuCategory += defaultMenu.body
-                                .replace(/%cmd/g, menu.prefix ? help : _p + help)
-                                .replace(/%islimit/g, menu.limit ? '(Ⓛ)' : '')
-                                .replace(/%isPremium/g, menu.premium ? '(Ⓟ)' : '') + '\n'
-                        }
-                    }
-                    menuCategory += defaultMenu.footer + '\n'
-                }
+        menuCategory += defaultMenu.header.replace(/%category/g, allTags[teks]) + '\n';
+        for (let menu of categoryCommands) {
+            for (let h of menu.help) {
+                if (!h) continue;
+                menuCategory += defaultMenu.body
+                    .replace(/%cmd/g, menu.prefix ? h : _p + h)
+                    .replace(/%islimit/g, menu.limit ? '[Ⓛ]' : '')
+                    .replace(/%isPremium/g, menu.premium ? '[👑]' : '') + '\n';
             }
-        } else {
-            menuCategory += defaultMenu.header.replace(/%category/g, allTags[teks]) + '\n'
-            
-            let categoryCommands = help.filter(menu => menu.tags && menu.tags.includes(teks) && menu.help)
-            for (let menu of categoryCommands) {
-                for (let help of menu.help) {
-                    menuCategory += defaultMenu.body
-                        .replace(/%cmd/g, menu.prefix ? help : _p + help)
-                        .replace(/%islimit/g, menu.limit ? '(Ⓛ)' : '')
-                        .replace(/%isPremium/g, menu.premium ? '(Ⓟ)' : '') + '\n'
-                }
-            }
-            menuCategory += defaultMenu.footer + '\n'
         }
-
-        menuCategory += '\n' + defaultMenu.after
+        menuCategory += defaultMenu.footer;
+        menuCategory += '\n' + defaultMenu.after;
         
         let replace = {
             '%': '%',
@@ -221,38 +196,45 @@ let handler = async (m, { conn, usedPrefix: _p, args = [], command }) => {
             uptime, 
             name,
             date,
-            time
-        }
+            time,
+            ram,
+            limit: limit < 0 ? 'Unlimited ♾️' : limit,
+            level,
+            exp,
+            maxexp: max,
+            role,
+            premium: premium ? 'VIP Premium ★' : 'Free User'
+        };
 
         let text = menuCategory.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join`|`})`, 'g'), 
-            (_, name) => '' + replace[name])
+            (_, name) => '' + replace[name]);
 
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: global.thumb || "https://telegra.ph/file/3a34bfa58714bdef500d9.jpg" },
+                image: { url: "https://uploader.danafxc.my.id/images/681f2b1d-e0fe-435e-9b9e-fa1cdbfa23a0.jpg" },
                 caption: text,
                 mentions: [m.sender],
             },
-            { quoted: m },
+            { quoted: m }
         );
     } catch (e) {
-    console.log(e);
-    throw e;
+        console.error(e);
+        m.reply('❌ Terjadi kesalahan pada sistem menu.');
     }
-}
+};
 
-handler.help = ['menu']
-handler.tags = ['main']
-handler.command = /^(menu|help)$/i
-handler.exp = 3
+handler.help = ['menu'];
+handler.tags = ['main'];
+handler.command = /^(menu|help|\?)$/i;
+handler.exp = 3;
 
-export default handler
+export default handler;
 
 function clockString(ms) {
-    if (isNaN(ms)) return '--'
-    let h = Math.floor(ms / 3600000)
-    let m = Math.floor(ms / 60000) % 60
-    let s = Math.floor(ms / 1000) % 60
-    return [h, m, s].map(v => v.toString().padStart(2, 0)).join(':')
+    if (isNaN(ms)) return '--:--:--';
+    let h = Math.floor(ms / 3600000);
+    let m = Math.floor(ms / 60000) % 60;
+    let s = Math.floor(ms / 1000) % 60;
+    return [h, m, s].map(v => v.toString().padStart(2, '0')).join(':');
 }

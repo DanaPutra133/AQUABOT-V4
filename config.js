@@ -5,22 +5,22 @@ dotenv.config();
 process.env.TZ = 'Asia/Jakarta';
 
 
-global.owner = ["6281289694906", "62882008912795", "6285803583481"]; // wajib di isi tidak boleh kosong
-global.mods = ["6281289694906", "62882008912795"]; // wajib di isi tidak boleh kosong
-global.prems = ["6281289694906", "62882008912795"]; // wajib di isi tidak boleh kosong
-global.nameowner = "DANA"; // wajib di isi tidak boleh kosong
-global.numberowner = "6281289694906"; // wajib di isi tidak boleh kosong
+global.owner = ["6287873446580", "6281289694906"]; // wajib di isi tidak boleh kosong
+global.mods = ["6287873446580", "6281289694906", "62882008912795"]; // wajib di isi tidak boleh kosong
+global.prems = ["6287873446580", "6281289694906", "62882008912795"]; // wajib di isi tidak boleh kosong
+global.nameowner = "Ryan pratama"; // wajib di isi tidak boleh kosong
+global.numberowner = "6287873446580"; // wajib di isi tidak boleh kosong
 global.mail = "danaputra10012@gmail.com"; // wajib di isi tidak boleh kosong
 global.gc = "https://chat.whatsapp.com/I5RpePh2b5u37OyFjzCNTr"; // wajib di isi tidak boleh kosong
 global.instagram = "https://www.instagram.com/dana_putra13/"; // wajib di isi tidak boleh kosong
-global.wm = "© Aquabot"; // isi nama bot atau nama kalian
+global.wm = "Kiryuu Ryuzeen"; // isi nama bot atau nama kalian
 global.wait = "_*Tunggu sedang di proses...*_"; // ini pesan simulasi loading
 global.eror = "_*Server Error*_"; // ini pesan saat terjadi kesalahan
 global.stiker_wait = "*⫹⫺ Stiker sedang dibuat...*"; // ini pesan simulasi saat loading pembuatan sticker
 global.qris = "https://cdn.filn.pp.ua/uploads/betabotzapi/41616.jpg";
 global.thumb = "https://telegra.ph/file/3a34bfa58714bdef500d9.jpg"; // thumb untuk menu
-global.packname = "Made With"; // watermark stikcker packname
-global.author = "Bot WhatsApp"; // watermark stikcker author
+global.packname = "Kiryuu Ryuzeen"; // watermark stikcker packname
+global.author = "Ryan pratama"; // watermark stikcker author
 global.maxwarn = "3"; // Peringatan maksimum Warn
 global.lapor = true  // set true agar bot mengirim return json error ke grub lapor, jika false tidak ada
 global.groupLapor = "120363216901617825@g.us"; // grub dimana bot mengirim laporan error dari user
