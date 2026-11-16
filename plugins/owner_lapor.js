@@ -25,11 +25,11 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
         let imgBuf = await q.download();
         if (imgBuf.length > 5 * 1024 * 1024) throw 'Ukuran gambar maksimal 5MB!';
-        
+
         let imageUrl = await uploadImage(imgBuf);
         if (!imageUrl) throw 'Gagal mengunggah gambar bukti error.';
 
-        let [featureName, description, reporterEmail] = text.split('|').map(v => v.trim());
+        let [featureName, description, reporterEmail] = text.split('|').map(v => v?.trim());
 
         if (!featureName || !description) {
             return m.reply(
@@ -43,24 +43,34 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
             throw 'Deskripsi terlalu panjang, maksimal 200 karakter!';
         }
 
-        let botJid = conn.user?.id || conn.user?.jid || '';
-        let rawBotNum = botJid.split('@')[0].split(':')[0].replace(/[^0-9]/g, '');
+        let candidate = [
+            conn.user?.phone,
+            conn.user?.number,
+            conn.user?.jid,
+            typeof conn.user?.id === 'string' ? conn.user.id : conn.user?.id?.user,
+            global.nomorBot
+        ].find(v => v && !String(v).includes('@lid'));
 
-        if (rawBotNum.startsWith('62')) {
-            rawBotNum = '0' + rawBotNum.slice(2);
+        let formattedBotNum = String(candidate || '')
+            .split('@')[0]
+            .split(':')[0]
+            .replace(/[^0-9]/g, '');
+
+        if (formattedBotNum.startsWith('62')) {
+            formattedBotNum = '0' + formattedBotNum.slice(2);
         }
-
-        let formattedBotNum = rawBotNum || (global.nomorBot ? global.nomorBot.replace(/[^0-9]/g, '') : '');
 
         if (!formattedBotNum) {
             throw 'Gagal mendeteksi nomor bot secara otomatis.';
         }
 
+        let isEmailValid = reporterEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reporterEmail);
+
         let ownerCaption = `*🚨 LAPORAN BUKTI ERROR TIKET*\n\n` +
             `• *Pelapor:* @${m.sender.split('@')[0]}\n` +
             `• *Fitur:* ${featureName}\n` +
             `• *Deskripsi:* ${description}\n` +
-            `• *Email:* ${reporterEmail || '-'}\n` +
+            `• *Email:* ${isEmailValid ? reporterEmail : '-'}\n` +
             `• *Image:* ${imageUrl}\n`;
 
         await conn.sendMessage(global.groupLapor, {
@@ -75,17 +85,17 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         }).catch(err => console.error('Gagal kirim ke WA Group Lapor:', err?.message));
 
         let apiUrl = `https://bot.aniqu.biz.id/api/public-tickets?botNumber=${formattedBotNum}`;
-        
+
         let payload = {
             featureName: featureName,
             description: description,
-            images: imageUrl, 
-            reporterEmail: reporterEmail || ''
+            images: imageUrl,
+            reporterEmail: isEmailValid ? reporterEmail : 'noreply@aniqu.biz.id'
         };
 
         let response = await fetch(apiUrl, {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
@@ -103,7 +113,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
                 `• *Status:* ${ticketData?.status || 'processing'}\n\n` +
                 `🔗 *Link Tiket Laporan:* \n${ticketLink}\n\n` +
                 `> Klik link di atas untuk memantau status perbaikan tiket kamu secara real-time.`;
-            
+
             return m.reply(replyMsg);
         } else {
             console.log('[Lapor API Fail Response]:', resData);
