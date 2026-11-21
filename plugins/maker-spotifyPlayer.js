@@ -71,7 +71,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       jsonBody,
       {
         params: {
-          apikey: apiKey,
+          apikey: dana,
           top: top,
           judul: judul,
           artis: artis,
