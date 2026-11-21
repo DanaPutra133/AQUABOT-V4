@@ -1,6 +1,6 @@
 import axios from 'axios';
 import FormData from 'form-data';
-import * as fileType from "file-type";
+import * as fileType from 'file-type';
 import { promisify } from 'util';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
@@ -10,32 +10,34 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
   let [top, judul, artis, durasi, WaktuSekarang] = text.split('|').map(v => v.trim());
   if (!top || !judul || !artis || !durasi || !WaktuSekarang) {
-    throw `Argumen tidak lengkap!\nPastikan ada pemisah garis vertikal (|).\nContoh: ${usedPrefix + command} C.H.R.I.S.Y.E | Diskoria | 3:45 | 1:20`;
+    throw `Argumen tidak lengkap!\nPastikan ada pemisah garis vertikal (|).\nContoh: ${usedPrefix + command} top | C.H.R.I.S.Y.E | Diskoria | 3:45 | 1:20`;
   }
 
   let q = m.quoted ? m.quoted : m;
-  let mime = (q.msg || q).mimetype || '';
-  if (!mime || !mime.includes('image')) {
+  let mime = (q.msg || q).mimetype || q.mediaType || '';
+  if (!/image/i.test(mime)) {
     throw 'Tidak ada gambar yang ditemukan. Balas gambar yang ingin dijadikan cover.';
   }
   
   m.reply('Sedang memproses cover Spotify...');
 
   try {
-    let media = await q.download();
+    let media = await (q.download ? q.download() : conn.downloadMediaMessage(q));
     let fileSizeLimit = 5 * 1024 * 1024; 
     
     if (media.length > fileSizeLimit) {
       throw 'Ukuran media melebihi batas 5MB';
     }
 
-    const typeResult = await fileType.fromBuffer(media) || {};
+    const getBufferType = fileType.fileTypeFromBuffer || fileType.fromBuffer;
+    const typeResult = (getBufferType ? await getBufferType(media) : null) || {};
     const ext = typeResult.ext || 'jpg';
+    const contentType = typeResult.mime || (mime.includes('/') ? mime : 'image/jpeg');
     
     const form = new FormData();
     form.append('image', media, {
       filename: `upload.${ext}`,
-      contentType: mime,
+      contentType,
     });
 
     const getLength = promisify(form.getLength).bind(form);
@@ -69,7 +71,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       jsonBody,
       {
         params: {
-          apikey: dana,
+          apikey: apiKey,
           top: top,
           judul: judul,
           artis: artis,
