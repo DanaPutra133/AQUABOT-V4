@@ -3,7 +3,7 @@ let handler = m => m
 let linkRegex = /chat\.whatsapp\.com\/([0-9A-Za-z]{20,24})/i
 
 handler.before = async function (m, { conn, isBotAdmin, isAdmin }) {
-  if ((isZapo && m.fromMe) || m.fromMe || !m.isGroup) return true
+  if ((m.isZapo && m.fromMe) || m.fromMe || !m.isGroup) return true
   
   let chat = global.db.data.chats[m.chat]
   if (!chat.antiLink) return true

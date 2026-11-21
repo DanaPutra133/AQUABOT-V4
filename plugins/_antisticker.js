@@ -1,7 +1,7 @@
 let handler = m => m
 
 handler.before = function (m, { isAdmin, isBotAdmin }) {
-  if (isZapo && m.fromMe) return true
+  if (m.isZapo && m.fromMe) return true
   let chat = global.db.data.chats[m.chat]
   let sender = global.db.data.chats[m.sender]
   
