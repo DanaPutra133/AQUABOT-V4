@@ -1,6 +1,6 @@
 import axios from 'axios';
 import FormData from 'form-data';
-import fileType from 'file-type'; 
+import * as fileType from "file-type";
 import { promisify } from 'util';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {

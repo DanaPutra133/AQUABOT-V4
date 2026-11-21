@@ -1,6 +1,6 @@
 import axios from 'axios';
 import FormData from 'form-data';
-import pkg from 'file-type';
+import * as pkg from 'file-type';
 const { fromBuffer } = pkg;
 import { promisify } from 'util';
 
