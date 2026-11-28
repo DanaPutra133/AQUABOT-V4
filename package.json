@@ -1,6 +1,6 @@
 {
   "name": "AQUABOT-V4",
-  "version": "RC0.3.3-zapo",
+  "version": "RC5.1.2-zapo",
   "description": "Lightweight WhatsApp Bot",
   "depecrated": false,
   "type": "module",
