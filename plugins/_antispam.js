@@ -1,4 +1,4 @@
-export async function before(m, { isAdmin, isOwner }) {
+    export async function before(m, { isAdmin, isOwner }) {
    
     let user = global.db.data.users[m.sender];
     let chat = global.db.data.chats[m.chat];

@@ -7,7 +7,7 @@ let handler = async (m, { conn, usedPrefix }) => {
     let id = m.chat
     if (id in conn.fisika) {
         conn.reply(m.chat, 'Masih ada soal belum terjawab di chat ini', conn.fisika[id][0])
-        throw false
+        return;
     }
     let src = await (await fetch(`https://api.danafxc.my.id/api/proxy/games?q=fisika&apikey=${dana}`)).json()
     let json = src

@@ -7,7 +7,7 @@
     let id = m.chat
     if (id in conn.tebakhsr) {
       conn.reply(m.chat, 'Masih ada soal belum terjawab di chat ini', conn.tebakhsr[id][0])
-      throw false
+      return;
     }
     let src = await (await fetch(`https://api.danafxc.my.id/api/proxy/games?q=tebakHsr&apikey=${dana}`)).json()
     let json = src

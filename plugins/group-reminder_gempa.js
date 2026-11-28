@@ -5,49 +5,41 @@ let lastGempaData = null;
 
 async function getGempaInfo() {
     try {
-        const url = `https://api.danafxc.my.id/api/proxy/features/gempa?apikey=${dana}`; // Changed URL to match the new JSON source
+        const url = `https://api.betabotz.eu.org/api/search/gempa?apikey=${lann}`;
         const response = await axios.get(url);
-        const res = response.data.data; // Access the 'data' object directly
+        const res = response.data.result.result;
 
         if (!res) {
             return;
         }
 
-        // Compare using DateTime for more robust checking
-        if (lastGempaData && lastGempaData.DateTime === res.DateTime) {
-            return;p
+
+        if (lastGempaData && lastGempaData.waktu === res.waktu) {
+            return;
         }
 
-        lastGempaData = res;
+        lastGempaData = res; 
 
         const gempaInfo = {
-            tanggal: res.Tanggal,
-            jam: res.Jam,
-            dateTime: res.DateTime,
-            coordinates: res.Coordinates,
+            waktu: res.waktu,
             lintang: res.Lintang,
             bujur: res.Bujur,
-            magnitude: res.Magnitude,
+            magnitude: res.Magnitudo,
             kedalaman: res.Kedalaman,
             wilayah: res.Wilayah,
             potensi: res.Potensi,
-            dirasakan: res.Dirasakan,
-            gambar: `https://data.bmkg.go.id/DataMKG/TEWS/${res.Shakemap}` // Construct the full image URL
+            gambar: res.image
         };
 
         console.log(`
-        *Informasi Gempa Terbaru*
-        Tanggal: ${gempaInfo.tanggal}
-        Jam: ${gempaInfo.jam}
+        Waktu Gempa: ${gempaInfo.waktu}
         Magnitudo: ${gempaInfo.magnitude}
         Wilayah: ${gempaInfo.wilayah}
-        Kedalaman: ${gempaInfo.kedalaman}
         Potensi: ${gempaInfo.potensi}
-        Dirasakan: ${gempaInfo.dirasakan}
-        Gambar Peta: ${gempaInfo.gambar}
+        Gambar: ${gempaInfo.gambar}
         `);
 
-        sendGempaReminderToGroups(gempaInfo);
+        sendGempaReminderToGroups(gempaInfo); 
     } catch (error) {
         console.error('[❗] Terjadi kesalahan saat mengambil data gempa:', error);
     }
@@ -56,30 +48,21 @@ async function getGempaInfo() {
 async function sendGempaReminderToGroups(gempaInfo) {
     for (const chatId of Object.keys(global.db.data.chats)) {
         const chat = global.db.data.chats[chatId];
-         if (chat.notifgempa) {
-            const reminderMessage = `🚨 *PENGINGAT GEMPA BUMI* 🚨\n\n` +
-                                    `📅 Tanggal: ${gempaInfo.tanggal}\n` +
-                                    `🕒 Jam: ${gempaInfo.jam}\n` +
-                                    `🌍 Wilayah: ${gempaInfo.wilayah}\n` +
-                                    `💥 Magnitudo: ${gempaInfo.magnitude}\n` +
-                                    `🌐 Lintang: ${gempaInfo.lintang}\n` +
-                                    `🌐 Bujur: ${gempaInfo.bujur}\n` +
-                                    `🔍 Kedalaman: ${gempaInfo.kedalaman}\n` +
-                                    `🌊 Potensi: ${gempaInfo.potensi}\n` +
-                                    `🗣️ Dirasakan: ${gempaInfo.dirasakan}\n` +
-                                    `\nJaga keselamatan kalian!`;
-            await sendReminderToGroup(chatId, reminderMessage, gempaInfo.gambar); // Pass image URL
+        if (chat.notifgempa) {
+            const reminderMessage = `🚨 *PENGINGAT GEMPA BUMI* 🚨\n\n🕒 Waktu: ${gempaInfo.waktu}\n🌍 Wilayah: ${gempaInfo.wilayah}\n💥 Magnitudo: ${gempaInfo.magnitude}\n🌐 Lintang: ${gempaInfo.lintang}\n🌐 Bujur: ${gempaInfo.bujur}\n🔍 Kedalaman: ${gempaInfo.kedalaman}\n🌊 Potensi: ${gempaInfo.potensi}\n📷 Gambar Peta: ${gempaInfo.gambar}\n\nJaga keselamatan kalian!`;
+            await sendReminderToGroup(chatId, reminderMessage); 
         }
     }
 }
 
-async function sendReminderToGroup(chatId, text, imageUrl) {
-    await conn.sendMessage(chatId, { image: { url: imageUrl }, caption: text });
+async function sendReminderToGroup(chatId, text) {
+    await conn.sendMessage(chatId, { text }); 
 }
 
 
 function startGempaReminder() {
     setInterval(() => {
+        console.log('Mengecek data gempa terbaru...');
         getGempaInfo();
     }, 60 * 60 * 1000); 
 }

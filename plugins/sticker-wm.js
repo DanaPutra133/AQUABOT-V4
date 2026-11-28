@@ -1,5 +1,6 @@
 import uploadFile from '../lib/uploadFile.js';
 import axios from 'axios';
+import { stickerToMp4, detectStickerKind, STICKER_KIND } from '../lib/sticker-convert.js?v=6';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   let q = m.quoted ? m.quoted : m;
@@ -18,29 +19,51 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     let img = await q.download?.();
     if (!img) throw `Gagal mengunduh media, pastikan kamu membalas gambar/video/stiker.`;
 
-    let media = await uploadFile(img);
     let isAnimated = (q.msg || q).isAnimated === true;
 
     if (isAnimated || /video|webp/g.test(mime)) {
-      let apiUrl = `https://api.danafxc.my.id/api/proxy/tools/convertwebp2mp4?apikey=${dana}&url=${encodeURIComponent(media)}`;
+      let videoBuffer = null;
 
-      let response = await axios.get(apiUrl, {
-        responseType: 'arraybuffer',
-       
-      });
+      try {
+        let mediaUrl = await uploadFile(img);
+        let apiUrl = `https://api.danafxc.my.id/api/proxy/tools/convertwebp2mp4?apikey=${dana}&url=${encodeURIComponent(mediaUrl)}`;
 
-      let videoBuffer = Buffer.from(response.data);
+        let response = await axios.get(apiUrl, {
+          responseType: 'arraybuffer',
+          timeout: 15000,
+        });
+        
+        if (response && response.data) {
+          videoBuffer = Buffer.from(response.data);
+        }
+      } catch (apiErr) {
+        console.warn('⚠️ API Danafxc gagal/timeout untuk WM, beralih ke konversi lokal...', apiErr?.message || apiErr);
+      }
+
+      if (!videoBuffer || !videoBuffer.length) {
+        try {
+          videoBuffer = await stickerToMp4(img);
+        } catch (localErr) {
+          console.error('Konversi lokal stickerToMp4 gagal:', localErr);
+        }
+      }
+
+      if (!videoBuffer || !videoBuffer.length) {
+        throw "Gagal mengubah media animasi menjadi video stiker.";
+      }
 
       await conn.sendVideoAsSticker(m.chat, videoBuffer, m, {
         packname: packname,
         author: author,
       });
+
     } else {
       await conn.sendImageAsSticker(m.chat, img, m, {
         packname: packname,
         author: author,
       });
     }
+
   } catch (e) {
     console.error(e);
     throw e;

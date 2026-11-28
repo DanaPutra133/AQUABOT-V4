@@ -67,7 +67,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
 handler.help = ['stalktiktok <username>'];
 handler.tags = ['stalk', 'tools'];
-handler.command = /^(stalktiktok|stalktt|ttstalk2?|tiktokstalk)$/i; // Sudah ditambahkan regex untuk menangkap .ttstalk2
+handler.command = /^(stalktiktok|stalktt|ttstalk2?|tiktokstalk)$/i; 
 handler.limit = true;
 
 export default handler;

@@ -5,9 +5,9 @@ let location = 'Jakarta';
 
 async function getWeatherInfo() {
     try {
-        const url = `https://api.danafxc.my.id/api/proxy/features/cuaca?kota=${encodeURIComponent(location)}&apikey=${dana}`;
+        const url = `https://api.betabotz.eu.org/api/tools/cuaca?query=${encodeURIComponent(location)}&apikey=${lann}`;
         const response = await axios.get(url);
-        const res = response.data.data;
+        const res = response.data.result;
 
         if (!res) {
             console.log('Data cuaca tidak tersedia');
@@ -15,15 +15,16 @@ async function getWeatherInfo() {
         }
 
         const weatherInfo = {
-            location: res.kota,
-            country: res.negara,
-            weather: res.kondisi,
-            currentTemp: res.suhu,
-            maxTemp: 'N/A', // The new API does not provide this data
-            minTemp: 'N/A', // The new API does not provide this data
-            humidity: res.kelembapan,
-            windSpeed: res.angin,
+            location: res.location,
+            country: res.country,
+            weather: res.weather,
+            currentTemp: res.currentTemp,
+            maxTemp: res.maxTemp,
+            minTemp: res.minTemp,
+            humidity: res.humidity,
+            windSpeed: res.windSpeed,
         };
+        
 
         console.log(`
         Lokasi: ${weatherInfo.location}

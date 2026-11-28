@@ -37,11 +37,16 @@ Contoh penggunaan: ${usedPrefix}math medium
       return;
     }
 
-    
+    let json;
+    try {
     const url = `https://api.danafxc.my.id/api/proxy/games?q=math&apikey=${dana}`;
     const res = await fetch(url);
-    const json = await res.json();
-  
+    json = await res.json();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+
     if (!Array.isArray(json)) {
       throw new Error('Format data math tidak valid dari API.');
     }

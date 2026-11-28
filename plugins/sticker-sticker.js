@@ -1,359 +1,270 @@
-import fs from 'fs';
-import fsp from 'fs/promises';
-import path from 'path';
-import os from 'os';
-import { randomBytes } from 'crypto';
-import { execFile } from 'child_process';
-import { promisify } from 'util';
-import { createRequire } from 'module';
-import sharp from 'sharp';
-import {
-  prepareWAMessageMedia,
-  proto,
-  downloadMediaMessage
-} from '@whiskeysockets/baileys';
+import fs from 'node:fs'
+import path from 'node:path'
+import { spawn } from 'node:child_process'
+import { randomUUID } from 'node:crypto'
+import { proto } from '../lib/simple.js'
+import { addExif } from '../lib/sticker.js'
 
-const require = createRequire(import.meta.url);
-const execFileAsync = promisify(execFile);
+const FFMPEG = process.env.FFMPEG_PATH || 'ffmpeg'
+const AUDIO_LIMIT = 10
+const VIDEO_LIMIT = 10
+const WEBP_LIMIT = 1024 * 1024
+const SCRATCH_DIR = path.join(process.cwd(), 'tmp', 'stca')
+const OPUS_MIME = 'audio/ogg; codecs=opus'
+const WEBP_MIME = 'image/webp'
+const PAD_FILTER = 'scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=0x00000000'
+const OPUS_ARGS = [
+  '-vn',
+  '-map_metadata', '-1',
+  '-c:a', 'libopus',
+  '-b:a', '64k',
+  '-ar', '48000',
+  '-ac', '1',
+  '-f', 'ogg'
+]
 
-const MAX_DURATION = 25;
-const MAX_STICKER_BYTES = 850 * 1024; // Batas aman WA (< 1 MB)
-
-function patchProtoInstance(p) {
-  const M = p?.Message;
-  if (!M || M.__audioStickerPatchedV3) return;
-
-  if (M.StickerMessage) {
-    const prevStickerEncode = M.StickerMessage.encode;
-    M.StickerMessage.encode = function (message, writer) {
-      const audio = message?.audioMessage;
-      if (audio && Object.prototype.hasOwnProperty.call(message, 'audioMessage')) {
-        delete message.audioMessage;
-      }
-      const w = prevStickerEncode.call(this, message, writer);
-      if (audio && M.AudioMessage) {
-        message.audioMessage = audio;
-        M.AudioMessage.encode(audio, w.uint32(210).fork()).ldelim();
-      }
-      return w;
-    };
-
-    if (typeof M.StickerMessage.fromObject === 'function') {
-      const prevStickerFromObj = M.StickerMessage.fromObject;
-      M.StickerMessage.fromObject = function (object) {
-        const msg = prevStickerFromObj.call(this, object);
-        if (object?.audioMessage) {
-          msg.audioMessage = M.AudioMessage?.fromObject
-            ? M.AudioMessage.fromObject(object.audioMessage)
-            : object.audioMessage;
-        }
-        return msg;
-      };
-    }
-  }
-
-  const prevMsgEncode = M.encode;
-  M.encode = function (message, writer) {
-    const asm = message?.audioStickerMessage;
-    if (asm) {
-      if (Object.prototype.hasOwnProperty.call(message, 'stickerMessage')) {
-        delete message.stickerMessage;
-      }
-      if (Object.prototype.hasOwnProperty.call(message, 'audioStickerMessage')) {
-        delete message.audioStickerMessage;
-      }
-    }
-    const w = prevMsgEncode.call(this, message, writer);
-    if (asm && M.FutureProofMessage) {
-      message.audioStickerMessage = asm;
-      M.FutureProofMessage.encode(asm, w.uint32(1074).fork()).ldelim();
-    }
-    return w;
-  };
-
-  if (typeof M.fromObject === 'function') {
-    const prevMsgFromObj = M.fromObject;
-    M.fromObject = function (object) {
-      const msg = prevMsgFromObj.call(this, object);
-      if (object?.audioStickerMessage) {
-        const inner = object.audioStickerMessage.message || object.audioStickerMessage;
-        if (inner?.stickerMessage && object.audioStickerMessage.message?.stickerMessage?.audioMessage) {
-          inner.stickerMessage.audioMessage = object.audioStickerMessage.message.stickerMessage.audioMessage;
-        }
-        msg.audioStickerMessage = { message: inner };
-        delete msg.stickerMessage;
-        if (inner) {
-          Object.setPrototypeOf(msg, inner);
-        }
-      }
-      return msg;
-    };
-  }
-
-  M.__audioStickerPatchedV3 = true;
+function varint(value) {
+  const bytes = []
+  let rest = value
+  do {
+    const chunk = rest & 0x7f
+    rest = Math.floor(rest / 128)
+    bytes.push(rest ? chunk | 0x80 : chunk)
+  } while (rest)
+  return bytes
 }
 
-function ensurePatched() {
-  patchProtoInstance(proto);
-  for (const pkg of ['@whiskeysockets/baileys', 'baileys', '@rexxhayanasi/elaina-baileys']) {
-    try {
-      const mod = require(pkg);
-      if (mod?.proto) patchProtoInstance(mod.proto);
-      if (mod?.default?.proto) patchProtoInstance(mod.default.proto);
-    } catch {}
-  }
+function lengthDelimited(id, payload) {
+  return Uint8Array.from([...varint((id << 3) | 2), ...varint(payload.length), ...payload])
 }
 
-async function downloadMediaBuf(q, conn) {
-  if (typeof q.download === 'function') {
-    try {
-      const buf = await q.download();
-      if (buf?.length) return buf;
-    } catch {}
-  }
-  if (q.fakeObj?.message || q.message) {
-    try {
-      const buf = await downloadMediaMessage(
-        q.fakeObj || q,
-        'buffer',
-        {},
-        {
-          logger: { info: () => {}, error: () => {}, warn: () => {} },
-          reuploadRequest: conn?.updateMediaMessage
-        }
-      );
-      if (buf?.length) return buf;
-    } catch {}
-  }
-  return null;
+function transcode(source, recipe, extension, timeout = 30000) {
+  fs.mkdirSync(SCRATCH_DIR, { recursive: true })
+  const tag = randomUUID()
+  const inFile = path.join(SCRATCH_DIR, `${tag}.src`)
+  const outFile = path.join(SCRATCH_DIR, `${tag}.${extension}`)
+  fs.writeFileSync(inFile, source)
+
+  return new Promise((resolve, reject) => {
+    const worker = spawn(FFMPEG, [
+      '-hide_banner', '-loglevel', 'error', '-nostdin', '-y',
+      '-threads', '1',
+      '-i', inFile,
+      ...recipe,
+      outFile
+    ])
+
+    let log = ''
+    let settled = false
+    let guard
+
+    const settle = (error, output) => {
+      if (settled) return
+      settled = true
+      clearTimeout(guard)
+      for (const file of [inFile, outFile]) {
+        try { fs.unlinkSync(file) } catch {}
+      }
+      if (error) reject(error)
+      else resolve(output)
+    }
+
+    guard = setTimeout(() => {
+      try { worker.kill('SIGKILL') } catch {}
+    }, timeout)
+
+    worker.stderr?.on('data', (chunk) => { log += chunk.toString() })
+    worker.once('error', (error) => settle(error))
+    worker.once('close', (code) => {
+      if (code !== 0) {
+        const tail = log.trim().slice(-180)
+        return settle(new Error(`ffmpeg exit ${code}${tail ? ': ' + tail : ''}`))
+      }
+      try {
+        if (!fs.existsSync(outFile)) return settle(new Error('ffmpeg tidak menghasilkan berkas'))
+        settle(null, fs.readFileSync(outFile))
+      } catch (error) {
+        settle(error)
+      }
+    })
+  })
 }
 
-async function addStickerExif(webpBuffer, packname, author) {
-  const json = {
-    'sticker-pack-id': 'com.bot.audiosticker',
-    'sticker-pack-name': String(packname ?? ''),
-    'sticker-pack-publisher': String(author ?? ''),
-    emojis: ['🔊']
-  };
-  const exifAttr = Buffer.from([
-    0x49, 0x49, 0x2a, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57,
-    0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00
-  ]);
-  const jsonBuff = Buffer.from(JSON.stringify(json), 'utf-8');
-  const exif = Buffer.concat([exifAttr, jsonBuff]);
-  exif.writeUIntLE(jsonBuff.length, 14, 4);
+function motionRecipe(quality, fps) {
+  return [
+    '-t', String(VIDEO_LIMIT),
+    '-fs', '0.7M',
+    '-an',
+    '-vf', `fps=${fps},${PAD_FILTER},format=yuva420p`,
+    '-c:v', 'libwebp',
+    '-lossless', '0',
+    '-q:v', String(quality),
+    '-loop', '0',
+    '-f', 'webp'
+  ]
+}
 
+const toMotion = (source, quality, fps) => transcode(source, motionRecipe(quality, fps), 'webp', 45000)
+
+async function siftAudio(source) {
   try {
-    const { Image } = require('node-webpmux');
-    const img = new Image();
-    await img.load(webpBuffer);
-    img.exif = exif;
-    return await img.save(null);
+    const output = await transcode(source, ['-t', String(AUDIO_LIMIT), ...OPUS_ARGS], 'ogg')
+    return output?.length ? output : null
   } catch {
-    return webpBuffer;
+    return null
   }
 }
 
-async function videoBufferToAnimatedWebp(buffer, packname, author) {
-  const tmpId = randomBytes(6).toString('hex');
-  const inPath = path.join(os.tmpdir(), `as_vid_${tmpId}.mp4`);
-  const outPath = path.join(os.tmpdir(), `as_out_${tmpId}.webp`);
+function looksWebp(buffer) {
+  return Buffer.isBuffer(buffer) &&
+    buffer.length > 29 &&
+    buffer.toString('latin1', 0, 4) === 'RIFF' &&
+    buffer.toString('latin1', 8, 12) === 'WEBP'
+}
 
-  const profiles = [
-    { fps: 10, size: 360, q: 42 },
-    { fps: 8, size: 300, q: 32 },
-    { fps: 7, size: 256, q: 25 }
-  ];
-
-  try {
-    await fsp.writeFile(inPath, buffer);
-    let bestBuf = null;
-
-    for (const p of profiles) {
-      const vf = `fps=${p.fps},scale=${p.size}:${p.size}:force_original_aspect_ratio=decrease,format=rgba,pad=${p.size}:${p.size}:(ow-iw)/2:(oh-ih)/2:color=#00000000,setsar=1`;
-      await execFileAsync('ffmpeg', [
-        '-y',
-        '-i', inPath,
-        '-t', String(MAX_DURATION),
-        '-vf', vf,
-        '-c:v', 'libwebp',
-        '-lossless', '0',
-        '-compression_level', '6',
-        '-q:v', String(p.q),
-        '-loop', '0',
-        '-preset', 'picture',
-        '-an',
-        '-vsync', '0',
-        outPath
-      ]);
-
-      bestBuf = await fsp.readFile(outPath);
-      if (bestBuf.length <= MAX_STICKER_BYTES) break;
-    }
-
-    return await addStickerExif(bestBuf, packname, author);
-  } finally {
-    await fsp.unlink(inPath).catch(() => {});
-    await fsp.unlink(outPath).catch(() => {});
+function inspectWebp(buffer) {
+  if (!looksWebp(buffer)) throw new Error('Hasil konversi bukan WebP yang sah')
+  switch (buffer.toString('latin1', 12, 16)) {
+    case 'VP8 ':
+      return { width: buffer.readUInt16LE(26) & 0x3fff, height: buffer.readUInt16LE(28) & 0x3fff, animated: false }
+    case 'VP8L':
+      return {
+        width: 1 + (buffer[21] | ((buffer[22] & 0x3f) << 8)),
+        height: 1 + ((buffer[22] >> 6) | (buffer[23] << 2) | ((buffer[24] & 0x0f) << 10)),
+        animated: false
+      }
+    case 'VP8X':
+      return {
+        width: 1 + buffer.readUIntLE(24, 3),
+        height: 1 + buffer.readUIntLE(27, 3),
+        animated: (buffer[20] & 2) !== 0
+      }
+    default:
+      throw new Error('Chunk WebP tidak dikenali')
   }
 }
 
-async function extractOggOpusFromVideo(buffer) {
-  const tmpId = randomBytes(6).toString('hex');
-  const inPath = path.join(os.tmpdir(), `ptt_in_${tmpId}.mp4`);
-  const outPath = path.join(os.tmpdir(), `ptt_out_${tmpId}.ogg`);
-
+async function stampExif(buffer) {
   try {
-    await fsp.writeFile(inPath, buffer);
-    await execFileAsync('ffmpeg', [
-      '-y',
-      '-i', inPath,
-      '-vn',
-      '-map', '0:a:0',
-      '-t', String(MAX_DURATION),
-      '-af', 'aresample=48000:async=1:first_pts=0',
-      '-c:a', 'libopus',
-      '-b:a', '48k',
-      '-vbr', 'on',
-      '-compression_level', '10',
-      '-ac', '1',
-      '-ar', '48000',
-      '-application', 'audio',
-      '-avoid_negative_ts', 'make_zero',
-      '-f', 'ogg',
-      outPath
-    ]);
-    const oggBuffer = await fsp.readFile(outPath);
-    if (!oggBuffer || oggBuffer.length < 200) return null;
-    return oggBuffer;
+    if (!looksWebp(buffer)) return buffer
+    const stamped = await addExif(buffer, global.packname, global.author)
+    return looksWebp(stamped) ? stamped : buffer
   } catch {
-    return null;
-  } finally {
-    await fsp.unlink(inPath).catch(() => {});
-    await fsp.unlink(outPath).catch(() => {});
+    return buffer
   }
 }
 
-async function sendCombinedAudioSticker(conn, chat, stickerBuffer, oggBuffer, durationHint = 0) {
-  ensurePatched();
+async function buildMotionSticker(source) {
+  const raw = Buffer.from(source)
+  let bytes = await stampExif(await toMotion(raw, 50, 10))
+  if (bytes.length > WEBP_LIMIT) {
+    const lean = await toMotion(raw, 35, 8)
+    const stamped = await stampExif(lean)
+    bytes = stamped.length <= WEBP_LIMIT ? stamped : lean
+  }
+  return { bytes, meta: inspectWebp(bytes) }
+}
 
-  const [{ audioMessage }, prepared] = await Promise.all([
-    prepareWAMessageMedia(
-      { audio: oggBuffer, mimetype: 'audio/ogg; codecs=opus', ptt: true },
-      { upload: conn.waUploadToServer }
-    ),
-    prepareWAMessageMedia(
-      { sticker: stickerBuffer, isAnimated: true },
-      { upload: conn.waUploadToServer }
-    )
-  ]);
+async function deliverStickerAudio(conn, chat, origin, sticker) {
+  if (!sticker.track?.length) {
+    await conn.sendMessage(chat, { sticker: sticker.bytes, mimetype: WEBP_MIME }, { quoted: origin })
+    return
+  }
 
-  const validSeconds = durationHint > 0 ? Math.min(MAX_DURATION, Math.ceil(durationHint)) : MAX_DURATION;
-  audioMessage.seconds = audioMessage.seconds || validSeconds;
-  audioMessage.ptt = true;
+  const bridge = conn._client
+  const [sound, visual] = await Promise.all([
+    bridge.message.upload(sticker.track, { type: 'audio' }),
+    bridge.message.upload(sticker.bytes, { type: 'image' })
+  ])
 
-  prepared.stickerMessage.isAnimated = true;
-  prepared.stickerMessage.audioMessage = audioMessage;
+  const soundMessage = proto.Message.AudioMessage.encode({
+    ...sound,
+    mimetype: OPUS_MIME,
+    ptt: true
+  }).finish()
 
-  await conn.relayMessage(
-    chat,
-    {
-      __proto__: prepared,
-      audioStickerMessage: { message: prepared },
-      messageContextInfo: { messageSecret: randomBytes(32) }
-    },
-    {}
-  );
+  await conn.sendMessage(chat, {
+    stickerMessage: {
+      ...visual,
+      mimetype: WEBP_MIME,
+      width: sticker.meta.width,
+      height: sticker.meta.height,
+      isAnimated: sticker.meta.animated,
+      $unknowns: [lengthDelimited(26, soundMessage)]
+    }
+  }, { quoted: origin })
 }
 
 let handler = async (m, { conn, command, usedPrefix }) => {
-  let q = m.quoted ? m.quoted : m;
-  let msgObj = q.msg || q;
-  let mime = msgObj.mimetype || '';
-  let mtype = q.mtype || '';
-  let isSoundCmd = /^(sa|saudio|stikeraudio|audiosticker)$/i.test(command);
+  const q = m.quoted ? m.quoted : m
+  const payload = q.msg || q
+  const mime = payload.mimetype || ''
+  const mtype = q.mtype || ''
+  const isSoundCmd = /^(sa|saudio|stcaudio|stikeraudio)$/i.test(command)
 
-  let isVideo = /video/.test(mime) || mtype === 'videoMessage';
-  let isImage = (/image/.test(mime) && !/webp/.test(mime)) || mtype === 'imageMessage';
+  const isVideo = mime.startsWith('video/') || mtype === 'videoMessage'
+  const isImage = (mime.startsWith('image/') && !mime.includes('webp')) || mtype === 'imageMessage'
 
   // Mode Sound Sticker (.sa) khusus video bersuara
   if (isSoundCmd && isVideo) {
-    let seconds = Number(msgObj.seconds || 0);
-    if (seconds > MAX_DURATION) {
-      return m.reply(`Maksimal durasi video untuk stiker audio adalah ${MAX_DURATION} detik!`);
+    if (Number(payload.seconds || 0) > VIDEO_LIMIT) {
+      return m.reply(`Maksimal durasi video untuk stiker audio adalah ${VIDEO_LIMIT} detik!`)
     }
 
-    let media = await downloadMediaBuf(q, conn);
-    if (!media) throw 'Video gagal diunduh.';
+    const raw = await q.download()
+    if (!raw?.length) throw new Error('Video gagal diunduh.')
 
-    let oggBuffer = await extractOggOpusFromVideo(media);
+    if (global.stiker_wait) m.reply(global.stiker_wait)
 
-    // Jika video memiliki trek audio, buat Audio Sticker
-    if (oggBuffer) {
-      let stickerBuffer = await videoBufferToAnimatedWebp(
-        media,
-        global.packname || 'Bot Sticker',
-        global.author || 'Sticker'
-      );
-      await sendCombinedAudioSticker(conn, m.chat, stickerBuffer, oggBuffer, seconds);
-      return;
+    const sticker = await buildMotionSticker(raw)
+    const track = await siftAudio(raw)
+
+    await deliverStickerAudio(conn, m.chat, m, {
+      bytes: sticker.bytes,
+      meta: sticker.meta,
+      track
+    })
+
+    if (!track) {
+      await m.reply('Video ini tanpa suara, jadi dikirim sebagai stiker biasa.')
     }
-
-    // Jika video tanpa suara, otomatis fallback ke stiker video biasa
-    if (seconds > 7) return m.reply('Video ini tanpa suara dan durasinya lebih dari 6 detik!');
-    let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, {
-      packname: global.packname,
-      author: global.author
-    });
-    if (typeof encmedia === 'string' && fs.existsSync(encmedia)) fs.unlinkSync(encmedia);
-    return m.reply('Video ini tanpa suara, jadi dikirim sebagai stiker biasa.');
+    return
   }
 
-  // Mode Stiker Gambar Biasa (.s / .sticker) + otomatis jika .sa dipakai di gambar
+  //  Mode Stiker Biasa (.s / .sticker) + Fallback otomatis jika .sa dipakai pada gambar
   if (isImage) {
-    let media = await downloadMediaBuf(q, conn);
-    if (!media) throw 'Gambar gagal diunduh.';
-
-    let processedMedia = await sharp(media)
-      .resize(512, 512, {
-        fit: 'contain',
-        background: { r: 255, g: 255, b: 255, alpha: 0 }
-      })
-      .png()
-      .toBuffer();
-
-    let encmedia = await conn.sendImageAsSticker(m.chat, processedMedia, m, {
+    const media = await q.download()
+    if (global.stiker_wait) m.reply(global.stiker_wait)
+    const encmedia = await conn.sendImageAsSticker(m.chat, media, m, {
       packname: global.packname,
       author: global.author
-    });
-    if (typeof encmedia === 'string' && fs.existsSync(encmedia)) fs.unlinkSync(encmedia);
-    return;
+    })
+    if (typeof encmedia === 'string' && fs.existsSync(encmedia)) fs.unlinkSync(encmedia)
+    return
   }
 
-  // Mode Stiker Video Biasa (.s / .sticker)
   if (isVideo) {
-    if (Number(msgObj.seconds || 0) > 7) return m.reply('Maksimal 6 detik!');
-    let media = await downloadMediaBuf(q, conn);
-    if (!media) throw 'Video gagal diunduh.';
-
-    let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, {
+    if (Number(payload.seconds || 0) > 7) return m.reply('maksimal 6 detik!')
+    const media = await q.download()
+    if (global.stiker_wait) m.reply(global.stiker_wait)
+    const encmedia = await conn.sendVideoAsSticker(m.chat, media, m, {
       packname: global.packname,
       author: global.author
-    });
-    if (typeof encmedia === 'string' && fs.existsSync(encmedia)) fs.unlinkSync(encmedia);
-    return;
+    })
+    if (typeof encmedia === 'string' && fs.existsSync(encmedia)) fs.unlinkSync(encmedia)
+    return
   }
 
   if (isSoundCmd) {
-    throw `Kirim/balas video bersuara dengan caption ${usedPrefix + command}\nDurasi video maksimal ${MAX_DURATION} detik.`;
+    throw `Kirim/Balas Video Bersuara Dengan Caption ${usedPrefix + command}\nDurasi Video Maksimal ${VIDEO_LIMIT} Detik`
   }
 
-  throw `Kirim gambar/video dengan caption ${usedPrefix + command}\nDurasi video 1-6 detik.`;
-};
+  throw `Kirim Gambar/Video Dengan Caption ${usedPrefix + command}\nDurasi Video 1-6 Detik`
+}
 
-handler.help = ['sticker', 'sa'];
-handler.tags = ['sticker'];
-handler.command = /^(stiker|s|sticker|sa|saudio|stikeraudio|audiosticker)$/i;
-handler.limit = true;
+handler.help = ['sticker', 'sa']
+handler.tags = ['sticker']
+handler.command = /^(stiker|s|sticker|sa|saudio|stcaudio|stikeraudio)$/i
+handler.limit = true
 
-export default handler;
+export default handler

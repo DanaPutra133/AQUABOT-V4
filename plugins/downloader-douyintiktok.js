@@ -43,7 +43,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
             { quoted: m },
           );
         }
-        
+        return;
     } catch (e) {
         console.error(e);
         throw e;

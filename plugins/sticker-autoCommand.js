@@ -6,29 +6,21 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
     if (command === 'addcmdsticker') {
         let q = m.quoted ? m.quoted : m;
-        let mime = (q.msg || q).mimetype || '';
+        let mime = (q.msg || q).mimetype || q.mediaType || '';
 
         if (!text) {
             return m.reply(
                 `⚠️ *Masukkan kata kunci trigger!*\n\n` +
                 `📌 *Cara Pakai:*\n` +
-                `Reply **stiker gambar (bukan stiker bergerak/GIF)** dengan caption:\n` +
+                `Reply **stiker diam (bukan stiker bergerak/GIF)** dengan caption:\n` +
                 `\`${usedPrefix + command} ketawa\``
             );
         }
 
-        if (!/webp/.test(mime)) {
+        if (!/webp|sticker/i.test(mime)) {
             return m.reply(
                 `⚠️ *Media tidak valid!*\n` +
                 `Harap reply sebuah **stiker diam (bukan GIF / gambar biasa / video)** dengan perintah \`${usedPrefix + command} ${text.trim()}\`.`
-            );
-        }
-
-        let isAnimated = Boolean((q.msg || q).isAnimated);
-        if (isAnimated) {
-            return m.reply(
-                `❌ *Stiker bergerak (GIF) tidak didukung!*\n` +
-                `Harap gunakan **stiker diam (statis)**, bukan stiker animasi/GIF.`
             );
         }
 
@@ -40,6 +32,14 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         try {
             let stickerBuf = await q.download();
             if (!stickerBuf) throw 'Gagal mengunduh buffer stiker.';
+
+            let isAnimated = Boolean((q.msg || q).isAnimated) || stickerBuf.includes(Buffer.from('ANIM'));
+            if (isAnimated) {
+                return m.reply(
+                    `❌ *Stiker bergerak (GIF) tidak didukung!*\n` +
+                    `Harap gunakan **stiker diam (statis)**, bukan stiker animasi/GIF.`
+                );
+            }
 
             dbSticker[keyword] = {
                 data: stickerBuf.toString('base64'),
@@ -54,8 +54,8 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
                 `> Setiap ada yang mengirim kata *${keyword}* (baik berdiri sendiri maupun di dalam kalimat), bot akan otomatis membalas dengan stiker tersebut.`
             );
         } catch (e) {
-            console.log(e);
-            throw e;
+            console.error('[addcmdsticker Sticker Error]:', e);
+            return m.reply('❌ Terjadi kesalahan saat menyimpan stiker.');
         }
     }
 
@@ -100,23 +100,25 @@ handler.before = async function (m, { conn }) {
     for (let key of keywords) {
         let regex = new RegExp(`\\b${escapeRegex(key)}\\b`, 'i');
         if (regex.test(m.text)) {
+            let stickerBuffer = Buffer.from(dbSticker[key].data, 'base64');
             try {
-                let stickerBuffer = Buffer.from(dbSticker[key].data, 'base64');
                 await conn.sendMessage(m.chat, {
                     sticker: stickerBuffer
                 }, { quoted: m });
             } catch (e) {
-                console.log(e);
-                throw e;
+                try {
+                    await conn.sendFile(m.chat, stickerBuffer, 'sticker.webp', '', m, false, { asSticker: true });
+                } catch (err) {
+                    console.error('[AutoSticker Send Error]:', err);
+                }
             }
             break;
         }
     }
 };
 
-handler.help = ["addcmdsticker", "delcmdsticker", "listcmdsticker"];
+handler.help = ['addcmdsticker', 'delcmdsticker', 'listcmdsticker'];
 handler.tags = ['sticker'];
 handler.command = /^(addcmdsticker|delcmdsticker|listcmdsticker)$/i;
-handler.premium = true;
 
 export default handler;

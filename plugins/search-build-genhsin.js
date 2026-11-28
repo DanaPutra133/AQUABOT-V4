@@ -60,9 +60,9 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     }
 }
 
-handler.help = ["genshinbuild <karakter>", "buildgi <karakter>"];
+handler.help = ['genshin <karakter>', 'gi <karakter>', 'build <karakter>'];
 handler.tags = ['anime', 'game', 'tools'];
-handler.command = /^(genshinbuild|buildgi)$/i;
+handler.command = /^(genshin|gi|buildgenshin|build)$/i;
 handler.limit = true;
 handler.group = true;
 
