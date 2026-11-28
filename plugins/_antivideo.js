@@ -1,6 +1,6 @@
 const exports = {};
 exports.before = async function(m, { isAdmin, isBotAdmin }) {
-  if (isZapo && m.fromMe) return;
+  if (m.isZapo && m.fromMe) return;
   let chat = global.db.data.chats[m.chat];
   let isVideo = m.mtype;
   if (chat && chat.antivideo && isVideo) {
