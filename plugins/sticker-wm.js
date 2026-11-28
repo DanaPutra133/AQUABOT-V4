@@ -1,10 +1,10 @@
 import { createHash } from 'node:crypto';
-import { downloadMediaMessage } from 'zapo-js';
 import uploadFile from '../lib/uploadFile.js';
 import axios from 'axios';
 import { stickerToMp4 } from '../lib/sticker-convert.js?v=6';
 import { proto } from '../lib/simple.js';
 import { addExif } from '../lib/sticker.js';
+import { downloadMediaMessage } from "zapo-js";
 
 const WEBP_MIME = 'image/webp';
 const OPUS_MIME = 'audio/ogg; codecs=opus';
@@ -16,7 +16,6 @@ function saveSoundCache(sent, webpBytes, stickerObj, audioInfo) {
   for (const [k, v] of soundStickerCache) {
     if (now - v.ts > CACHE_TTL) soundStickerCache.delete(k);
   }
-
   const msgId = sent?.id || sent?.key?.id || sent?.messageId;
   if (msgId) soundStickerCache.set(`id:${msgId}`, { audioInfo, ts: now });
 
@@ -24,14 +23,9 @@ function saveSoundCache(sent, webpBytes, stickerObj, audioInfo) {
     const sha = createHash('sha256').update(webpBytes).digest('base64');
     soundStickerCache.set(`sha:${sha}`, { audioInfo, ts: now });
   }
-
   if (stickerObj?.fileSha256) {
-    const rawSha = typeof stickerObj.fileSha256 === 'string'
-      ? Buffer.from(stickerObj.fileSha256, 'base64')
-      : Buffer.from(stickerObj.fileSha256);
-    if (rawSha.length) {
-      soundStickerCache.set(`sha:${rawSha.toString('base64')}`, { audioInfo, ts: now });
-    }
+    const sha = Buffer.from(stickerObj.fileSha256).toString('base64');
+    soundStickerCache.set(`sha:${sha}`, { audioInfo, ts: now });
   }
 }
 
@@ -121,7 +115,7 @@ function extractFieldFromUnknowns(unknowns, targetFieldId) {
 
 function unwrapContainer(raw) {
   let cur = raw;
-  for (let i = 0; i < 8 && cur && typeof cur === 'object'; i++) {
+  for (let i = 0; i < 6 && cur && typeof cur === 'object'; i++) {
     const fpBytes = extractFieldFromUnknowns(cur.$unknowns || cur.unknownFields, 134);
     if (fpBytes && proto?.Message?.FutureProofMessage) {
       try {
@@ -137,70 +131,45 @@ function unwrapContainer(raw) {
       cur.audioStickerMessage?.message ||
       cur.futureProofMessage?.message ||
       cur.ephemeralMessage?.message ||
-      cur.viewOnceMessageV2Extension?.message ||
       cur.viewOnceMessageV2?.message ||
       cur.viewOnceMessage?.message ||
       cur.documentWithCaptionMessage?.message ||
       cur.editedMessage?.message;
-    if (next) {
-      cur = next;
-      continue;
-    }
-
-    if (cur.message && typeof cur.message === 'object' && !cur.stickerMessage) {
-      cur = cur.message;
-      continue;
-    }
-    break;
+    if (!next) break;
+    cur = next;
   }
   return cur || {};
 }
 
-function isStickerMessageObj(obj) {
-  if (!obj || typeof obj !== 'object') return false;
-  return Boolean(
-    obj.audioMessage ||
-    obj.$unknowns ||
-    obj.unknownFields ||
-    obj.isAnimated !== undefined ||
-    /webp/i.test(obj.mimetype || '') ||
-    ((obj.mediaKey || obj.directPath || obj.url) && !obj.caption && !obj.ptt)
-  );
-}
-
-function getAllStickerObjs(q, m = null) {
+function getStickerObj(q) {
   const candidates = [
     q?.message,
     q?.fakeObj?.message,
-    m?.msg?.contextInfo?.quotedMessage,
-    q?.msg
+    q?.msg && typeof q.msg === 'object' ? { stickerMessage: q.msg } : null
   ].filter(Boolean);
 
-  const found = [];
   for (const cand of candidates) {
     const raw = unwrapContainer(cand);
-    if (raw.stickerMessage) found.push(raw.stickerMessage);
-    else if (isStickerMessageObj(raw)) found.push(raw);
+    if (raw.stickerMessage) return raw.stickerMessage;
   }
-  return found;
+  return null;
 }
 
-function extractEmbeddedAudio(node, m = null) {
-  const stickerObjs = getAllStickerObjs(node, m);
+function extractEmbeddedAudio(node) {
+  const stickerObj = getStickerObj(node);
+  if (!stickerObj || typeof stickerObj !== 'object') return null;
 
-  for (const stickerObj of stickerObjs) {
-    if (stickerObj.audioMessage && typeof stickerObj.audioMessage === 'object') {
-      return { decoded: stickerObj.audioMessage, rawBytes: null };
-    }
+  if (stickerObj.audioMessage && typeof stickerObj.audioMessage === 'object') {
+    return { decoded: stickerObj.audioMessage, rawBytes: null };
+  }
 
-    const audioBytes = extractFieldFromUnknowns(stickerObj.$unknowns || stickerObj.unknownFields, 26);
-    if (audioBytes?.length) {
-      try {
-        const decoded = proto.Message.AudioMessage.decode(audioBytes);
-        return { decoded, rawBytes: audioBytes };
-      } catch {
-        return { decoded: null, rawBytes: audioBytes };
-      }
+  const audioBytes = extractFieldFromUnknowns(stickerObj.$unknowns || stickerObj.unknownFields, 26);
+  if (audioBytes?.length) {
+    try {
+      const decoded = proto.Message.AudioMessage.decode(audioBytes);
+      return { decoded, rawBytes: audioBytes };
+    } catch {
+      return { decoded: null, rawBytes: audioBytes };
     }
   }
 
@@ -247,6 +216,7 @@ async function deliverAudioStickerWithWm(conn, chat, origin, webpBuffer, packnam
   let soundMessageBytes = null;
   let updatedAudioInfo = audioInfo;
 
+  // 1. Jika punya raw Opus buffer di cache -> upload langsung paling stabil
   if (audioInfo?.opusBytes?.length) {
     const uploadedSound = await bridge.message.upload(audioInfo.opusBytes, { type: 'audio' });
     const soundObj = {
@@ -256,43 +226,43 @@ async function deliverAudioStickerWithWm(conn, chat, origin, webpBuffer, packnam
     };
     soundMessageBytes = proto.Message.AudioMessage.encode(soundObj).finish();
     updatedAudioInfo = { decoded: soundObj, rawBytes: soundMessageBytes, opusBytes: audioInfo.opusBytes };
-  } else if (audioInfo?.decoded) {
+  }
+  // 2. Jika berasal dari pesan masuk -> download ulang audionya lalu re-upload
+  else if (audioInfo?.decoded) {
     const d = audioInfo.decoded;
-    let opusBuf = null;
+    const cleanAudioProto = {
+      url: d.url,
+      directPath: d.directPath,
+      mediaKey: d.mediaKey,
+      fileSha256: d.fileSha256,
+      fileEncSha256: d.fileEncSha256,
+      fileLength: d.fileLength,
+      mediaKeyTimestamp: d.mediaKeyTimestamp,
+      mimetype: d.mimetype || OPUS_MIME,
+      seconds: d.seconds,
+      ptt: true,
+      waveform: d.waveform
+    };
 
     try {
-      const bytes = await bridge.message.downloadBytes({ audioMessage: d });
-      if (bytes?.length) opusBuf = Buffer.from(bytes);
-    } catch {}
-
-    if (!opusBuf && typeof downloadMediaMessage === 'function') {
-      try {
-        const stream = await downloadMediaMessage({ audioMessage: d });
-        const chunks = [];
-        for await (const chunk of stream) chunks.push(chunk);
-        if (chunks.length) opusBuf = Buffer.concat(chunks);
-      } catch {}
-    }
-
-    if (opusBuf?.length) {
-      const uploadedSound = await bridge.message.upload(opusBuf, { type: 'audio' });
-      const soundObj = {
-        ...uploadedSound,
-        mimetype: d.mimetype || OPUS_MIME,
-        seconds: d.seconds || undefined,
-        ptt: true
-      };
-      soundMessageBytes = proto.Message.AudioMessage.encode(soundObj).finish();
-      updatedAudioInfo = { decoded: soundObj, rawBytes: soundMessageBytes, opusBytes: opusBuf };
-    } else if (audioInfo?.rawBytes?.length) {
-      soundMessageBytes = audioInfo.rawBytes;
+      const audioBytes = await bridge.message.downloadBytes({ audioMessage: cleanAudioProto });
+      if (audioBytes?.length) {
+        const opusBuf = Buffer.from(audioBytes);
+        const uploadedSound = await bridge.message.upload(opusBuf, { type: 'audio' });
+        const soundObj = {
+          ...uploadedSound,
+          mimetype: d.mimetype || OPUS_MIME,
+          seconds: d.seconds || undefined,
+          ptt: true
+        };
+        soundMessageBytes = proto.Message.AudioMessage.encode(soundObj).finish();
+        updatedAudioInfo = { decoded: soundObj, rawBytes: soundMessageBytes, opusBytes: opusBuf };
+      }
+    } catch {
+      soundMessageBytes = proto.Message.AudioMessage.encode(cleanAudioProto).finish();
     }
   } else if (audioInfo?.rawBytes?.length) {
     soundMessageBytes = audioInfo.rawBytes;
-  }
-
-  if (!soundMessageBytes?.length) {
-    throw new Error('Trek audio pada stiker gagal diekstrak.');
   }
 
   const sent = await conn.sendMessage(chat, {
@@ -310,48 +280,48 @@ async function deliverAudioStickerWithWm(conn, chat, origin, webpBuffer, packnam
 }
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
-  const q = m.quoted ? m.quoted : m;
-  const mtype = q.mtype || '';
-  const stickerObjs = getAllStickerObjs(q, m);
-  const primarySticker = stickerObjs[0] || null;
-  const mime = (q.msg || q).mimetype || (primarySticker || /sticker/i.test(mtype) ? WEBP_MIME : '');
+  let q = m.quoted ? m.quoted : m;
+  let mtype = q.mtype || '';
+  let stickerObj = getStickerObj(q);
+  let mime = (q.msg || q).mimetype || (stickerObj || /sticker/i.test(mtype) ? WEBP_MIME : '');
 
   if (!text) throw `Format salah!\n\nContoh penggunaan:\n*${usedPrefix + command} Packname | Author*\n(Atau balas gambar/video/stiker)`;
   if (!mime) throw `Balas gambar/video/stiker dengan perintah ${usedPrefix + command}`;
   if (/video/g.test(mime) && (q.msg || q).seconds > 11) return m.reply('Maksimal 10 detik!');
 
-  const parts = text.split(/[|•]/).map(v => v.trim());
-  const packname = parts[0] || text;
-  const author = parts[1] || '';
-  const waitMsg = typeof wait !== 'undefined' ? wait : global.wait;
-  if (waitMsg) await m.reply(waitMsg);
+  let parts = text.split(/[|•]/).map(v => v.trim());
+  let packname = parts[0] || text;
+  let author = parts[1] || '';
+  await m.reply(global.wait);
 
   try {
     let img = await q.download?.().catch(() => null);
-    if ((!img || !img.length) && primarySticker && conn._client?.message?.downloadBytes) {
-      const bytes = await conn._client.message.downloadBytes({ stickerMessage: primarySticker }).catch(() => null);
+    if ((!img || !img.length) && stickerObj && conn._client?.message?.downloadBytes) {
+      const bytes = await conn._client.message.downloadBytes({ stickerMessage: stickerObj }).catch(() => null);
       if (bytes?.length) img = Buffer.from(bytes);
     }
     if (!img || !img.length) throw `Gagal mengunduh media, pastikan kamu membalas gambar/video/stiker.`;
 
-    const embeddedAudio = extractEmbeddedAudio(q, m) || getSoundFromCache(q, m, img);
+    // 1. Cek audio dari quoted message ATAU cache (ID pesan / SHA-256 WebP)
+    const embeddedAudio = extractEmbeddedAudio(q) || getSoundFromCache(q, m, img);
 
     if (embeddedAudio && looksWebp(img)) {
       await deliverAudioStickerWithWm(conn, m.chat, m, img, packname, author, embeddedAudio);
       return;
     }
 
-    const isAnimated = (q.msg || q).isAnimated === true;
+    // 2. Alur normal untuk stiker biasa, video, dan gambar (via API Danafxc + fallback lokal)
+    let isAnimated = (q.msg || q).isAnimated === true;
 
     if (isAnimated || /video|webp/g.test(mime)) {
       let videoBuffer = null;
       const apiKey = typeof dana !== 'undefined' ? dana : (global.dana || '');
 
       try {
-        const mediaUrl = await uploadFile(img);
-        const apiUrl = `https://api.danafxc.my.id/api/proxy/tools/convertwebp2mp4?apikey=${apiKey}&url=${encodeURIComponent(mediaUrl)}`;
+        let mediaUrl = await uploadFile(img);
+        let apiUrl = `https://api.danafxc.my.id/api/proxy/tools/convertwebp2mp4?apikey=${apiKey}&url=${encodeURIComponent(mediaUrl)}`;
 
-        const response = await axios.get(apiUrl, {
+        let response = await axios.get(apiUrl, {
           responseType: 'arraybuffer',
           timeout: 15000,
         });
@@ -372,30 +342,33 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       }
 
       if (!videoBuffer || !videoBuffer.length) {
-        throw 'Gagal mengubah media animasi menjadi video stiker.';
+        throw "Gagal mengubah media animasi menjadi video stiker.";
       }
 
       await conn.sendVideoAsSticker(m.chat, videoBuffer, m, {
-        packname,
-        author,
+        packname: packname,
+        author: author,
       });
+
     } else {
       await conn.sendImageAsSticker(m.chat, img, m, {
-        packname,
-        author,
+        packname: packname,
+        author: author,
       });
     }
+
   } catch (e) {
     console.error(e);
     throw e;
   }
 };
 
+// Simpan metadata audio dari Sound Sticker kiriman user lain ke cache
 handler.before = async function (m) {
   if (!m) return;
-  const audioInfo = extractEmbeddedAudio(m, m);
+  const audioInfo = extractEmbeddedAudio(m);
   if (audioInfo) {
-    const [stickerObj] = getAllStickerObjs(m, m);
+    const stickerObj = getStickerObj(m);
     saveSoundCache(m, null, stickerObj, audioInfo);
   }
 };
